@@ -23,7 +23,6 @@ public class DrivingService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i("Driving Status: ", "Started");
         mDrivingView.startDriving();
         return START_STICKY;
     }

@@ -12,20 +12,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".DashboardActivity">
+        <activity android:name=".DashboardActivity" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <service android:name=".FirebaseEventService">
+        <service android:name=".DrivingEventService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <service android:name=".DrivingService">
-
+        </service>
+        <service android:name=".NeuraMonitorService">
         </service>
     </application>
 
