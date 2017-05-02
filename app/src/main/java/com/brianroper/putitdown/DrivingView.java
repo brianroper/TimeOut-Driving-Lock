@@ -4,10 +4,18 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.os.Build;
+import android.support.v7.view.menu.MenuView;
+import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static android.content.Context.WINDOW_SERVICE;
@@ -16,10 +24,12 @@ import static android.content.Context.WINDOW_SERVICE;
  * Created by brianroper on 5/2/17.
  */
 
-public class DrivingView {
+public class DrivingView{
 
     private Context mContext;
     private RelativeLayout mRelativeLayout;
+    private ImageButton mOverflowButton;
+    private TextView mOverflowTextView;
 
     public DrivingView(Context context) {
         mContext = context;
@@ -61,6 +71,8 @@ public class DrivingView {
 
         WindowManager windowManager = (WindowManager) mContext.getSystemService(WINDOW_SERVICE);
         windowManager.addView(mRelativeLayout, layoutParams);
+
+        initializeViews(mRelativeLayout);
     }
 
     public void stopDriving(){
@@ -73,5 +85,44 @@ public class DrivingView {
         mRelativeLayout.setSystemUiVisibility(uiOptions);
         windowManager.removeView(mRelativeLayout);
         mRelativeLayout = null;
+    }
+
+    public void initializeViews(RelativeLayout root){
+        mOverflowButton = (ImageButton) root.findViewById(R.id.overflow_button);
+        mOverflowTextView = (TextView) root.findViewById(R.id.overflow_textview);
+
+        mOverflowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showOverflow();
+            }
+        });
+
+        mOverflowTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopDriving();
+            }
+        });
+
+        root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mOverflowTextView.getVisibility() == View.GONE){
+                    return;
+                }
+                if(mOverflowTextView.getVisibility() == View.VISIBLE){
+                    hideOverflow();
+                }
+            }
+        });
+    }
+
+    public void showOverflow(){
+        mOverflowTextView.setVisibility(View.VISIBLE);
+    }
+
+    public void hideOverflow(){
+        mOverflowTextView.setVisibility(View.GONE);
     }
 }
