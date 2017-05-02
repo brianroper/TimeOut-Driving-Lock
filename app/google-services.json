@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1067247502849",
+    "firebase_url": "https://putitdown-6296b.firebaseio.com",
+    "project_id": "putitdown-6296b",
+    "storage_bucket": "putitdown-6296b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1067247502849:android:2010a774f0d4dfdd",
+        "android_client_info": {
+          "package_name": "com.brianroper.putitdown"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1067247502849-opprm47pj2f3a9sjsngbibm336fq554u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.brianroper.putitdown",
+            "certificate_hash": "bab60bc07910560fd4352c4566233056af767d34"
+          }
+        },
+        {
+          "client_id": "1067247502849-pf66niuo2eavpfl41nnaf7s5klrsnurn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARp-XoIfL2P22WTwtv8nYoZ6yS6BMxTXI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1067247502849-pf66niuo2eavpfl41nnaf7s5klrsnurn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

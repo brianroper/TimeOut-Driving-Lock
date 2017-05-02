@@ -1,11 +1,16 @@
 package com.brianroper.putitdown;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.neura.sdk.object.AuthenticationRequest;
 import com.neura.sdk.object.Permission;
 import com.neura.standalonesdk.service.NeuraApiClient;
@@ -25,6 +30,12 @@ public class DashboardActivity extends AppCompatActivity {
     private NeuraApiClient mNeuraApiClient;
     @BindView(R.id.test_button)
     Button mButton;
+    @BindView(R.id.test_button2)
+    Button mButton2;
+    @BindView(R.id.test_button3)
+    Button mButton3;
+    public final static int REQUEST_CODE = 5463;
+    private boolean mOverlayPermission = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +44,27 @@ public class DashboardActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        checkDrawOverlayPermission();
+
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 connectNeura();
+            }
+        });
+
+        mButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mNeuraApiClient.simulateAnEvent();
+            }
+        });
+
+        mButton3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent driveService = new Intent(getApplicationContext(), DrivingService.class);
+                startService(driveService);
             }
         });
     }
@@ -52,7 +80,6 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void callNeura() {
-
         AuthenticationRequest request = new AuthenticationRequest(
                 Permission.list(new String[]{Utils.FINISHED_DRIVING, Utils.STARTED_DRIVING}));
 
@@ -62,6 +89,9 @@ public class DashboardActivity extends AppCompatActivity {
                 Log.i(getClass().getSimpleName(), "Successfully authenticate with neura. " +
                         "NeuraUserId = " + authenticateData.getNeuraUserId() + " " +
                         "AccessToken = " + authenticateData.getAccessToken());
+
+                mNeuraApiClient.registerFirebaseToken(
+                        DashboardActivity.this, FirebaseInstanceId.getInstance().getToken());
 
                 ArrayList<EventDefinition> events = authenticateData.getEvents();
                 //Subscribe to the events you wish Neura to alert you :
@@ -87,5 +117,25 @@ public class DashboardActivity extends AppCompatActivity {
                 Log.e("Neura Authentication: ", "Failed");
             }
         });
+    }
+
+    /**
+     * check for overlay permission
+     */
+    public void checkDrawOverlayPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, REQUEST_CODE);
+            } else {
+                permissionGranted();
+            }
+        } else
+            permissionGranted();
+    }
+
+    public void permissionGranted() {
+        mOverlayPermission = true;
     }
 }

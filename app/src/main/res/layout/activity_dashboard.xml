@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.brianroper.putitdown.DashboardActivity">
+    android:layout_height="match_parent">
 
     <Button
         android:layout_width="match_parent"
@@ -13,4 +10,18 @@
         android:text="Neura"
         android:id="@+id/test_button"/>
 
-</android.support.constraint.ConstraintLayout>
+    <Button
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Event"
+    android:id="@+id/test_button2"
+    android:layout_below="@+id/test_button"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Driving"
+        android:id="@+id/test_button3"
+        android:layout_below="@+id/test_button2"/>
+
+</RelativeLayout>
