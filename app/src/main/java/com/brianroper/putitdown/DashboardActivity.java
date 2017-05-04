@@ -6,9 +6,12 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.neura.sdk.object.AuthenticationRequest;
@@ -24,18 +27,20 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.RealmResults;
 
 public class DashboardActivity extends AppCompatActivity {
 
     private NeuraApiClient mNeuraApiClient;
-    @BindView(R.id.test_button)
-    Button mButton;
-    @BindView(R.id.test_button2)
-    Button mButton2;
-    @BindView(R.id.test_button3)
-    Button mButton3;
     public final static int REQUEST_CODE = 5463;
     private boolean mOverlayPermission = false;
+    @BindView(R.id.log_recycler)
+    RecyclerView mNeuraEventLogRecycler;
+    NeuraEventAdapter mNeuraEventAdapter;
+    private LinearLayoutManager mLinearLayoutManager;
+    private RealmResults<NeuraEventLog> mRealmResults;
+    @BindView(R.id.trip_count)
+    TextView mTripCountTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,30 +51,13 @@ public class DashboardActivity extends AppCompatActivity {
 
         checkDrawOverlayPermission();
 
+        connectNeura();
+
         Intent neuraService = new Intent(getApplicationContext(), NeuraMonitorService.class);
         startService(neuraService);
 
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                connectNeura();
-            }
-        });
-
-        mButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mNeuraApiClient.simulateAnEvent();
-            }
-        });
-
-        mButton3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent driveService = new Intent(getApplicationContext(), DrivingService.class);
-                startService(driveService);
-            }
-        });
+        initializeAdapter();
+        setTripTextView();
     }
 
     public void connectNeura() {
@@ -139,5 +127,20 @@ public class DashboardActivity extends AppCompatActivity {
 
     public void permissionGranted() {
         mOverlayPermission = true;
+    }
+
+    private void initializeAdapter(){
+        mNeuraEventAdapter = new NeuraEventAdapter(getApplicationContext());
+        mLinearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mLinearLayoutManager.setReverseLayout(true);
+        mLinearLayoutManager.setStackFromEnd(true);
+        mNeuraEventLogRecycler.setLayoutManager(mLinearLayoutManager);
+        mRealmResults = mNeuraEventAdapter.getNeuraEventLogDataFromRealm();
+        mNeuraEventLogRecycler.setAdapter(mNeuraEventAdapter);
+    }
+
+    private void setTripTextView(){
+        int trips = mRealmResults.size() / 2;
+        mTripCountTextView.setText(trips + "");
     }
 }

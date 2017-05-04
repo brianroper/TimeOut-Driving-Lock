@@ -9,9 +9,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/overflow_button"
-        android:src="@drawable/ic_action_overflow"
+        android:src="@mipmap/ic_more_vert_white_48dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimary"
+        android:padding="16dp"/>
 
     <TextView
         android:layout_width="100dp"
@@ -35,8 +37,9 @@
         android:textColor="#ffff"
         android:fontFamily="sans-serif-medium"
         android:layout_centerHorizontal="true"
-        android:textSize="35sp"
-        android:padding="16dp"/>
+        android:textSize="40sp"
+        android:padding="16dp"
+        android:layout_above="@+id/car_image"/>
 
     <ImageView
         android:layout_width="200dp"
