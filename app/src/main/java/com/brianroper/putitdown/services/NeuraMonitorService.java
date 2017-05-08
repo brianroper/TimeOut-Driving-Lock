@@ -45,7 +45,12 @@ public class NeuraMonitorService extends Service {
      * handle Neura api call
      */
     private void monitorNeura(){
-        connectNeura();
+        if(Utils.activeNetworkCheck(this)){
+            connectNeura();
+        }
+        else{
+            Utils.noActiveNetworkNotification(this);
+        }
     }
 
     /**

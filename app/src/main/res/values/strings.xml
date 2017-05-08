@@ -8,4 +8,8 @@
     <string name="event_finished_driving">you finished driving</string>
 
     <string name="passenger_mode_key">passengerStatus</string>
+
+    <string name="no_active_network">No network connection detected! Put it down requires a network connection to track your driving patterns</string>
+    <string name="no_active_network_notification_title">No network connection detected</string>
+    <string name="no_active_network_notification_content">Put it down requires a network connection to track your driving patterns</string>
 </resources>

@@ -3,10 +3,10 @@ package com.brianroper.putitdown.services;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.model.NeuraEventLog;
+import com.brianroper.putitdown.utils.Utils;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.neura.standalonesdk.events.NeuraEvent;
@@ -22,24 +22,36 @@ import io.realm.RealmConfiguration;
  */
 
 public class DrivingEventService extends FirebaseMessagingService {
+
+    private SharedPreferences mSharedPreferences;
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        getSharedPreferences();
+        if(Utils.activeNetworkCheck(this)){
+            handleNeuraEventMessage(remoteMessage);
+        }
+        else{
+            Utils.noActiveNetworkNotification(this);
+        }
+    }
+
+    /**
+     * handles the event message received from the Neura Api
+     */
+    private void handleNeuraEventMessage(RemoteMessage remoteMessage){
         Map data = remoteMessage.getData();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (NeuraPushCommandFactory.getInstance().isNeuraEvent(data)) {
             NeuraEvent event = NeuraPushCommandFactory.getInstance().getEvent(data);
-            Log.i(getClass().getSimpleName(), "received Neura event - " + event.toString());
             Intent drivingService = new Intent(this, DrivingService.class);
-            //handles user started driving event
             if(event.getEventName().equals("userStartedDriving")){
-                if(sharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false)){
+                if(mSharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false)){
                     startService(drivingService);
                     addNeuraEventLog(event);
                 }
             }
-            //handles user finished driving event
             else if(event.getEventName().equals("userFinishedDriving")){
-                if(!sharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false)){
+                if(!mSharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false)){
                     stopService(drivingService);
                     addNeuraEventLog(event);
                 }
@@ -50,7 +62,7 @@ public class DrivingEventService extends FirebaseMessagingService {
     /**
      * creates a NeuraEventLog realm object for each Neura event
      */
-    public void addNeuraEventLog(final NeuraEvent event){
+    private void addNeuraEventLog(final NeuraEvent event){
         Realm realm;
         Realm.init(getApplicationContext());
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
@@ -67,5 +79,12 @@ public class DrivingEventService extends FirebaseMessagingService {
             }
         });
         realm.close();
+    }
+
+    /**
+     * returns default shared preferences
+     */
+    private void getSharedPreferences(){
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 }
