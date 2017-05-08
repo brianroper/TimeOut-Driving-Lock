@@ -1,4 +1,4 @@
-package com.brianroper.putitdown;
+package com.brianroper.putitdown.services;
 
 import android.app.Service;
 import android.content.Intent;
@@ -7,6 +7,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.brianroper.putitdown.R;
+import com.brianroper.putitdown.utils.Utils;
 import com.neura.resources.authentication.AuthenticateCallback;
 import com.neura.resources.authentication.AuthenticateData;
 import com.neura.sdk.object.AuthenticationRequest;
@@ -38,10 +40,17 @@ public class NeuraMonitorService extends Service {
         return null;
     }
 
+
+    /**
+     * handle Neura api call
+     */
     private void monitorNeura(){
         connectNeura();
     }
 
+    /**
+     * connect to the Neura api using AppUid and AppSecret keys
+     */
     public void connectNeura() {
         Builder builder = new Builder(getApplicationContext());
         mNeuraApiClient = builder.build();
@@ -51,6 +60,9 @@ public class NeuraMonitorService extends Service {
         callNeura();
     }
 
+    /**
+     * call the Neura api and begin monitoring the userStartedDriving and userFinishedDriving events
+     */
     public void callNeura() {
         AuthenticationRequest request = new AuthenticationRequest(
                 Permission.list(new String[]{Utils.FINISHED_DRIVING, Utils.STARTED_DRIVING}));

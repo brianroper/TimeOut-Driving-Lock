@@ -30,29 +30,27 @@
         android:visibility="gone"
         android:layout_marginTop="16dp"/>
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Put It Down"
-        android:textColor="#ffff"
-        android:fontFamily="sans-serif-medium"
+        android:id="@+id/title_text"
         android:layout_centerHorizontal="true"
-        android:textSize="40sp"
-        android:padding="16dp"
-        android:layout_above="@+id/car_image"/>
+        android:src="@drawable/putitdownlogo"
+        android:padding="8dp"
+        android:layout_below="@+id/car_image"/>
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@mipmap/ic_car_48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/redcar"
         android:layout_centerInParent="true"
-        android:padding="16dp"
+        android:padding="4dp"
         android:id="@+id/car_image"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/car_image"
+        android:layout_below="@+id/title_text"
         android:text="Your are driving..."
         android:layout_centerInParent="true"
         android:fontFamily="sans-serif-medium"

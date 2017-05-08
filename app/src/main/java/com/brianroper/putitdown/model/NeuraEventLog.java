@@ -1,4 +1,4 @@
-package com.brianroper.putitdown;
+package com.brianroper.putitdown.model;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;

@@ -1,11 +1,11 @@
-package com.brianroper.putitdown;
+package com.brianroper.putitdown.services;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
-import android.util.Log;
+
+import com.brianroper.putitdown.views.DrivingView;
 
 /**
  * Created by brianroper on 5/2/17.
@@ -23,6 +23,7 @@ public class DrivingService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        //draw screen overlay
         mDrivingView.startDriving();
         return START_STICKY;
     }
@@ -35,6 +36,7 @@ public class DrivingService extends Service {
 
     @Override
     public void onDestroy() {
+        //destroy screen overlay
         mDrivingView.stopDriving();
         super.onDestroy();
     }

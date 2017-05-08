@@ -1,4 +1,4 @@
-package com.brianroper.putitdown;
+package com.brianroper.putitdown.utils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

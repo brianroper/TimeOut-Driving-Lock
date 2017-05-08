@@ -1,8 +1,12 @@
-package com.brianroper.putitdown;
+package com.brianroper.putitdown.services;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.brianroper.putitdown.R;
+import com.brianroper.putitdown.model.NeuraEventLog;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.neura.standalonesdk.events.NeuraEvent;
@@ -21,23 +25,31 @@ public class DrivingEventService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Map data = remoteMessage.getData();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (NeuraPushCommandFactory.getInstance().isNeuraEvent(data)) {
             NeuraEvent event = NeuraPushCommandFactory.getInstance().getEvent(data);
             Log.i(getClass().getSimpleName(), "received Neura event - " + event.toString());
             Intent drivingService = new Intent(this, DrivingService.class);
+            //handles user started driving event
             if(event.getEventName().equals("userStartedDriving")){
-                Log.i("Driving Session: ", "Started");
-                startService(drivingService);
-                addNeuraEventLog(event);
+                if(sharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false)){
+                    startService(drivingService);
+                    addNeuraEventLog(event);
+                }
             }
+            //handles user finished driving event
             else if(event.getEventName().equals("userFinishedDriving")){
-                Log.i("Driving Session: ", "Stopped");
-                stopService(drivingService);
-                addNeuraEventLog(event);
+                if(!sharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false)){
+                    stopService(drivingService);
+                    addNeuraEventLog(event);
+                }
             }
         }
     }
 
+    /**
+     * creates a NeuraEventLog realm object for each Neura event
+     */
     public void addNeuraEventLog(final NeuraEvent event){
         Realm realm;
         Realm.init(getApplicationContext());

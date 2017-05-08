@@ -1,4 +1,4 @@
-package com.brianroper.putitdown;
+package com.brianroper.putitdown.views;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -13,6 +13,8 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.brianroper.putitdown.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +37,9 @@ public class DrivingView{
         mContext = context;
     }
 
+    /**
+     * draws screen overlay
+     */
     public void startDriving(){
         if(mRelativeLayout != null){
             return;
@@ -75,6 +80,9 @@ public class DrivingView{
         initializeViews(mRelativeLayout);
     }
 
+    /**
+     * removes the screen overlay
+     */
     public void stopDriving(){
         if(mRelativeLayout == null){
             return;
@@ -87,6 +95,9 @@ public class DrivingView{
         mRelativeLayout = null;
     }
 
+    /**
+     * initialize views for the screen overlay
+     */
     public void initializeViews(RelativeLayout root){
         mOverflowButton = (ImageButton) root.findViewById(R.id.overflow_button);
         mOverflowTextView = (TextView) root.findViewById(R.id.overflow_textview);
@@ -118,10 +129,16 @@ public class DrivingView{
         });
     }
 
+    /**
+     * sets the overflow menu text view to visible
+     */
     public void showOverflow(){
         mOverflowTextView.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * sets the overflow menu text view to gone
+     */
     public void hideOverflow(){
         mOverflowTextView.setVisibility(View.GONE);
     }

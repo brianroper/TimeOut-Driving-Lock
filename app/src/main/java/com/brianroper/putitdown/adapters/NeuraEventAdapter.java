@@ -1,11 +1,18 @@
-package com.brianroper.putitdown;
+package com.brianroper.putitdown.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.brianroper.putitdown.R;
+import com.brianroper.putitdown.model.NeuraEventLog;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,8 +43,13 @@ public class NeuraEventAdapter extends RecyclerView.Adapter<NeuraEventAdapter.Ne
 
     @Override
     public void onBindViewHolder(NeuraEventAdapter.NeuraEventViewHolder holder, int position) {
-        holder.mEventNameTextView.setText(mRealmResults.get(position).getEventName());
-        holder.mEventTimeStampTextView.setText(mRealmResults.get(position).getTimestamp() + "");
+        if(mRealmResults.get(position).getEventName().equals("userStartedDriving")){
+            holder.mEventNameTextView.setText(mContext.getString(R.string.event_started_driving));
+        }
+        else if(mRealmResults.get(position).getEventName().equals("userFinishedDriving")){
+            holder.mEventNameTextView.setText(mContext.getString(R.string.event_finished_driving));
+        }
+        holder.mEventTimeStampTextView.setText(formatTimeStamp(mRealmResults.get(position).getTimestamp()));
     }
 
     @Override
@@ -57,6 +69,9 @@ public class NeuraEventAdapter extends RecyclerView.Adapter<NeuraEventAdapter.Ne
         }
     }
 
+    /**
+     * returns NeuraEventLog data from realm db
+     */
     public RealmResults<NeuraEventLog> getNeuraEventLogDataFromRealm(){
         Realm realm;
         Realm.init(mContext);
@@ -66,5 +81,21 @@ public class NeuraEventAdapter extends RecyclerView.Adapter<NeuraEventAdapter.Ne
         realm = Realm.getInstance(realmConfiguration);
         mRealmResults = realm.where(NeuraEventLog.class).findAll();
         return mRealmResults;
+    }
+
+    /**
+     * convert the NeuraEventData timestamp into a date object
+     */
+    public String formatTimeStamp(long timestamp){
+        String time;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timestamp);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        Date date = calendar.getTime();
+        time = date.toString();
+        Log.i("Time: ", date + "");
+        return time;
     }
 }

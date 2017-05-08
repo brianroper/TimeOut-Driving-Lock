@@ -1,18 +1,24 @@
-package com.brianroper.putitdown;
+package com.brianroper.putitdown.views;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
+import com.brianroper.putitdown.R;
+import com.brianroper.putitdown.adapters.NeuraEventAdapter;
+import com.brianroper.putitdown.model.NeuraEventLog;
+import com.brianroper.putitdown.services.NeuraMonitorService;
+import com.brianroper.putitdown.utils.Utils;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.neura.sdk.object.AuthenticationRequest;
 import com.neura.sdk.object.Permission;
@@ -27,6 +33,8 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 import io.realm.RealmResults;
 
 public class DashboardActivity extends AppCompatActivity {
@@ -41,6 +49,8 @@ public class DashboardActivity extends AppCompatActivity {
     private RealmResults<NeuraEventLog> mRealmResults;
     @BindView(R.id.trip_count)
     TextView mTripCountTextView;
+    @BindView(R.id.passenger_switch)
+    SwitchCompat mPassengerSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +61,11 @@ public class DashboardActivity extends AppCompatActivity {
 
         checkDrawOverlayPermission();
 
-        connectNeura();
-
-        Intent neuraService = new Intent(getApplicationContext(), NeuraMonitorService.class);
-        startService(neuraService);
+        if(mNeuraApiClient==null){
+            connectNeura();
+            Intent neuraService = new Intent(getApplicationContext(), NeuraMonitorService.class);
+            startService(neuraService);
+        }
 
         initializeAdapter();
         setTripTextView();
@@ -84,7 +95,6 @@ public class DashboardActivity extends AppCompatActivity {
                         DashboardActivity.this, FirebaseInstanceId.getInstance().getToken());
 
                 ArrayList<EventDefinition> events = authenticateData.getEvents();
-                //Subscribe to the events you wish Neura to alert you :
                 for (int i = 0; i < events.size(); i++) {
                     mNeuraApiClient.subscribeToEvent(events.get(i).getName(),
                             "YourEventIdentifier_" + events.get(i).getName(),
@@ -142,5 +152,25 @@ public class DashboardActivity extends AppCompatActivity {
     private void setTripTextView(){
         int trips = mRealmResults.size() / 2;
         mTripCountTextView.setText(trips + "");
+    }
+
+    /**
+     * handle switch event for passenger switch
+     */
+    @OnCheckedChanged(R.id.passenger_switch)
+    public void setPassengerSwitchListener(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if(mPassengerSwitch.isChecked()){
+            sharedPreferences
+                    .edit()
+                    .putBoolean(getString(R.string.passenger_mode_key), true)
+                    .apply();
+        }
+        else if(!mPassengerSwitch.isChecked()){
+            sharedPreferences
+                    .edit()
+                    .putBoolean(getString(R.string.passenger_mode_key), false)
+                    .apply();
+        }
     }
 }
