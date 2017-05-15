@@ -6,12 +6,16 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.brianroper.putitdown.R;
+import com.brianroper.putitdown.model.Constants;
+import com.brianroper.putitdown.model.DrivingMessage;
 import com.brianroper.putitdown.model.NeuraEventLog;
 import com.brianroper.putitdown.utils.Utils;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.neura.standalonesdk.events.NeuraEvent;
 import com.neura.standalonesdk.events.NeuraPushCommandFactory;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -28,12 +32,14 @@ public class DrivingEventService extends FirebaseMessagingService {
 
     private SharedPreferences mSharedPreferences;
     private boolean mPassengerStatus;
+    private EventBus mEventBus = EventBus.getDefault();
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         getSharedPreferences();
         if(Utils.activeNetworkCheck(this)){
             handleNeuraEventMessage(remoteMessage);
+            postEventMessage();
         }
         else{
             Utils.noActiveNetworkNotification(this);
@@ -95,15 +101,29 @@ public class DrivingEventService extends FirebaseMessagingService {
         Log.i("Passenger Status: ", mPassengerStatus + "");
     }
 
+    /**
+     * formats and returns the current time
+     */
     private String returnTime(Calendar calendar){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm a");
         String time = simpleDateFormat.format(calendar.getTime());
         return time;
     }
 
+    /**
+     * formats and returns the current date
+     */
     private String returnDate(Calendar calendar){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd");
         String date = simpleDateFormat.format(calendar.getTime());
         return date;
+    }
+
+    /**
+     * notifies DashBoardActivity that the service has finished
+     */
+    private void postEventMessage(){
+        Constants constants = new Constants();
+        mEventBus.postSticky(new DrivingMessage(constants.DRIVING_EVENT_FINISHED));
     }
 }

@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.adapters.NeuraEventAdapter;
+import com.brianroper.putitdown.model.Constants;
+import com.brianroper.putitdown.model.DrivingMessage;
 import com.brianroper.putitdown.model.NeuraEventLog;
 import com.brianroper.putitdown.services.NeuraMonitorService;
 import com.brianroper.putitdown.utils.Utils;
@@ -34,6 +36,10 @@ import com.neura.resources.authentication.AuthenticateData;
 import com.neura.sdk.service.SubscriptionRequestCallbacks;
 import com.neura.sdk.object.EventDefinition;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -46,6 +52,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     private NeuraApiClient mNeuraApiClient;
     public final static int REQUEST_CODE = 5463;
+    private EventBus mEventBus = EventBus.getDefault();
 
     @BindView(R.id.log_recycler)
     RecyclerView mNeuraEventLogRecycler;
@@ -181,6 +188,9 @@ public class DashboardActivity extends AppCompatActivity {
         mNeuraEventLogRecycler.setAdapter(mNeuraEventAdapter);
     }
 
+    /**
+     * changes empty view to visible when there is no data in adapter
+     */
     private void handleEmptyView(RealmResults<NeuraEventLog> results){
         if(results.size()==0){
            mEmptyView.setVisibility(View.VISIBLE);
@@ -269,5 +279,37 @@ public class DashboardActivity extends AppCompatActivity {
     @OnClick(R.id.test_button)
     public void setTestButton(){
         mNeuraApiClient.simulateAnEvent();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mEventBus.register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mEventBus.unregister(this);
+    }
+
+    /**
+     * listens for a DrivingMessage from the DrivingEventService when it completes
+     */
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onDrivingMessageEvent(DrivingMessage drivingMessage){
+        Constants constants = new Constants();
+        if(drivingMessage.message == constants.DRIVING_EVENT_FINISHED) {
+            handleAdapterDataSet();
+        }
+    }
+
+    /**
+     * refreshes the data in the adapter
+     */
+    public void handleAdapterDataSet(){
+        mNeuraEventAdapter.getNeuraEventLogDataFromRealm();
+        mNeuraEventAdapter.notifyDataSetChanged();
+        setTripTextView();
     }
 }
