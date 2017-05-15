@@ -1,6 +1,5 @@
 package com.brianroper.putitdown.utils;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -25,6 +24,9 @@ public class Utils {
         Toast.makeText(context, context.getString(R.string.no_active_network), Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * error notification displayed to user when there is no available network
+     */
     static public void noActiveNetworkNotification(Context context){
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context)

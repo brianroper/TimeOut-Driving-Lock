@@ -15,17 +15,60 @@
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
         android:id="@+id/event_name"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"/>
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/event_timestamp"
-        android:text="1493833949"
+        android:orientation="horizontal"
+        android:id="@+id/date_layout"
         android:layout_alignParentEnd="true"
-        android:paddingEnd="16dp"
+        android:paddingBottom="1dp"
+        android:paddingTop="1dp"
         android:paddingStart="16dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"/>
+        android:paddingEnd="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/event_date"
+            android:layout_gravity="center"
+            android:text="5/15"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_date"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/time_layout"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/date_layout"
+        android:paddingBottom="1dp"
+        android:paddingTop="1dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/event_time"
+            android:text="10:58 AM"
+            android:layout_gravity="center"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_time"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

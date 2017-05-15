@@ -12,6 +12,8 @@ public class NeuraEventLog extends RealmObject {
     private String id;
     private String eventName;
     private long timestamp;
+    private String date;
+    private String time;
 
     public NeuraEventLog() {
     }
@@ -30,5 +32,21 @@ public class NeuraEventLog extends RealmObject {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

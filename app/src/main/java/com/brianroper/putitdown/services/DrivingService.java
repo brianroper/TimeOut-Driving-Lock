@@ -1,7 +1,11 @@
 package com.brianroper.putitdown.services;
 
+import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -25,6 +29,7 @@ public class DrivingService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         //draw screen overlay
         mDrivingView.startDriving();
+        silenceDevice();
         return START_STICKY;
     }
 
@@ -38,6 +43,23 @@ public class DrivingService extends Service {
     public void onDestroy() {
         //destroy screen overlay
         mDrivingView.stopDriving();
+        enableDeviceRinger();
         super.onDestroy();
+    }
+
+    /**
+     * silence the device audio and vibration
+     */
+    public void silenceDevice(){
+        AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(AUDIO_SERVICE);
+        audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+    }
+
+    /**
+     * set the device ringer to normal
+     */
+    public void enableDeviceRinger(){
+        AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(AUDIO_SERVICE);
+        audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
     }
 }

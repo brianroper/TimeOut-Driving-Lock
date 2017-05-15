@@ -1,5 +1,7 @@
 package com.brianroper.putitdown.views;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -12,6 +14,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.brianroper.putitdown.R;
@@ -34,6 +39,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 import io.realm.RealmResults;
 
 public class DashboardActivity extends AppCompatActivity {
@@ -47,10 +53,17 @@ public class DashboardActivity extends AppCompatActivity {
     TextView mTripCountTextView;
     @BindView(R.id.passenger_switch)
     SwitchCompat mPassengerSwitch;
+    @BindView(R.id.empty_view)
+    RelativeLayout mEmptyView;
+    @BindView(R.id.log_view)
+    RelativeLayout mLogView;
+    @BindView(R.id.test_button)
+    Button mButton;
 
     private NeuraEventAdapter mNeuraEventAdapter;
     private LinearLayoutManager mLinearLayoutManager;
     private RealmResults<NeuraEventLog> mRealmResults;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +75,14 @@ public class DashboardActivity extends AppCompatActivity {
         //TODO: move overlay permission check to on boarding
         checkDrawOverlayPermission();
 
+        getSharedPreferences();
+
         monitorNeura();
 
         initializeAdapter();
         setTripTextView();
+
+        handleDoNotDisturbPermissions();
     }
 
     /**
@@ -78,7 +95,7 @@ public class DashboardActivity extends AppCompatActivity {
                 initializeNeuraService();
             }
             else{
-                Utils.activeNetworkCheck(this);
+                Utils.noActiveNetworkToast(this);
             }
         }
     }
@@ -160,7 +177,19 @@ public class DashboardActivity extends AppCompatActivity {
         mLinearLayoutManager.setStackFromEnd(true);
         mNeuraEventLogRecycler.setLayoutManager(mLinearLayoutManager);
         mRealmResults = mNeuraEventAdapter.getNeuraEventLogDataFromRealm();
+        handleEmptyView(mRealmResults);
         mNeuraEventLogRecycler.setAdapter(mNeuraEventAdapter);
+    }
+
+    private void handleEmptyView(RealmResults<NeuraEventLog> results){
+        if(results.size()==0){
+           mEmptyView.setVisibility(View.VISIBLE);
+           mLogView.setVisibility(View.GONE);
+        }
+        else{
+            mEmptyView.setVisibility(View.GONE);
+            mLogView.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -176,18 +205,20 @@ public class DashboardActivity extends AppCompatActivity {
      */
     @OnCheckedChanged(R.id.passenger_switch)
     public void setPassengerSwitchListener(){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        stopNeuraService();
         if(mPassengerSwitch.isChecked()){
-            sharedPreferences
+            mSharedPreferences
                     .edit()
                     .putBoolean(getString(R.string.passenger_mode_key), true)
                     .apply();
+            initializeNeuraService();
         }
         else if(!mPassengerSwitch.isChecked()){
-            sharedPreferences
+            mSharedPreferences
                     .edit()
                     .putBoolean(getString(R.string.passenger_mode_key), false)
                     .apply();
+            initializeNeuraService();
         }
     }
 
@@ -197,5 +228,46 @@ public class DashboardActivity extends AppCompatActivity {
     private void initializeNeuraService(){
         Intent neuraService = new Intent(getApplicationContext(), NeuraMonitorService.class);
         startService(neuraService);
+    }
+
+    /**
+     * stops a running NeuraMonitorService
+     */
+    private void stopNeuraService(){
+        Intent neuraService = new Intent(getApplicationContext(), NeuraMonitorService.class);
+        stopService(neuraService);
+    }
+
+    /**
+     * returns shared preferences and sets default passenger value
+     */
+    private void getSharedPreferences(){
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mSharedPreferences
+                .edit()
+                .putBoolean(getString(R.string.passenger_mode_key), false)
+                .apply();
+    }
+
+    /**
+     * checks for the do not disturb permission
+     */
+    public void handleDoNotDisturbPermissions(){
+        NotificationManager notificationManager =
+                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && !notificationManager.isNotificationPolicyAccessGranted()) {
+
+            Intent intent = new Intent(
+                    android.provider.Settings
+                            .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+            startActivity(intent);
+        }
+    }
+
+    @OnClick(R.id.test_button)
+    public void setTestButton(){
+        mNeuraApiClient.simulateAnEvent();
     }
 }

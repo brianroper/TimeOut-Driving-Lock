@@ -3,6 +3,7 @@ package com.brianroper.putitdown.services;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.model.NeuraEventLog;
@@ -12,6 +13,8 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.neura.standalonesdk.events.NeuraEvent;
 import com.neura.standalonesdk.events.NeuraPushCommandFactory;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Map;
 
 import io.realm.Realm;
@@ -24,6 +27,7 @@ import io.realm.RealmConfiguration;
 public class DrivingEventService extends FirebaseMessagingService {
 
     private SharedPreferences mSharedPreferences;
+    private boolean mPassengerStatus;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -44,14 +48,12 @@ public class DrivingEventService extends FirebaseMessagingService {
         if (NeuraPushCommandFactory.getInstance().isNeuraEvent(data)) {
             NeuraEvent event = NeuraPushCommandFactory.getInstance().getEvent(data);
             Intent drivingService = new Intent(this, DrivingService.class);
-            if(event.getEventName().equals("userStartedDriving")){
-                if(mSharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false)){
+            if(!mPassengerStatus){
+                if(event.getEventName().equals("userStartedDriving")){
                     startService(drivingService);
                     addNeuraEventLog(event);
                 }
-            }
-            else if(event.getEventName().equals("userFinishedDriving")){
-                if(!mSharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false)){
+                else if(event.getEventName().equals("userFinishedDriving")){
                     stopService(drivingService);
                     addNeuraEventLog(event);
                 }
@@ -63,6 +65,7 @@ public class DrivingEventService extends FirebaseMessagingService {
      * creates a NeuraEventLog realm object for each Neura event
      */
     private void addNeuraEventLog(final NeuraEvent event){
+        final Calendar calendar = Calendar.getInstance();
         Realm realm;
         Realm.init(getApplicationContext());
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
@@ -75,6 +78,8 @@ public class DrivingEventService extends FirebaseMessagingService {
                NeuraEventLog neuraEventLog = realm.createObject(NeuraEventLog.class, event.getNeuraId());
                neuraEventLog.setEventName(event.getEventName());
                neuraEventLog.setTimestamp(event.getEventTimestamp());
+               neuraEventLog.setTime(returnTime(calendar));
+               neuraEventLog.setDate(returnDate(calendar));
                realm.copyToRealmOrUpdate(neuraEventLog);
             }
         });
@@ -86,5 +91,19 @@ public class DrivingEventService extends FirebaseMessagingService {
      */
     private void getSharedPreferences(){
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mPassengerStatus = mSharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false);
+        Log.i("Passenger Status: ", mPassengerStatus + "");
+    }
+
+    private String returnTime(Calendar calendar){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm a");
+        String time = simpleDateFormat.format(calendar.getTime());
+        return time;
+    }
+
+    private String returnDate(Calendar calendar){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd");
+        String date = simpleDateFormat.format(calendar.getTime());
+        return date;
     }
 }

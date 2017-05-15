@@ -78,7 +78,41 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:id="@+id/empty_view"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/empty_title"
+                android:text="Trip Log"
+                android:textColor="@color/colorAccent"
+                android:fontFamily="sans-serif-medium"
+                android:paddingBottom="4dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="16dp"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You currently have no saved trip data. Start driving to change that!"
+                android:layout_below="@+id/empty_title"
+                android:layout_centerHorizontal="true"
+                android:paddingTop="4dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="16dp"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:id="@+id/log_view">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -139,6 +173,13 @@
                 android:paddingEnd="16dp"
                 android:paddingBottom="16dp"
                 android:id="@+id/passenger_detail"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test"
+                android:layout_below="@+id/passenger_detail"
+                android:id="@+id/test_button"/>
 
             <android.support.v7.widget.SwitchCompat
                 android:layout_width="wrap_content"
