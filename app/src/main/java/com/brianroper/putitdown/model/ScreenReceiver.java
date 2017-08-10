@@ -18,6 +18,9 @@ public class ScreenReceiver extends BroadcastReceiver {
         } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
             Log.d("ScreenStatus", "Screen On");
         }
+        else{
+            Log.d("ScreenStatus", "Inactive");
+        }
     }
 }
 

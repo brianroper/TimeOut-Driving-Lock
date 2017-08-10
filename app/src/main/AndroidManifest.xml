@@ -44,6 +44,8 @@
             </meta-data>
         </receiver>
 
+        <service android:name=".services.ScreenService"/>
+
     </application>
 
 </manifest>

@@ -25,6 +25,7 @@ import com.brianroper.putitdown.model.Constants;
 import com.brianroper.putitdown.model.DrivingMessage;
 import com.brianroper.putitdown.model.NeuraEventLog;
 import com.brianroper.putitdown.services.NeuraMonitorService;
+import com.brianroper.putitdown.services.ScreenService;
 import com.brianroper.putitdown.utils.Utils;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.neura.sdk.object.AuthenticationRequest;
@@ -90,6 +91,8 @@ public class DashboardActivity extends AppCompatActivity {
         setTripTextView();
 
         handleDoNotDisturbPermissions();
+
+        initializeScreenService();
     }
 
     /**
@@ -312,5 +315,10 @@ public class DashboardActivity extends AppCompatActivity {
         mNeuraEventAdapter.notifyDataSetChanged();
         setTripTextView();
         handleEmptyView(mRealmResults);
+    }
+
+    public void initializeScreenService(){
+        Intent screenService = new Intent(getApplicationContext(), ScreenService.class);
+        startService(screenService);
     }
 }
