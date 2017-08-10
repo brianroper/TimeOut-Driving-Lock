@@ -1,5 +1,6 @@
 package com.brianroper.putitdown.views;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
@@ -7,7 +8,9 @@ import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.BounceInterpolator;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,6 +29,7 @@ public class DrivingView{
     private RelativeLayout mRelativeLayout;
     private ImageButton mOverflowButton;
     private TextView mOverflowTextView;
+    private ImageView mCarImageView;
 
     public DrivingView(Context context) {
         mContext = context;
@@ -72,6 +76,7 @@ public class DrivingView{
         windowManager.addView(mRelativeLayout, layoutParams);
 
         initializeViews(mRelativeLayout);
+        setBounceInterpolator();
     }
 
     /**
@@ -95,6 +100,7 @@ public class DrivingView{
     public void initializeViews(RelativeLayout root){
         mOverflowButton = (ImageButton) root.findViewById(R.id.overflow_button);
         mOverflowTextView = (TextView) root.findViewById(R.id.overflow_textview);
+        mCarImageView = (ImageView) root.findViewById(R.id.car_image);
 
         mOverflowButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,5 +141,17 @@ public class DrivingView{
      */
     public void hideOverflow(){
         mOverflowTextView.setVisibility(View.GONE);
+    }
+
+    /**
+     * handles the bounce animation for the car image view
+     */
+    public void setBounceInterpolator(){
+        final ObjectAnimator objectAnimator =
+                ObjectAnimator.ofFloat(mCarImageView, "translationY", 0, 50, 0);
+        objectAnimator.setInterpolator(new BounceInterpolator());
+        objectAnimator.setDuration(1000);
+        objectAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+        objectAnimator.start();
     }
 }

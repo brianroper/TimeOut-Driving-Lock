@@ -311,5 +311,6 @@ public class DashboardActivity extends AppCompatActivity {
         mNeuraEventAdapter.getNeuraEventLogDataFromRealm();
         mNeuraEventAdapter.notifyDataSetChanged();
         setTripTextView();
+        handleEmptyView(mRealmResults);
     }
 }

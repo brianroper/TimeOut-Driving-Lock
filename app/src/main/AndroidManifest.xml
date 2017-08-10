@@ -32,6 +32,18 @@
             android:name=".services.NeuraMonitorService"
             android:label="NeuraMonitorService">
         </service>
+
+        <receiver android:name=".widgets.CounterProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider">
+            </meta-data>
+        </receiver>
+
     </application>
 
 </manifest>
