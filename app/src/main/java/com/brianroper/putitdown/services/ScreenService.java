@@ -6,7 +6,11 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.brianroper.putitdown.model.NeuraEventLog;
 import com.brianroper.putitdown.model.ScreenReceiver;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 /**
  * Created by brianroper on 8/10/17.
@@ -58,5 +62,9 @@ public class ScreenService extends Service {
                 unregisterReceiver(mScreenReceiver);
             }
         } catch (IllegalArgumentException e) {}
+    }
+
+    private void incrementScreenCounter(){
+
     }
 }
