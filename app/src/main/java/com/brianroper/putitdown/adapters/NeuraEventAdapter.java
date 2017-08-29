@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.brianroper.putitdown.R;
@@ -45,6 +46,11 @@ public class NeuraEventAdapter extends RecyclerView.Adapter<NeuraEventAdapter.Ne
 
     @Override
     public void onBindViewHolder(NeuraEventAdapter.NeuraEventViewHolder holder, int position) {
+
+        if(position == getItemCount() - 1){
+            holder.mDivider.setVisibility(View.GONE);
+        }
+
         if(mRealmResults.get(position).getEventName().equals("userStartedDriving")){
             holder.mEventNameTextView.setText(mContext.getString(R.string.event_started_driving));
         }
@@ -67,6 +73,8 @@ public class NeuraEventAdapter extends RecyclerView.Adapter<NeuraEventAdapter.Ne
         TextView mEventDateTextView;
         @BindView(R.id.event_time)
         TextView mEventTimeTextView;
+        @BindView(R.id.divider)
+        RelativeLayout mDivider;
 
         public NeuraEventViewHolder(View itemView) {
             super(itemView);

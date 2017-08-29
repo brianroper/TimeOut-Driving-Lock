@@ -26,6 +26,7 @@ import com.brianroper.putitdown.adapters.NeuraEventAdapter;
 import com.brianroper.putitdown.model.Constants;
 import com.brianroper.putitdown.model.DrivingMessage;
 import com.brianroper.putitdown.model.NeuraEventLog;
+import com.brianroper.putitdown.model.RecyclerViewDivider;
 import com.brianroper.putitdown.services.NeuraMonitorService;
 import com.brianroper.putitdown.services.ScreenService;
 import com.brianroper.putitdown.utils.Utils;
@@ -214,8 +215,9 @@ public class DashboardActivity extends AppCompatActivity {
     private void initializeAdapter(){
         mNeuraEventAdapter = new NeuraEventAdapter(getApplicationContext());
         mLinearLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mLinearLayoutManager.setReverseLayout(true);
-        mLinearLayoutManager.setStackFromEnd(true);
+        //mLinearLayoutManager.setReverseLayout(true);
+       // mLinearLayoutManager.setStackFromEnd(true);
+        //mNeuraEventLogRecycler.addItemDecoration(new RecyclerViewDivider(getApplicationContext()));
         mNeuraEventLogRecycler.setLayoutManager(mLinearLayoutManager);
         mRealmResults = mNeuraEventAdapter.getNeuraEventLogDataFromRealm();
         handleEmptyView(mRealmResults);
