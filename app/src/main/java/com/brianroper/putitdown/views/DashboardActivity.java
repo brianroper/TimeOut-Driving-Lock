@@ -354,4 +354,10 @@ public class DashboardActivity extends AppCompatActivity {
         Intent screenService = new Intent(getApplicationContext(), ScreenService.class);
         startService(screenService);
     }
+
+    @OnClick(R.id.surface_log)
+    public void setSurfaceLogListener(){
+        Intent logIntent = new Intent(getApplicationContext(), LogActivity.class);
+        startActivity(logIntent);
+    }
 }

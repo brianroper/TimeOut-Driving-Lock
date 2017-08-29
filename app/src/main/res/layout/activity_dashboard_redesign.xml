@@ -107,7 +107,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="12"
+                                android:text="0"
                                 android:textSize="55sp"
                                 android:id="@+id/trip_failed_count"
                                 android:textColor="@color/primaryText"/>
@@ -192,6 +192,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/primaryText"
                     android:text="You currently have no saved trip data. Start driving to change that!"
                     android:layout_below="@+id/empty_title"
                     android:layout_centerHorizontal="true"
