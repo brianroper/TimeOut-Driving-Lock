@@ -10,9 +10,11 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -57,8 +59,6 @@ public class DashboardActivity extends AppCompatActivity {
 
     @BindView(R.id.log_recycler)
     RecyclerView mNeuraEventLogRecycler;
-    @BindView(R.id.trip_count)
-    TextView mTripCountTextView;
     @BindView(R.id.passenger_switch)
     SwitchCompat mPassengerSwitch;
     @BindView(R.id.empty_view)
@@ -68,6 +68,25 @@ public class DashboardActivity extends AppCompatActivity {
     @BindView(R.id.test_button)
     Button mButton;
 
+    //Redesign Views
+    @BindView(R.id.trip_success_count)
+    TextView mTripSuccessCount;
+    @BindView(R.id.trip_failed_count)
+    TextView mTripFailedCount;
+    @BindView(R.id.trip_day_of_week)
+    TextView mTripDayOfWeek;
+    @BindView(R.id.trip_date)
+    TextView mTripDate;
+    @BindView(R.id.surface_goal)
+    CardView mSurfaceGoal;
+    @BindView(R.id.surface_log)
+    CardView mSurfaceLog;
+    @BindView(R.id.surface_switch)
+    CardView mSurfaceSwitch;
+    @BindView(R.id.surface_trips)
+    CardView mSurfaceTrips;
+
+
     private NeuraEventAdapter mNeuraEventAdapter;
     private LinearLayoutManager mLinearLayoutManager;
     private RealmResults<NeuraEventLog> mRealmResults;
@@ -76,9 +95,11 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+        setContentView(R.layout.activity_dashboard_redesign);
 
         ButterKnife.bind(this);
+
+        handleCardViewBackgroundColors();
 
         //TODO: move overlay permission check to on boarding
         checkDrawOverlayPermission();
@@ -93,6 +114,16 @@ public class DashboardActivity extends AppCompatActivity {
         handleDoNotDisturbPermissions();
 
         initializeScreenService();
+    }
+
+    /**
+     * handles cardview background colors
+     */
+    public void handleCardViewBackgroundColors(){
+        mSurfaceGoal.setCardBackgroundColor(getResources().getColor(R.color.white));
+        mSurfaceLog.setCardBackgroundColor(getResources().getColor(R.color.white));
+        mSurfaceSwitch.setCardBackgroundColor(getResources().getColor(R.color.white));
+        mSurfaceTrips.setCardBackgroundColor(getResources().getColor(R.color.white));
     }
 
     /**
@@ -210,7 +241,7 @@ public class DashboardActivity extends AppCompatActivity {
      */
     private void setTripTextView(){
         int trips = mRealmResults.size() / 2;
-        mTripCountTextView.setText(trips + "");
+        mTripSuccessCount.setText(trips + "");
     }
 
     /**

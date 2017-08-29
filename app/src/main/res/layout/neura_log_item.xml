@@ -14,6 +14,7 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:id="@+id/event_name"
+        android:textColor="@color/primaryText"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"/>
 
@@ -31,7 +32,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/event_date"
             android:layout_gravity="center"
-            android:text="5/15"/>
+            android:text="5/15"
+            android:textColor="@color/primaryText"/>
 
         <ImageView
             android:layout_width="30dp"
@@ -56,7 +58,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/event_time"
             android:text="10:58 AM"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:textColor="@color/primaryText"/>
 
         <ImageView
             android:layout_width="30dp"

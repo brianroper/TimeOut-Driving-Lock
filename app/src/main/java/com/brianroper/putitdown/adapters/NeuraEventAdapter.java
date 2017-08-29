@@ -57,7 +57,7 @@ public class NeuraEventAdapter extends RecyclerView.Adapter<NeuraEventAdapter.Ne
 
     @Override
     public int getItemCount() {
-        return mRealmResults.size();
+        return 2;
     }
 
     public class NeuraEventViewHolder extends RecyclerView.ViewHolder{

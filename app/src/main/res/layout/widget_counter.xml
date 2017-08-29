@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:text="Put It Down"
+            android:text="TimeOut"
             android:fontFamily="sans-serif"
             android:textSize="24sp"
             android:textColor="@android:color/white"
