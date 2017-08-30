@@ -14,7 +14,6 @@ public class NeuraEventLog extends RealmObject {
     private long timestamp;
     private String date;
     private String time;
-    private boolean isSuccessful;
 
     public NeuraEventLog() {
     }
@@ -49,13 +48,5 @@ public class NeuraEventLog extends RealmObject {
 
     public void setTime(String time) {
         this.time = time;
-    }
-
-    public boolean isSuccessful() {
-        return isSuccessful;
-    }
-
-    public void setSuccessful(boolean successful) {
-        isSuccessful = successful;
     }
 }

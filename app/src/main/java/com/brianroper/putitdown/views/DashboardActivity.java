@@ -21,10 +21,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.brianroper.putitdown.R;
-import com.brianroper.putitdown.adapters.NeuraEventAdapter;
+import com.brianroper.putitdown.adapters.DrivingLogEventAdapter;
 import com.brianroper.putitdown.model.Constants;
+import com.brianroper.putitdown.model.DrivingEventLog;
 import com.brianroper.putitdown.model.DrivingMessage;
-import com.brianroper.putitdown.model.NeuraEventLog;
 import com.brianroper.putitdown.services.NeuraMonitorService;
 import com.brianroper.putitdown.services.ScreenService;
 import com.brianroper.putitdown.utils.Utils;
@@ -57,7 +57,7 @@ public class DashboardActivity extends AppCompatActivity {
     private EventBus mEventBus = EventBus.getDefault();
 
     @BindView(R.id.log_recycler)
-    RecyclerView mNeuraEventLogRecycler;
+    RecyclerView mDrivingLogEventRecycler;
     @BindView(R.id.passenger_switch)
     SwitchCompat mPassengerSwitch;
     @BindView(R.id.empty_view)
@@ -85,10 +85,9 @@ public class DashboardActivity extends AppCompatActivity {
     @BindView(R.id.surface_trips)
     CardView mSurfaceTrips;
 
-
-    private NeuraEventAdapter mNeuraEventAdapter;
+    private DrivingLogEventAdapter mDrivingLogEventAdapter;
     private LinearLayoutManager mLinearLayoutManager;
-    private RealmResults<NeuraEventLog> mRealmResults;
+    private RealmResults<DrivingEventLog> mRealmResults;
     private SharedPreferences mSharedPreferences;
 
     @Override
@@ -211,21 +210,21 @@ public class DashboardActivity extends AppCompatActivity {
      * initializes the adapter to the Neura Log Data recycler view
      */
     private void initializeAdapter(){
-        mNeuraEventAdapter = new NeuraEventAdapter(getApplicationContext());
+        mDrivingLogEventAdapter = new DrivingLogEventAdapter(getApplicationContext());
         mLinearLayoutManager = new LinearLayoutManager(getApplicationContext());
         //mLinearLayoutManager.setReverseLayout(true);
        // mLinearLayoutManager.setStackFromEnd(true);
-        //mNeuraEventLogRecycler.addItemDecoration(new RecyclerViewDivider(getApplicationContext()));
-        mNeuraEventLogRecycler.setLayoutManager(mLinearLayoutManager);
-        mRealmResults = mNeuraEventAdapter.getNeuraEventLogDataFromRealm();
+        //mDrivingLogEventRecycler.addItemDecoration(new RecyclerViewDivider(getApplicationContext()));
+        mDrivingLogEventRecycler.setLayoutManager(mLinearLayoutManager);
+        mRealmResults = mDrivingLogEventAdapter.getDrivingEventLogFromRealm();
         handleEmptyView(mRealmResults);
-        mNeuraEventLogRecycler.setAdapter(mNeuraEventAdapter);
+        mDrivingLogEventRecycler.setAdapter(mDrivingLogEventAdapter);
     }
 
     /**
      * changes empty view to visible when there is no data in adapter
      */
-    private void handleEmptyView(RealmResults<NeuraEventLog> results){
+    private void handleEmptyView(RealmResults<DrivingEventLog> results){
         if(results.size()==0){
            mEmptyView.setVisibility(View.VISIBLE);
            mLogView.setVisibility(View.GONE);
@@ -240,8 +239,18 @@ public class DashboardActivity extends AppCompatActivity {
      * sets the text using realm results for the trips text view
      */
     private void setTripTextView(){
-        int trips = mRealmResults.size() / 2;
-        mTripSuccessCount.setText(trips + "");
+        int successfulTrips = 0;
+        int failedTrips = 0;
+        for (int i = 0; i < mRealmResults.size(); i++) {
+            if(mRealmResults.get(i).isSuccessful() == true){
+                successfulTrips++;
+            }
+            else if(mRealmResults.get(i).isSuccessful() == false){
+                failedTrips++;
+            }
+        }
+        mTripSuccessCount.setText(successfulTrips + "");
+        mTripFailedCount.setText(failedTrips + "");
     }
 
     /**
@@ -342,8 +351,8 @@ public class DashboardActivity extends AppCompatActivity {
      * refreshes the data in the adapter
      */
     public void handleAdapterDataSet(){
-        mNeuraEventAdapter.getNeuraEventLogDataFromRealm();
-        mNeuraEventAdapter.notifyDataSetChanged();
+        mDrivingLogEventAdapter.getDrivingEventLogFromRealm();
+        mDrivingLogEventAdapter.notifyDataSetChanged();
         setTripTextView();
         handleEmptyView(mRealmResults);
     }
