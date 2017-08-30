@@ -1,12 +1,15 @@
 package com.brianroper.putitdown.views;
 
 import android.animation.ObjectAnimator;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -125,6 +128,7 @@ public class DrivingView{
         mOverflowTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sendFactNotification();
                 addFailedDrivingEvent();
                 stopDriving();
             }
@@ -194,8 +198,41 @@ public class DrivingView{
         realm.close();
     }
 
+    /**
+     * returns the devices shared preferences
+     */
     public void getSharedPreferences(){
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         mCurrentNeuraEventId = mSharedPreferences.getString("currentNeuraEventId", "");
+    }
+
+    /**
+     * builds and sends notification containing texting and driving facts
+     */
+    public void sendFactNotification(){
+
+        //builds the basic notification using the array stored in strings.xml
+        //TODO: randomly generate a fact based on array size and index
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(mContext)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setContentTitle("Dont text and drive!")
+                .setContentText(mContext.getResources().getStringArray(R.array.timeout_facts)[0]);
+
+        //shows notification text on the status bar when recieved
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setDefaults(Notification.DEFAULT_VIBRATE);
+
+        //allows for the full content of longer facts to be displayed in the notification
+        NotificationCompat.BigTextStyle bigTextStyle =
+                new NotificationCompat.BigTextStyle();
+        bigTextStyle.setBigContentTitle("Dont text and drive!");
+        bigTextStyle.bigText(mContext.getResources().getStringArray(R.array.timeout_facts)[0]);
+        builder.setStyle(bigTextStyle);
+
+        //sends the notification
+        NotificationManager manager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(001, builder.build());
     }
 }
