@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
+import android.media.AudioManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -130,6 +131,7 @@ public class DrivingView{
             public void onClick(View v) {
                 sendFactNotification();
                 addFailedDrivingEvent();
+                Utils.enableDeviceRinger(mContext);
                 stopDriving();
             }
         });
@@ -215,11 +217,11 @@ public class DrivingView{
         //TODO: randomly generate a fact based on array size and index
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(mContext)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setSmallIcon(R.drawable.ic_trip_failed)
                 .setContentTitle("Dont text and drive!")
                 .setContentText(mContext.getResources().getStringArray(R.array.timeout_facts)[0]);
 
-        //shows notification text on the status bar when recieved
+        //shows notification text on the status bar when received
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
         builder.setDefaults(Notification.DEFAULT_VIBRATE);
 

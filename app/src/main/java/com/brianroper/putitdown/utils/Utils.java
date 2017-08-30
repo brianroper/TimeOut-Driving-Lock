@@ -2,6 +2,7 @@ package com.brianroper.putitdown.utils;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.NotificationCompat;
@@ -14,6 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+
+import static android.content.Context.AUDIO_SERVICE;
 
 /**
  * Created by brianroper on 5/1/17.
@@ -92,5 +95,21 @@ public class Utils {
             e.printStackTrace();
         }
         return date;
+    }
+
+    /**
+     * set the device ringer to normal
+     */
+    static public void enableDeviceRinger(Context context){
+        AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
+        audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+    }
+
+    /**
+     * silence the device audio and vibration
+     */
+    static public void silenceDevice(Context context){
+        AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
+        audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
     }
 }

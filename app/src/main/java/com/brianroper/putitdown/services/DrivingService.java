@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.brianroper.putitdown.utils.Utils;
 import com.brianroper.putitdown.views.DrivingView;
 
 /**
@@ -29,7 +30,7 @@ public class DrivingService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         //draw screen overlay
         mDrivingView.startDriving();
-        silenceDevice();
+        Utils.silenceDevice(getApplicationContext());
         return START_STICKY;
     }
 
@@ -42,24 +43,8 @@ public class DrivingService extends Service {
     @Override
     public void onDestroy() {
         //destroy screen overlay
+        Utils.enableDeviceRinger(getApplicationContext());
         mDrivingView.stopDriving();
-        enableDeviceRinger();
         super.onDestroy();
-    }
-
-    /**
-     * silence the device audio and vibration
-     */
-    public void silenceDevice(){
-        AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(AUDIO_SERVICE);
-        audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-    }
-
-    /**
-     * set the device ringer to normal
-     */
-    public void enableDeviceRinger(){
-        AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(AUDIO_SERVICE);
-        audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
     }
 }
