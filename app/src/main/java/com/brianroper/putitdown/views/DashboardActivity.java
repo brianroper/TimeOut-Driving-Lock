@@ -351,17 +351,24 @@ public class DashboardActivity extends AppCompatActivity {
      * refreshes the data in the adapter
      */
     public void handleAdapterDataSet(){
+        mDrivingLogEventAdapter.overrideListItemCount(2);
         mDrivingLogEventAdapter.getDrivingEventLogFromRealm();
         mDrivingLogEventAdapter.notifyDataSetChanged();
         setTripTextView();
         handleEmptyView(mRealmResults);
     }
 
+    /**
+     * starts the service that monitors screen counts for the widget
+     */
     public void initializeScreenService(){
         Intent screenService = new Intent(getApplicationContext(), ScreenService.class);
         startService(screenService);
     }
 
+    /**
+     * listener for the surface log
+     */
     @OnClick(R.id.surface_log)
     public void setSurfaceLogListener(){
         Intent logIntent = new Intent(getApplicationContext(), DrivingLogActivity.class);

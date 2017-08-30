@@ -25,6 +25,7 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
 
     private Context mContext;
     private RealmResults<DrivingEventLog> mRealmResults;
+    private int mOverrideListItemCount = 0;
 
     public DrivingLogEventAdapter(Context context) {
         mContext = context;
@@ -57,7 +58,12 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
 
     @Override
     public int getItemCount() {
-        return mRealmResults.size();
+        if(mOverrideListItemCount == 0){
+            return mRealmResults.size();
+        }
+        else{
+            return mOverrideListItemCount;
+        }
     }
 
     public class DrivingLogEventViewHolder extends RecyclerView.ViewHolder{
@@ -110,5 +116,12 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
      */
     public void returnThisMonthDrivingEventLogs(){
         //TODO: sort this month logs
+    }
+
+    /**
+     * manually adjusts the size of the results to fit into the dashboard
+     */
+    public void overrideListItemCount(int count){
+        mOverrideListItemCount = count;
     }
 }
