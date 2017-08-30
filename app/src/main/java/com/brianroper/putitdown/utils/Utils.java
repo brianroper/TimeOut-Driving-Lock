@@ -61,7 +61,7 @@ public class Utils {
     }
 
     /**
-     * formats and returns the current time
+     * formats and returns the current time in h:mm a format
      */
     static public String returnTime(Calendar calendar){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm a");
@@ -70,7 +70,7 @@ public class Utils {
     }
 
     /**
-     * formats and returns the current date
+     * formats and returns the current date in MM/dd format
      */
     static public String returnDate(Calendar calendar){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd");
@@ -111,5 +111,25 @@ public class Utils {
     static public void silenceDevice(Context context){
         AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
         audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+    }
+
+    /**
+     * returns the date in the yyyy M dd format
+     */
+    static public String returnFullDate(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+    /**
+     * returns the day of the week
+     */
+    static public String returnDayOfWeek(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE");
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
     }
 }

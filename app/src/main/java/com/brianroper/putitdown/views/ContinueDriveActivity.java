@@ -3,9 +3,11 @@ package com.brianroper.putitdown.views;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.brianroper.putitdown.R;
-
 public class ContinueDriveActivity extends AppCompatActivity {
+
+    /**
+     * this is just a placeholder activity that we manipulate to restart the driving lock
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

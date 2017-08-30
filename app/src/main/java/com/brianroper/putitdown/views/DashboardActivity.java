@@ -108,6 +108,8 @@ public class DashboardActivity extends AppCompatActivity {
 
         initializeAdapter();
         setTripTextView();
+        setTripDateTextView();
+        setTripDayOfWeekTextView();
 
         handleDoNotDisturbPermissions();
 
@@ -373,5 +375,19 @@ public class DashboardActivity extends AppCompatActivity {
     public void setSurfaceLogListener(){
         Intent logIntent = new Intent(getApplicationContext(), DrivingLogActivity.class);
         startActivity(logIntent);
+    }
+
+    /**
+     * sets the text for the date textview
+     */
+    public void setTripDateTextView(){
+        mTripDate.setText(Utils.returnFullDate());
+    }
+
+    /**
+     * sets the text for the day of the week textview
+     */
+    public void setTripDayOfWeekTextView(){
+        mTripDayOfWeek.setText(Utils.returnDayOfWeek());
     }
 }

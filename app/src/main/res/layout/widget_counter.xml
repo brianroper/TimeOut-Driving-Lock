@@ -47,11 +47,11 @@
         android:layout_height="140dp"
         android:layout_below="@+id/title_card"
         android:id="@+id/middle_card"
-        android:background="#EEEEEE">
+        android:background="@color/white">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:src="@mipmap/ic_launcher"
             android:layout_centerHorizontal="true"
             android:id="@+id/todays_check_status_icon"
@@ -102,7 +102,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/middle_card"
         android:id="@+id/bottom_card"
-        android:background="#BDBDBD">
+        android:background="@color/background">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -132,7 +132,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Thu"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/primaryText"
                     android:fontFamily="sans-serif"
                     android:textSize="14sp"
                     android:layout_gravity="center"
@@ -144,6 +144,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/slot_1_check_count"
                     android:text="228"
+                    android:textColor="@color/primaryText"
                     android:layout_gravity="center"
                     android:layout_marginBottom="4dp"/>
             </LinearLayout>
@@ -166,7 +167,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Thu"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/primaryText"
                     android:fontFamily="sans-serif"
                     android:textSize="14sp"
                     android:layout_gravity="center"
@@ -178,6 +179,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/slot_2_check_count"
                     android:text="228"
+                    android:textColor="@color/primaryText"
                     android:layout_gravity="center"
                     android:layout_marginBottom="4dp"/>
             </LinearLayout>
@@ -200,7 +202,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Thu"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/primaryText"
                     android:fontFamily="sans-serif"
                     android:textSize="14sp"
                     android:layout_gravity="center"
@@ -212,6 +214,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/slot_3_check_count"
                     android:text="228"
+                    android:textColor="@color/primaryText"
                     android:layout_gravity="center"
                     android:layout_marginBottom="4dp"/>
             </LinearLayout>
@@ -234,7 +237,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Thu"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/primaryText"
                     android:fontFamily="sans-serif"
                     android:textSize="14sp"
                     android:layout_gravity="center"
@@ -246,6 +249,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/slot_4_check_count"
                     android:text="228"
+                    android:textColor="@color/primaryText"
                     android:layout_gravity="center"
                     android:layout_marginBottom="4dp"/>
             </LinearLayout>
@@ -268,7 +272,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Thu"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/primaryText"
                     android:fontFamily="sans-serif"
                     android:textSize="14sp"
                     android:layout_gravity="center"
@@ -280,6 +284,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/slot_5_check_count"
                     android:text="228"
+                    android:textColor="@color/primaryText"
                     android:layout_gravity="center"
                     android:layout_marginBottom="4dp"/>
             </LinearLayout>
