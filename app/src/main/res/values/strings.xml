@@ -20,8 +20,16 @@
 
 
     <array name="timeout_facts">
-        <item>Because text messaging requires visual, manual, and cognitive attention from the driver, it is by far one of the most alarming distractions.</item>
-        <item>Distracted driving is any activity that diverts a person’s attention away from the primary task of driving. All distractions endanger driver, passenger, and bystander safety.</item>
-        <item>Distracted driving is a dangerous epidemic on America’s roadways. In 2015, there were 3,477 people killed and an estimated additional 391,000 injured in motor vehicle crashes involving distracted drivers.</item>
+        <item>Because text messaging requires visual, manual, and cognitive attention from the
+            driver, it is by far one of the most alarming distractions.
+        </item>
+        <item>Distracted driving is any activity that diverts a person’s attention away from the
+            primary task of driving. All distractions endanger driver, passenger, and bystander
+            safety.
+        </item>
+        <item>Distracted driving is a dangerous epidemic on America’s roadways. In 2015, there were
+            3,477 people killed and an estimated additional 391,000 injured in motor vehicle crashes
+            involving distracted drivers.
+        </item>
     </array>
 </resources>

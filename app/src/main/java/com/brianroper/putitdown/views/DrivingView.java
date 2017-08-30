@@ -3,7 +3,9 @@ package com.brianroper.putitdown.views;
 import android.animation.ObjectAnimator;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
@@ -179,25 +181,27 @@ public class DrivingView{
      * adds the successful driving event data to the local storage
      */
     private void addFailedDrivingEvent(){
-        final Calendar calendar = Calendar.getInstance();
-        Realm realm;
-        Realm.init(mContext);
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        realm = Realm.getInstance(realmConfiguration);
-        getSharedPreferences();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, mCurrentNeuraEventId);
-                drivingEventLog.setTime(Utils.returnTime(calendar));
-                drivingEventLog.setDate(Utils.returnDate(calendar));
-                drivingEventLog.setSuccessful(false);
-                realm.copyToRealmOrUpdate(drivingEventLog);
-            }
-        });
-        realm.close();
+        try{
+            final Calendar calendar = Calendar.getInstance();
+            Realm realm;
+            Realm.init(mContext);
+            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
+                    .deleteRealmIfMigrationNeeded()
+                    .build();
+            realm = Realm.getInstance(realmConfiguration);
+            getSharedPreferences();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, mCurrentNeuraEventId);
+                    drivingEventLog.setTime(Utils.returnTime(calendar));
+                    drivingEventLog.setDate(Utils.returnDate(calendar));
+                    drivingEventLog.setSuccessful(false);
+                    realm.copyToRealmOrUpdate(drivingEventLog);
+                }
+            });
+            realm.close();
+        }catch (Exception e){e.printStackTrace();}
     }
 
     /**
@@ -213,13 +217,20 @@ public class DrivingView{
      */
     public void sendFactNotification(){
 
+        //creates pending intent that notification action will perform
+        Intent drivingIntent = new Intent(mContext, ContinueDriveActivity.class);
+        drivingIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, drivingIntent, 0);
+        //TODO: continue timeout session when notification button is clicked
+
         //builds the basic notification using the array stored in strings.xml
         //TODO: randomly generate a fact based on array size and index
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(mContext)
                 .setSmallIcon(R.drawable.ic_trip_failed)
-                .setContentTitle("Dont text and drive!")
-                .setContentText(mContext.getResources().getStringArray(R.array.timeout_facts)[0]);
+                .setContentTitle("Don't text and drive!")
+                .setContentText(mContext.getResources().getStringArray(R.array.timeout_facts)[0])
+                .addAction(R.drawable.redcar, "Continue TimeOut", pendingIntent);
 
         //shows notification text on the status bar when received
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);

@@ -55,6 +55,8 @@
             android:parentActivityName=".views.DashboardActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
+        <activity android:name=".views.ContinueDriveActivity">
+        </activity>
     </application>
 
 </manifest>
