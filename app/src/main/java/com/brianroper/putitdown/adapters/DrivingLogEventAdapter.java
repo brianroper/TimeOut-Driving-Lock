@@ -10,13 +10,6 @@ import android.widget.TextView;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.model.DrivingEventLog;
-import com.brianroper.putitdown.model.NeuraEventLog;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,38 +18,38 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
 /**
- * Created by brianroper on 5/3/17.
+ * Created by brianroper on 8/29/17.
  */
 
-public class NeuraEventAdapter extends RecyclerView.Adapter<NeuraEventAdapter.NeuraEventViewHolder> {
+public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEventAdapter.DrivingLogEventViewHolder> {
 
     private Context mContext;
-    private RealmResults<NeuraEventLog> mRealmResults;
+    private RealmResults<DrivingEventLog> mRealmResults;
 
-    public NeuraEventAdapter(Context context) {
+    public DrivingLogEventAdapter(Context context) {
         mContext = context;
     }
 
     @Override
-    public NeuraEventAdapter.NeuraEventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public DrivingLogEventAdapter.DrivingLogEventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View root = inflater.inflate(R.layout.neura_log_item, parent, false);
-        final NeuraEventViewHolder neuraEventViewHolder = new NeuraEventViewHolder(root);
-        return neuraEventViewHolder;
+        final DrivingLogEventViewHolder drivingLogEventViewHolder = new DrivingLogEventViewHolder(root);
+        return drivingLogEventViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(NeuraEventAdapter.NeuraEventViewHolder holder, int position) {
+    public void onBindViewHolder(DrivingLogEventAdapter.DrivingLogEventViewHolder holder, int position) {
 
         if(position == getItemCount() - 1){
             holder.mDivider.setVisibility(View.GONE);
         }
 
-        if(mRealmResults.get(position).getEventName().equals("userStartedDriving")){
-            holder.mEventNameTextView.setText(mContext.getString(R.string.event_started_driving));
+        if(mRealmResults.get(position).isSuccessful() == true){
+            holder.mEventNameTextView.setText("you had a safe trip");
         }
-        else if(mRealmResults.get(position).getEventName().equals("userFinishedDriving")){
-            holder.mEventNameTextView.setText(mContext.getString(R.string.event_finished_driving));
+        else if(mRealmResults.get(position).isSuccessful() == false){
+            holder.mEventNameTextView.setText("you used your device while driving");
         }
         holder.mEventDateTextView.setText(mRealmResults.get(position).getDate());
         holder.mEventTimeTextView.setText(mRealmResults.get(position).getTime());
@@ -64,10 +57,10 @@ public class NeuraEventAdapter extends RecyclerView.Adapter<NeuraEventAdapter.Ne
 
     @Override
     public int getItemCount() {
-        return 2;
+        return mRealmResults.size();
     }
 
-    public class NeuraEventViewHolder extends RecyclerView.ViewHolder{
+    public class DrivingLogEventViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.event_name)
         TextView mEventNameTextView;
         @BindView(R.id.event_date)
@@ -77,7 +70,7 @@ public class NeuraEventAdapter extends RecyclerView.Adapter<NeuraEventAdapter.Ne
         @BindView(R.id.divider)
         RelativeLayout mDivider;
 
-        public NeuraEventViewHolder(View itemView) {
+        public DrivingLogEventViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
@@ -86,14 +79,36 @@ public class NeuraEventAdapter extends RecyclerView.Adapter<NeuraEventAdapter.Ne
     /**
      * returns NeuraEventLog data from realm db
      */
-    public RealmResults<NeuraEventLog> getNeuraEventLogDataFromRealm(){
+    public RealmResults<DrivingEventLog> getDrivingEventLogFromRealm(){
         Realm realm;
         Realm.init(mContext);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
                 .deleteRealmIfMigrationNeeded()
                 .build();
         realm = Realm.getInstance(realmConfiguration);
-        mRealmResults = realm.where(NeuraEventLog.class).findAll();
+        mRealmResults = realm.where(DrivingEventLog.class).findAll();
         return mRealmResults;
+    }
+
+    /**
+     * returns all time driving logs
+     */
+    public void returnAllTimeDrivingEventLogs(){
+        //TODO: sort all time logs
+        //TODO: exlude this week and this month
+    }
+
+    /**
+     * returns this week driving logs
+     */
+    public void returnThisWeekDrivingEventLogs(){
+        //TODO: sort this week logs
+    }
+
+    /**
+     * returns this month driving logs
+     */
+    public void returnThisMonthDrivingEventLogs(){
+        //TODO: sort this month logs
     }
 }

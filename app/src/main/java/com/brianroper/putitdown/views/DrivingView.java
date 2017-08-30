@@ -2,9 +2,11 @@ package com.brianroper.putitdown.views;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,6 +17,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.brianroper.putitdown.R;
+import com.brianroper.putitdown.model.DrivingEventLog;
+import com.brianroper.putitdown.utils.Utils;
+import com.neura.standalonesdk.events.NeuraEvent;
+
+import java.util.Calendar;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static android.content.Context.WINDOW_SERVICE;
@@ -30,6 +40,9 @@ public class DrivingView{
     private ImageButton mOverflowButton;
     private TextView mOverflowTextView;
     private ImageView mCarImageView;
+
+    private SharedPreferences mSharedPreferences;
+    private String mCurrentNeuraEventId = "";
 
     public DrivingView(Context context) {
         mContext = context;
@@ -112,6 +125,7 @@ public class DrivingView{
         mOverflowTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                addFailedDrivingEvent();
                 stopDriving();
             }
         });
@@ -153,5 +167,35 @@ public class DrivingView{
         objectAnimator.setDuration(1000);
         objectAnimator.setRepeatCount(ObjectAnimator.INFINITE);
         objectAnimator.start();
+    }
+
+    /**
+     * adds the successful driving event data to the local storage
+     */
+    private void addFailedDrivingEvent(){
+        final Calendar calendar = Calendar.getInstance();
+        Realm realm;
+        Realm.init(mContext);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        realm = Realm.getInstance(realmConfiguration);
+        getSharedPreferences();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, mCurrentNeuraEventId);
+                drivingEventLog.setTime(Utils.returnTime(calendar));
+                drivingEventLog.setDate(Utils.returnDate(calendar));
+                drivingEventLog.setSuccessful(false);
+                realm.copyToRealmOrUpdate(drivingEventLog);
+            }
+        });
+        realm.close();
+    }
+
+    public void getSharedPreferences(){
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mCurrentNeuraEventId = mSharedPreferences.getString("currentNeuraEventId", "");
     }
 }

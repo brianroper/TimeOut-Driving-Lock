@@ -51,7 +51,7 @@
         <service android:name=".services.ScreenService"/>
 
         <activity
-            android:name=".views.LogActivity"
+            android:name=".views.DrivingLogActivity"
             android:parentActivityName=".views.DashboardActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>

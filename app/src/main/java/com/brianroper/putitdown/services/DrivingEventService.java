@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.model.Constants;
+import com.brianroper.putitdown.model.DrivingEventLog;
 import com.brianroper.putitdown.model.DrivingMessage;
 import com.brianroper.putitdown.model.NeuraEventLog;
 import com.brianroper.putitdown.utils.Utils;
@@ -53,6 +54,7 @@ public class DrivingEventService extends FirebaseMessagingService {
         Map data = remoteMessage.getData();
         if (NeuraPushCommandFactory.getInstance().isNeuraEvent(data)) {
             NeuraEvent event = NeuraPushCommandFactory.getInstance().getEvent(data);
+            mSharedPreferences.edit().putString("currentNeuraEventId", event.getNeuraId()).apply();
             Intent drivingService = new Intent(this, DrivingService.class);
             if(!mPassengerStatus){
                 if(event.getEventName().equals("userStartedDriving")){
@@ -62,6 +64,7 @@ public class DrivingEventService extends FirebaseMessagingService {
                 else if(event.getEventName().equals("userFinishedDriving")){
                     stopService(drivingService);
                     addNeuraEventLog(event);
+                    addSuccessfulDrivingEvent(event, true);
                 }
             }
         }
@@ -84,9 +87,33 @@ public class DrivingEventService extends FirebaseMessagingService {
                NeuraEventLog neuraEventLog = realm.createObject(NeuraEventLog.class, event.getNeuraId());
                neuraEventLog.setEventName(event.getEventName());
                neuraEventLog.setTimestamp(event.getEventTimestamp());
-               neuraEventLog.setTime(returnTime(calendar));
-               neuraEventLog.setDate(returnDate(calendar));
+               neuraEventLog.setTime(Utils.returnTime(calendar));
+               neuraEventLog.setDate(Utils.returnDate(calendar));
                realm.copyToRealmOrUpdate(neuraEventLog);
+            }
+        });
+        realm.close();
+    }
+
+    /**
+     * adds the successful driving event data to the local storage
+     */
+    private void addSuccessfulDrivingEvent(final NeuraEvent event, final boolean isSuccessful){
+        final Calendar calendar = Calendar.getInstance();
+        Realm realm;
+        Realm.init(getApplicationContext());
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        realm = Realm.getInstance(realmConfiguration);
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, event.getNeuraId());
+                drivingEventLog.setTime(Utils.returnTime(calendar));
+                drivingEventLog.setDate(Utils.returnDate(calendar));
+                drivingEventLog.setSuccessful(isSuccessful);
+                realm.copyToRealmOrUpdate(drivingEventLog);
             }
         });
         realm.close();
@@ -99,24 +126,6 @@ public class DrivingEventService extends FirebaseMessagingService {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mPassengerStatus = mSharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false);
         Log.i("Passenger Status: ", mPassengerStatus + "");
-    }
-
-    /**
-     * formats and returns the current time
-     */
-    private String returnTime(Calendar calendar){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm a");
-        String time = simpleDateFormat.format(calendar.getTime());
-        return time;
-    }
-
-    /**
-     * formats and returns the current date
-     */
-    private String returnDate(Calendar calendar){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd");
-        String date = simpleDateFormat.format(calendar.getTime());
-        return date;
     }
 
     /**

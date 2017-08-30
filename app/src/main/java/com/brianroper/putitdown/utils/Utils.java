@@ -9,6 +9,12 @@ import android.widget.Toast;
 
 import com.brianroper.putitdown.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 /**
  * Created by brianroper on 5/1/17.
  */
@@ -49,5 +55,42 @@ public class Utils {
                 Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
+    }
+
+    /**
+     * formats and returns the current time
+     */
+    static public String returnTime(Calendar calendar){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm a");
+        String time = simpleDateFormat.format(calendar.getTime());
+        return time;
+    }
+
+    /**
+     * formats and returns the current date
+     */
+    static public String returnDate(Calendar calendar){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd");
+        String date = simpleDateFormat.format(calendar.getTime());
+        return date;
+    }
+
+    /**
+     * convert the NeuraEventData timestamp into a date object
+     */
+    static public Date formatTimeStamp(long timestamp){
+        Calendar calendar = Calendar.getInstance();
+        TimeZone timeZone = calendar.getTimeZone();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yy");
+        simpleDateFormat.setTimeZone(timeZone);
+        String localTime = simpleDateFormat.format(new Date(timestamp * 1000));
+        Date date = new Date();
+        try{
+            date = simpleDateFormat.parse(localTime);
+        }
+        catch (ParseException e){
+            e.printStackTrace();
+        }
+        return date;
     }
 }

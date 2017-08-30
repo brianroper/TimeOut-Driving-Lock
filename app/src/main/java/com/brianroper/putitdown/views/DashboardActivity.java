@@ -14,7 +14,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,7 +25,6 @@ import com.brianroper.putitdown.adapters.NeuraEventAdapter;
 import com.brianroper.putitdown.model.Constants;
 import com.brianroper.putitdown.model.DrivingMessage;
 import com.brianroper.putitdown.model.NeuraEventLog;
-import com.brianroper.putitdown.model.RecyclerViewDivider;
 import com.brianroper.putitdown.services.NeuraMonitorService;
 import com.brianroper.putitdown.services.ScreenService;
 import com.brianroper.putitdown.utils.Utils;
@@ -357,7 +355,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     @OnClick(R.id.surface_log)
     public void setSurfaceLogListener(){
-        Intent logIntent = new Intent(getApplicationContext(), LogActivity.class);
+        Intent logIntent = new Intent(getApplicationContext(), DrivingLogActivity.class);
         startActivity(logIntent);
     }
 }
