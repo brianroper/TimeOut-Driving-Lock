@@ -30,7 +30,7 @@ public class ScreenReceiver extends BroadcastReceiver {
                     .build();
             realm = Realm.getInstance(realmConfiguration);
 
-            if(realm.where(ScreenCounter.class).equalTo("id", Integer.parseInt(Utils.returnDateAsId())).findFirst() )
+            //if(realm.where(ScreenCounter.class).equalTo("id", Integer.parseInt(Utils.returnDateAsId())).findFirst())
 
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
@@ -40,7 +40,11 @@ public class ScreenReceiver extends BroadcastReceiver {
                     realm.copyToRealmOrUpdate(counterData);
                 }
             });
+<<<<<<< HEAD
             realm.close(); */
+=======
+            realm.close();*/
+>>>>>>> d85c2e02b3c92271cfab68917bfeb84028a4cca9
         }
         else{
             Log.d("ScreenStatus", "Inactive");
