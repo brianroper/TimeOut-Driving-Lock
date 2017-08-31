@@ -132,4 +132,14 @@ public class Utils {
         String formattedDate = dateFormat.format(calendar.getTime());
         return formattedDate;
     }
+
+    /**
+     * returns the date in an id format
+     */
+    static public String returnDateAsId(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
 }
