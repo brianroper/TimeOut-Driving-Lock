@@ -23,7 +23,7 @@ public class ScreenReceiver extends BroadcastReceiver {
         } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
             Log.d("ScreenStatus", "Screen On");
 
-            Realm realm;
+           /* Realm realm;
             Realm.init(context);
             RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
                     .deleteRealmIfMigrationNeeded()
@@ -40,7 +40,7 @@ public class ScreenReceiver extends BroadcastReceiver {
                     realm.copyToRealmOrUpdate(counterData);
                 }
             });
-            realm.close();
+            realm.close(); */
         }
         else{
             Log.d("ScreenStatus", "Inactive");
