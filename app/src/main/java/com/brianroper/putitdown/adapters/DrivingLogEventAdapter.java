@@ -2,6 +2,7 @@ package com.brianroper.putitdown.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +60,7 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
     @Override
     public int getItemCount() {
         if(mOverrideListItemCount == 0){
+            Log.i("OverrideListCount: ", mOverrideListItemCount + "");
             return mRealmResults.size();
         }
         else{

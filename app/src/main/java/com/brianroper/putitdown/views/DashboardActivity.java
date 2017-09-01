@@ -231,6 +231,7 @@ public class DashboardActivity extends AppCompatActivity {
        // mLinearLayoutManager.setStackFromEnd(true);
         //mDrivingLogEventRecycler.addItemDecoration(new RecyclerViewDivider(getApplicationContext()));
         mDrivingLogEventRecycler.setLayoutManager(mLinearLayoutManager);
+        mDrivingLogEventAdapter.overrideListItemCount(2);
         mRealmResults = mDrivingLogEventAdapter.getDrivingEventLogFromRealm();
         handleEmptyView(mRealmResults);
         mDrivingLogEventRecycler.setAdapter(mDrivingLogEventAdapter);
@@ -366,7 +367,6 @@ public class DashboardActivity extends AppCompatActivity {
      * refreshes the data in the adapter
      */
     public void handleAdapterDataSet(){
-        mDrivingLogEventAdapter.overrideListItemCount(2);
         mDrivingLogEventAdapter.getDrivingEventLogFromRealm();
         mDrivingLogEventAdapter.notifyDataSetChanged();
         setTripTextView();
