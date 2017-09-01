@@ -52,7 +52,7 @@
         <ImageView
             android:layout_width="55dp"
             android:layout_height="55dp"
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/ic_device_lock"
             android:layout_centerHorizontal="true"
             android:id="@+id/widget_todays_check_status_icon"
             android:layout_marginTop="16dp"/>
@@ -125,7 +125,7 @@
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@drawable/ic_device_lock"
                     android:id="@+id/slot_1_status_icon"
                     android:layout_marginBottom="4dp"
                     android:layout_gravity="center"/>
@@ -160,7 +160,7 @@
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@drawable/ic_device_lock"
                     android:id="@+id/slot_2_status_icon"
                     android:layout_marginBottom="4dp"
                     android:layout_gravity="center"/>
@@ -195,7 +195,7 @@
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@drawable/ic_device_lock"
                     android:id="@+id/slot_3_status_icon"
                     android:layout_marginBottom="4dp"
                     android:layout_gravity="center"/>
@@ -230,7 +230,7 @@
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@drawable/ic_device_lock"
                     android:id="@+id/slot_4_status_icon"
                     android:layout_marginBottom="4dp"
                     android:layout_gravity="center"/>
@@ -265,7 +265,7 @@
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@drawable/ic_device_lock"
                     android:id="@+id/slot_5_status_icon"
                     android:layout_marginBottom="4dp"
                     android:layout_gravity="center"/>
