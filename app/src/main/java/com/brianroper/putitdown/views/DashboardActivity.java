@@ -391,6 +391,15 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
+     * listener for the trip surface
+     */
+    @OnClick(R.id.surface_trips)
+    public void setSurfaceTripListener(){
+        Intent logIntent = new Intent(getApplicationContext(), DrivingLogActivity.class);
+        startActivity(logIntent);
+    }
+
+    /**
      * sets the text for the date textview
      */
     public void setTripDateTextView(){

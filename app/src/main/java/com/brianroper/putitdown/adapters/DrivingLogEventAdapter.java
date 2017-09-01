@@ -57,8 +57,15 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
     @Override
     public void onBindViewHolder(DrivingLogEventAdapter.DrivingLogEventViewHolder holder, int position) {
 
-        if(position == getItemCount() - 1){
-            holder.mDivider.setVisibility(View.GONE);
+        if(mIsDashboard){
+            if(position == getItemCount() - 1){
+                holder.mDivider.setVisibility(View.GONE);
+            }
+        }
+        else{
+            if(position == (getItemCount() - getItemCount())){
+                holder.mDivider.setVisibility(View.GONE);
+            }
         }
 
         if(mRealmResults.get(position).isSuccessful() == true){

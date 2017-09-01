@@ -91,6 +91,8 @@ public class DrivingLogActivity extends AppCompatActivity {
     public void populateThisWeekRecycler(){
         mThisWeekRecycler.setAdapter(mDLogAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         mThisWeekRecycler.setLayoutManager(layoutManager);
         mDLogAdapter.returnThisWeekDrivingEventLogs();
         mDLogAdapter.notifyDataSetChanged();
@@ -102,6 +104,8 @@ public class DrivingLogActivity extends AppCompatActivity {
     public void populateThisMonthRecycler(){
         mThisMonthRecycler.setAdapter(mDLogAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         mThisMonthRecycler.setLayoutManager(layoutManager);
         mDLogAdapter.returnThisMonthDrivingEventLogs();
         mDLogAdapter.notifyDataSetChanged();
@@ -113,6 +117,8 @@ public class DrivingLogActivity extends AppCompatActivity {
     public void populateAllTimeRecycler(){
         mAllTimeRecycler.setAdapter(mDLogAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         mAllTimeRecycler.setLayoutManager(layoutManager);
         mDLogAdapter.returnAllTimeDrivingEventLogs();
         mDLogAdapter.notifyDataSetChanged();
