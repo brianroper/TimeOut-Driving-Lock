@@ -1,7 +1,9 @@
 package com.brianroper.putitdown.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.model.DrivingEventLog;
+import com.brianroper.putitdown.views.DrivingLogActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,7 +28,8 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
 
     private Context mContext;
     private RealmResults<DrivingEventLog> mRealmResults;
-    private int mOverrideListItemCount = 0;
+    final int DASHBOARD_LIST_ITEM_COUNT = 2;
+    private boolean mIsDashboard = false;
 
     public DrivingLogEventAdapter(Context context) {
         mContext = context;
@@ -36,6 +40,17 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View root = inflater.inflate(R.layout.neura_log_item, parent, false);
         final DrivingLogEventViewHolder drivingLogEventViewHolder = new DrivingLogEventViewHolder(root);
+
+        if(mIsDashboard){
+            root.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent logIntent = new Intent(mContext, DrivingLogActivity.class);
+                    mContext.startActivity(logIntent);
+                }
+            });
+        }
+
         return drivingLogEventViewHolder;
     }
 
@@ -58,11 +73,11 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
 
     @Override
     public int getItemCount() {
-        if(mOverrideListItemCount == 0){
-            return mRealmResults.size();
+        if(mIsDashboard){
+            return DASHBOARD_LIST_ITEM_COUNT;
         }
         else{
-            return mOverrideListItemCount;
+            return mRealmResults.size();
         }
     }
 
@@ -119,9 +134,9 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
     }
 
     /**
-     * manually adjusts the size of the results to fit into the dashboard
+     * enables the listener for the recycler view in the dashboard
      */
-    public void overrideListItemCount(int count){
-        mOverrideListItemCount = count;
+    public void isDashboard(){
+        mIsDashboard = true;
     }
 }

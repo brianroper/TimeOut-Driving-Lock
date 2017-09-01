@@ -1,7 +1,9 @@
 package com.brianroper.putitdown.views;
 
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -10,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +21,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.adapters.DrivingLogEventAdapter;
@@ -84,11 +89,16 @@ public class DashboardActivity extends AppCompatActivity {
     CardView mSurfaceSwitch;
     @BindView(R.id.surface_trips)
     CardView mSurfaceTrips;
+    @BindView(R.id.goal_seek_bar)
+    AppCompatSeekBar mGoalSeekbar;
+    @BindView(R.id.goal_seek_bar_count)
+    TextView mGoalCount;
 
     private DrivingLogEventAdapter mDrivingLogEventAdapter;
     private LinearLayoutManager mLinearLayoutManager;
     private RealmResults<DrivingEventLog> mRealmResults;
     private SharedPreferences mSharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,10 +120,13 @@ public class DashboardActivity extends AppCompatActivity {
         setTripTextView();
         setTripDateTextView();
         setTripDayOfWeekTextView();
+        setGoalCountTextView();
 
         handleDoNotDisturbPermissions();
 
         initializeScreenService();
+
+        handleSeekBar();
     }
 
     /**
@@ -218,6 +231,7 @@ public class DashboardActivity extends AppCompatActivity {
        // mLinearLayoutManager.setStackFromEnd(true);
         //mDrivingLogEventRecycler.addItemDecoration(new RecyclerViewDivider(getApplicationContext()));
         mDrivingLogEventRecycler.setLayoutManager(mLinearLayoutManager);
+        mDrivingLogEventAdapter.isDashboard();
         mRealmResults = mDrivingLogEventAdapter.getDrivingEventLogFromRealm();
         handleEmptyView(mRealmResults);
         mDrivingLogEventRecycler.setAdapter(mDrivingLogEventAdapter);
@@ -353,7 +367,6 @@ public class DashboardActivity extends AppCompatActivity {
      * refreshes the data in the adapter
      */
     public void handleAdapterDataSet(){
-        mDrivingLogEventAdapter.overrideListItemCount(2);
         mDrivingLogEventAdapter.getDrivingEventLogFromRealm();
         mDrivingLogEventAdapter.notifyDataSetChanged();
         setTripTextView();
@@ -390,4 +403,76 @@ public class DashboardActivity extends AppCompatActivity {
     public void setTripDayOfWeekTextView(){
         mTripDayOfWeek.setText(Utils.returnDayOfWeek());
     }
+
+    /**
+     * sets the stored value for the goal amount
+     */
+    public void setGoalCountTextView(){
+        int goal = mSharedPreferences.getInt("goal", 25);
+        mGoalCount.setText(goal + "");
+        mGoalSeekbar.setProgress(goal);
+    }
+
+    /**
+     * manages the seekbar
+     */
+    public void handleSeekBar(){
+        mGoalSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mGoalCount.setText(progress + "");
+                Log.i("GoalProgress: ", progress + "");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(final SeekBar seekBar) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
+                builder.setTitle("Set a goal")
+                        .setMessage("Would you like to set " + seekBar.getProgress() +" as your personal goal?")
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                storeGoal(seekBar.getProgress());
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                setGoalCountTextView();
+                            }
+                        })
+                        .show();
+
+            }
+        });
+    }
+
+    /**
+     * stores goal number in shared preferences
+     */
+    public void storeGoal(int progress){
+        mSharedPreferences.edit().putInt("goal", progress).apply();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
