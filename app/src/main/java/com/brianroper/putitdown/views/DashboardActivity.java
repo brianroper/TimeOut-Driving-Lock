@@ -231,7 +231,7 @@ public class DashboardActivity extends AppCompatActivity {
        // mLinearLayoutManager.setStackFromEnd(true);
         //mDrivingLogEventRecycler.addItemDecoration(new RecyclerViewDivider(getApplicationContext()));
         mDrivingLogEventRecycler.setLayoutManager(mLinearLayoutManager);
-        mDrivingLogEventAdapter.overrideListItemCount(2);
+        mDrivingLogEventAdapter.isDashboard();
         mRealmResults = mDrivingLogEventAdapter.getDrivingEventLogFromRealm();
         handleEmptyView(mRealmResults);
         mDrivingLogEventRecycler.setAdapter(mDrivingLogEventAdapter);
