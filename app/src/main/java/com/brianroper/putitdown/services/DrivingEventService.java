@@ -17,6 +17,8 @@ import com.neura.standalonesdk.events.NeuraEvent;
 import com.neura.standalonesdk.events.NeuraPushCommandFactory;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -34,6 +36,7 @@ public class DrivingEventService extends FirebaseMessagingService {
     private SharedPreferences mSharedPreferences;
     private boolean mPassengerStatus;
     private EventBus mEventBus = EventBus.getDefault();
+    private boolean mIsDriving = true;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -60,11 +63,15 @@ public class DrivingEventService extends FirebaseMessagingService {
                 if(event.getEventName().equals("userStartedDriving")){
                     startService(drivingService);
                     addNeuraEventLog(event);
+                    mIsDriving = true;
                 }
                 else if(event.getEventName().equals("userFinishedDriving")){
-                    stopService(drivingService);
-                    addNeuraEventLog(event);
-                    addSuccessfulDrivingEvent(event, true);
+                    if(mIsDriving == true){
+                        stopService(drivingService);
+                        addNeuraEventLog(event);
+                        addSuccessfulDrivingEvent(event, true);
+                        mIsDriving = false;
+                    }
                 }
             }
         }
@@ -134,5 +141,29 @@ public class DrivingEventService extends FirebaseMessagingService {
     private void postEventMessage(){
         Constants constants = new Constants();
         mEventBus.postSticky(new DrivingMessage(constants.DRIVING_EVENT_FINISHED));
+    }
+
+    /**
+     * listens for an interrupted driving event
+     * when the user unlocks the device while driving this notifies this service
+     */
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onDrivingMessageEvent(DrivingMessage drivingMessage){
+        Constants constants = new Constants();
+        if(drivingMessage.message == constants.DRIVING_EVENT_STOPPED) {
+            mIsDriving = false;
+        }
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

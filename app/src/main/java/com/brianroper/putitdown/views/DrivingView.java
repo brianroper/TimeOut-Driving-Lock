@@ -23,9 +23,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.brianroper.putitdown.R;
+import com.brianroper.putitdown.model.Constants;
 import com.brianroper.putitdown.model.DrivingEventLog;
+import com.brianroper.putitdown.model.DrivingMessage;
 import com.brianroper.putitdown.utils.Utils;
 import com.neura.standalonesdk.events.NeuraEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
 
@@ -111,6 +115,9 @@ public class DrivingView{
         mRelativeLayout.setSystemUiVisibility(uiOptions);
         windowManager.removeView(mRelativeLayout);
         mRelativeLayout = null;
+
+        Constants constants = new Constants();
+        EventBus.getDefault().postSticky(new DrivingMessage(constants.DRIVING_EVENT_STOPPED));
     }
 
     /**
