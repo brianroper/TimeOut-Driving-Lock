@@ -20,23 +20,25 @@
         android:layout_height="wrap_content"
         android:id="@+id/overflow_textview"
         android:text="Unlock"
-        android:background="#ffff"
+        android:background="@color/background"
         android:textSize="22sp"
+        android:textColor="@color/primaryText"
         android:padding="8dp"
         android:gravity="center"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_marginEnd="16dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_marginTop="16dp"/>
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="280dp"
+        android:layout_height="100dp"
         android:id="@+id/title_text"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/putitdownlogo"
-        android:padding="8dp"
+        android:src="@drawable/timeout_full_logo"
+        android:padding="16dp"
+        android:scaleType="centerCrop"
         android:layout_below="@+id/car_image"/>
 
     <ImageView
