@@ -280,7 +280,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:padding="16dp"
-                    android:id="@+id/passenger_switch"/>
+                    android:id="@+id/passenger_switch"
+                    android:theme="@style/AccessoryTheme"/>
 
             </RelativeLayout>
         </android.support.v7.widget.CardView>
@@ -336,6 +337,7 @@
                     android:id="@+id/goal_seek_bar"
                     android:progress="25"
                     android:max="50"
+                    android:theme="@style/AccessoryTheme"
                     android:secondaryProgressTint="@color/grey"/>
 
                 <TextView
