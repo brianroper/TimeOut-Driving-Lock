@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
@@ -93,6 +94,8 @@ public class DashboardActivity extends AppCompatActivity {
     AppCompatSeekBar mGoalSeekbar;
     @BindView(R.id.goal_seek_bar_count)
     TextView mGoalCount;
+    @BindView(R.id.dashboard_swipe_refresh_layout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     private DrivingLogEventAdapter mDrivingLogEventAdapter;
     private LinearLayoutManager mLinearLayoutManager;
@@ -113,14 +116,12 @@ public class DashboardActivity extends AppCompatActivity {
         checkDrawOverlayPermission();
 
         getSharedPreferences();
-
         monitorNeura();
 
         initializeAdapter();
-        setTripTextView();
-        setTripDateTextView();
-        setTripDayOfWeekTextView();
-        setGoalCountTextView();
+        populateAllViews();
+
+        setSwipeFreshListener();
 
         handleDoNotDisturbPermissions();
 
@@ -137,6 +138,16 @@ public class DashboardActivity extends AppCompatActivity {
         mSurfaceLog.setCardBackgroundColor(getResources().getColor(R.color.white));
         mSurfaceSwitch.setCardBackgroundColor(getResources().getColor(R.color.white));
         mSurfaceTrips.setCardBackgroundColor(getResources().getColor(R.color.white));
+    }
+
+    /**
+     * populates all the views for this activity
+     */
+    public void populateAllViews(){
+        setTripTextView();
+        setTripDateTextView();
+        setTripDayOfWeekTextView();
+        setGoalCountTextView();
     }
 
     /**
@@ -227,8 +238,8 @@ public class DashboardActivity extends AppCompatActivity {
     private void initializeAdapter(){
         mDrivingLogEventAdapter = new DrivingLogEventAdapter(getApplicationContext());
         mLinearLayoutManager = new LinearLayoutManager(getApplicationContext());
-        //mLinearLayoutManager.setReverseLayout(true);
-       // mLinearLayoutManager.setStackFromEnd(true);
+        mLinearLayoutManager.setReverseLayout(true);
+        mLinearLayoutManager.setStackFromEnd(true);
         //mDrivingLogEventRecycler.addItemDecoration(new RecyclerViewDivider(getApplicationContext()));
         mDrivingLogEventRecycler.setLayoutManager(mLinearLayoutManager);
         mDrivingLogEventAdapter.isDashboard();
@@ -289,6 +300,20 @@ public class DashboardActivity extends AppCompatActivity {
                     .apply();
             initializeNeuraService();
         }
+    }
+
+    /**
+     * sets the on sqipe listener for the refresh view
+     */
+    public void setSwipeFreshListener(){
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                populateAllViews();
+                handleAdapterDataSet();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     /**
@@ -367,7 +392,7 @@ public class DashboardActivity extends AppCompatActivity {
      * refreshes the data in the adapter
      */
     public void handleAdapterDataSet(){
-        mDrivingLogEventAdapter.getDrivingEventLogFromRealm();
+        //mDrivingLogEventAdapter.getDrivingEventLogFromRealm();
         mDrivingLogEventAdapter.notifyDataSetChanged();
         setTripTextView();
         handleEmptyView(mRealmResults);
@@ -456,7 +481,6 @@ public class DashboardActivity extends AppCompatActivity {
                             }
                         })
                         .show();
-
             }
         });
     }
