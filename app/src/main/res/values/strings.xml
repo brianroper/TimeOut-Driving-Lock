@@ -32,4 +32,6 @@
             involving distracted drivers.
         </item>
     </array>
+
+    <string name="auto_reply_text">is currently driving safely using TimeOut. They will get back to you when they are finished.</string>
 </resources>
