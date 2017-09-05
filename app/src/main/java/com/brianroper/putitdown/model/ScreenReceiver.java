@@ -22,29 +22,6 @@ public class ScreenReceiver extends BroadcastReceiver {
 
         } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
             Log.d("ScreenStatus", "Screen On");
-
-           /* Realm realm;
-            Realm.init(context);
-            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
-                    .deleteRealmIfMigrationNeeded()
-                    .build();
-            realm = Realm.getInstance(realmConfiguration);
-
-            //if(realm.where(ScreenCounter.class).equalTo("id", Integer.parseInt(Utils.returnDateAsId())).findFirst())
-
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    ScreenCounter counterData = realm.where(ScreenCounter.class).equalTo("id", 001).findFirst();
-                    counterData.setCounter(counterData.getCounter() + 1);
-                    realm.copyToRealmOrUpdate(counterData);
-                }
-            });
-<<<<<<< HEAD
-            realm.close(); */
-=======
-            realm.close();*/
->>>>>>> d85c2e02b3c92271cfab68917bfeb84028a4cca9
         }
         else{
             Log.d("ScreenStatus", "Inactive");
