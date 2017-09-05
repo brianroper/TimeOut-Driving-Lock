@@ -63,8 +63,6 @@ public class DashboardActivity extends AppCompatActivity {
     public final static int REQUEST_CODE = 5463;
     private EventBus mEventBus = EventBus.getDefault();
 
-    @BindView(R.id.log_recycler)
-    RecyclerView mDrivingLogEventRecycler;
     @BindView(R.id.passenger_switch)
     SwitchCompat mPassengerSwitch;
     @BindView(R.id.empty_view)
@@ -97,6 +95,22 @@ public class DashboardActivity extends AppCompatActivity {
     TextView mGoalCount;
     @BindView(R.id.dashboard_swipe_refresh_layout)
     SwipeRefreshLayout mSwipeRefreshLayout;
+
+    /**
+     * views for the recent trip log
+     */
+    @BindView(R.id.top_event_name)
+    TextView mTripLogTopEventName;
+    @BindView(R.id.top_event_date)
+    TextView mTripLogTopEventDate;
+    @BindView(R.id.top_event_time)
+    TextView mTripLogTopEventTime;
+    @BindView(R.id.bottom_event_date)
+    TextView mTripBottomEventDate;
+    @BindView(R.id.bottom_event_time)
+    TextView mTripBottomEventTime;
+    @BindView(R.id.bottom_event_name)
+    TextView mTripBottomEventName;
 
     private DrivingLogEventAdapter mDrivingLogEventAdapter;
     private LinearLayoutManager mLinearLayoutManager;
@@ -252,15 +266,9 @@ public class DashboardActivity extends AppCompatActivity {
      */
     private void initializeAdapter(){
         mDrivingLogEventAdapter = new DrivingLogEventAdapter(getApplicationContext());
-        mLinearLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mLinearLayoutManager.setReverseLayout(true);
-        mLinearLayoutManager.setStackFromEnd(true);
-        //mDrivingLogEventRecycler.addItemDecoration(new RecyclerViewDivider(getApplicationContext()));
-        mDrivingLogEventRecycler.setLayoutManager(mLinearLayoutManager);
-        mDrivingLogEventAdapter.isDashboard();
         mRealmResults = mDrivingLogEventAdapter.getDrivingEventLogFromRealm();
         handleEmptyView(mRealmResults);
-        mDrivingLogEventRecycler.setAdapter(mDrivingLogEventAdapter);
+        setTripLogViews(mRealmResults);
     }
 
     /**
@@ -293,6 +301,34 @@ public class DashboardActivity extends AppCompatActivity {
         }
         mTripSuccessCount.setText(successfulTrips + "");
         mTripFailedCount.setText(failedTrips + "");
+    }
+
+    private void setTripLogViews(RealmResults<DrivingEventLog> results){
+
+        if(mRealmResults.size() != 0){
+            int topLog = results.size() - 1;
+            int bottomLog = results.size() - 2;
+
+            mTripLogTopEventDate.setText(Utils.returnDateStringFromDate(results.get(topLog).getDate()));
+            mTripBottomEventDate.setText(Utils.returnDateStringFromDate(results.get(bottomLog).getDate()));
+
+            mTripBottomEventTime.setText(results.get(bottomLog).getTime());
+            mTripLogTopEventTime.setText(results.get(topLog).getTime());
+
+            if(results.get(topLog).isSuccessful()){
+                mTripLogTopEventName.setText("you had a safe trip");
+            }
+            else{
+                mTripLogTopEventName.setText("you used your device while driving");
+            }
+
+            if(results.get(bottomLog).isSuccessful()){
+                mTripBottomEventName.setText("you had a safe trip");
+            }
+            else{
+                mTripBottomEventName.setText("you used your device while driving");
+            }
+        }
     }
 
     /**

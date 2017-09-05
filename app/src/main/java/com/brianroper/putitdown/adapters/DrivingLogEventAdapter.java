@@ -14,6 +14,8 @@ import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.utils.Utils;
 import com.brianroper.putitdown.views.DrivingLogActivity;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
@@ -28,8 +30,6 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
 
     private Context mContext;
     private RealmResults<DrivingEventLog> mRealmResults;
-    final int DASHBOARD_LIST_ITEM_COUNT = 2;
-    private boolean mIsDashboard = false;
 
     public DrivingLogEventAdapter(Context context) {
         mContext = context;
@@ -40,54 +40,29 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View root = inflater.inflate(R.layout.neura_log_item, parent, false);
         final DrivingLogEventViewHolder drivingLogEventViewHolder = new DrivingLogEventViewHolder(root);
-
-        if(mIsDashboard){
-            root.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent logIntent = new Intent(mContext, DrivingLogActivity.class);
-                    mContext.startActivity(logIntent);
-                }
-            });
-        }
-
         return drivingLogEventViewHolder;
     }
 
     @Override
     public void onBindViewHolder(DrivingLogEventAdapter.DrivingLogEventViewHolder holder, int position) {
 
-        if(mIsDashboard){
-            if(position == getItemCount() - 1){
-                holder.mDivider.setVisibility(View.GONE);
-            }
-        }
-        else{
-            if(position == (getItemCount() - getItemCount())){
-                holder.mDivider.setVisibility(View.GONE);
-            }
+        if(position == (getItemCount() - getItemCount())){
+            holder.mDivider.setVisibility(View.GONE);
         }
 
-        if(mRealmResults.size() >= DASHBOARD_LIST_ITEM_COUNT){
-            if(mRealmResults.get(position).isSuccessful() == true){
-                holder.mEventNameTextView.setText("you had a safe trip");
-            }
-            else if(mRealmResults.get(position).isSuccessful() == false){
-                holder.mEventNameTextView.setText("you used your device while driving");
-            }
-            holder.mEventDateTextView.setText(Utils.returnDateStringFromDate(mRealmResults.get(position).getDate()));
-            holder.mEventTimeTextView.setText(mRealmResults.get(position).getTime());
+        if(mRealmResults.get(position).isSuccessful() == true){
+            holder.mEventNameTextView.setText("you had a safe trip");
         }
+        else if(mRealmResults.get(position).isSuccessful() == false){
+            holder.mEventNameTextView.setText("you used your device while driving");
+        }
+        holder.mEventDateTextView.setText(Utils.returnDateStringFromDate(mRealmResults.get(position).getDate()));
+        holder.mEventTimeTextView.setText(mRealmResults.get(position).getTime());
     }
 
     @Override
     public int getItemCount() {
-        if(mIsDashboard){
-            return DASHBOARD_LIST_ITEM_COUNT;
-        }
-        else{
-            return mRealmResults.size();
-        }
+        return mRealmResults.size();
     }
 
     public class DrivingLogEventViewHolder extends RecyclerView.ViewHolder{
@@ -140,12 +115,5 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
      */
     public void returnThisMonthDrivingEventLogs(){
         //TODO: sort this month logs
-    }
-
-    /**
-     * enables the listener for the recycler view in the dashboard
-     */
-    public void isDashboard(){
-        mIsDashboard = true;
     }
 }

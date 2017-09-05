@@ -173,6 +173,7 @@
             android:layout_marginTop="4dp"
             android:elevation="2dp">
 
+            <!-- empty view -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -206,9 +207,10 @@
 
             </RelativeLayout>
 
+            <!-- date visible view  -->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="168dp"
+                android:layout_height="wrap_content"
                 android:visibility="visible"
                 android:id="@+id/log_view">
 
@@ -225,12 +227,164 @@
                     android:paddingTop="16dp"
                     android:textSize="16sp"/>
 
-                <android.support.v7.widget.RecyclerView
+                <RelativeLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="vertical"
+                    android:id="@+id/dashboard_log_top"
+                    android:layout_below="@+id/log_title"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/log_recycler"
-                    android:layout_below="@+id/log_title">
-                </android.support.v7.widget.RecyclerView>
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="you had a safe trip"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:id="@+id/top_event_name"
+                        android:textColor="@color/primaryText"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentStart="true"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/top_date_layout"
+                        android:layout_alignParentEnd="true"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/top_event_date"
+                            android:layout_gravity="center"
+                            android:text="5/15"
+                            android:textColor="@color/primaryText"/>
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@mipmap/ic_date"
+                            android:layout_gravity="center"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/top_time_layout"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@+id/top_date_layout"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/top_event_time"
+                            android:text="10:58 AM"
+                            android:layout_gravity="center"
+                            android:textColor="@color/primaryText"/>
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@mipmap/ic_time"
+                            android:layout_gravity="center"/>
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/top_time_layout"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@color/grey"
+                        android:id="@+id/divider">
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="vertical"
+                    android:layout_below="@+id/dashboard_log_top"
+                    android:id="@+id/dashboard_log_bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="you had a safe trip"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:id="@+id/bottom_event_name"
+                        android:textColor="@color/primaryText"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/bottom_date_layout"
+                        android:layout_alignParentEnd="true"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/bottom_event_date"
+                            android:layout_gravity="center"
+                            android:text="5/15"
+                            android:textColor="@color/primaryText"/>
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@mipmap/ic_date"
+                            android:layout_gravity="center"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/bottom_time_layout"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@+id/bottom_date_layout"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/bottom_event_time"
+                            android:text="10:58 AM"
+                            android:layout_gravity="center"
+                            android:textColor="@color/primaryText"/>
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@mipmap/ic_time"
+                            android:layout_gravity="center"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
 
             </RelativeLayout>
 
