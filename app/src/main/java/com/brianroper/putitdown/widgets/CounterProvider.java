@@ -7,7 +7,7 @@ import android.content.Context;
 import android.widget.RemoteViews;
 
 import com.brianroper.putitdown.R;
-import com.brianroper.putitdown.model.ScreenCounter;
+import com.brianroper.putitdown.model.realmObjects.ScreenCounter;
 import com.brianroper.putitdown.utils.Utils;
 
 import io.realm.Realm;

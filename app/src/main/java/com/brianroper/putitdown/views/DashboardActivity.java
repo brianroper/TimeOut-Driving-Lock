@@ -26,13 +26,12 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.adapters.DrivingLogEventAdapter;
 import com.brianroper.putitdown.model.Constants;
-import com.brianroper.putitdown.model.DrivingEventLog;
-import com.brianroper.putitdown.model.DrivingMessage;
+import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
+import com.brianroper.putitdown.model.events.DrivingMessage;
 import com.brianroper.putitdown.services.NeuraMonitorService;
 import com.brianroper.putitdown.services.ScreenService;
 import com.brianroper.putitdown.utils.Utils;
@@ -118,6 +117,8 @@ public class DashboardActivity extends AppCompatActivity {
         checkDrawOverlayPermission();
 
         getSharedPreferences();
+        setPassengerSwitchPosition();
+
         monitorNeura();
 
         initializeAdapter();
@@ -302,23 +303,17 @@ public class DashboardActivity extends AppCompatActivity {
     public void setPassengerSwitchListener(){
         stopNeuraService();
         if(mPassengerSwitch.isChecked()){
-            mSharedPreferences
-                    .edit()
-                    .putBoolean(getString(R.string.passenger_mode_key), true)
-                    .apply();
+            enablePassengerMode();
             initializeNeuraService();
         }
         else if(!mPassengerSwitch.isChecked()){
-            mSharedPreferences
-                    .edit()
-                    .putBoolean(getString(R.string.passenger_mode_key), false)
-                    .apply();
+            disablePassengerMode();
             initializeNeuraService();
         }
     }
 
     /**
-     * sets the on sqipe listener for the refresh view
+     * sets the on swipe listener for the refresh view
      */
     public void setSwipeFreshListener(){
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -352,10 +347,40 @@ public class DashboardActivity extends AppCompatActivity {
      */
     private void getSharedPreferences(){
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+    }
+
+    /**
+     * updates passenger shared preferences value
+     */
+    private void enablePassengerMode(){
+        mSharedPreferences
+                .edit()
+                .putBoolean(getString(R.string.passenger_mode_key), true)
+                .apply();
+    }
+
+    /**
+     * updates passenger shared preferences value
+     */
+    private void disablePassengerMode(){
         mSharedPreferences
                 .edit()
                 .putBoolean(getString(R.string.passenger_mode_key), false)
                 .apply();
+    }
+
+    /**
+     * updates passenger switch ui
+     */
+    public void setPassengerSwitchPosition(){
+        boolean passengerMode = mSharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false);
+
+        if(passengerMode){
+            mPassengerSwitch.setChecked(true);
+        }
+        else if(!passengerMode){
+            mPassengerSwitch.setChecked(false);
+        }
     }
 
     /**
@@ -506,21 +531,6 @@ public class DashboardActivity extends AppCompatActivity {
     public void storeGoal(int progress){
         mSharedPreferences.edit().putInt("goal", progress).apply();
     }
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

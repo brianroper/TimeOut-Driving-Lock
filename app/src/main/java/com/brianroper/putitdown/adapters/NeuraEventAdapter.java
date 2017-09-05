@@ -9,14 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.brianroper.putitdown.R;
-import com.brianroper.putitdown.model.DrivingEventLog;
-import com.brianroper.putitdown.model.NeuraEventLog;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import com.brianroper.putitdown.model.realmObjects.NeuraEventLog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

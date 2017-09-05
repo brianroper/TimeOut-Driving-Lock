@@ -1,4 +1,4 @@
-package com.brianroper.putitdown.model;
+package com.brianroper.putitdown.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

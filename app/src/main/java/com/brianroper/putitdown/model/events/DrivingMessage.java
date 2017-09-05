@@ -1,4 +1,4 @@
-package com.brianroper.putitdown.model;
+package com.brianroper.putitdown.model.events;
 
 /**
  * Created by brianroper on 5/15/17.

@@ -7,9 +7,9 @@ import android.util.Log;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.model.Constants;
-import com.brianroper.putitdown.model.DrivingEventLog;
-import com.brianroper.putitdown.model.DrivingMessage;
-import com.brianroper.putitdown.model.NeuraEventLog;
+import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
+import com.brianroper.putitdown.model.events.DrivingMessage;
+import com.brianroper.putitdown.model.realmObjects.NeuraEventLog;
 import com.brianroper.putitdown.utils.Utils;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -20,7 +20,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
 

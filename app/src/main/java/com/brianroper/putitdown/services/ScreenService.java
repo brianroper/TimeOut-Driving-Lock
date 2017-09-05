@@ -6,11 +6,7 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.brianroper.putitdown.model.NeuraEventLog;
-import com.brianroper.putitdown.model.ScreenReceiver;
-
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
+import com.brianroper.putitdown.receivers.ScreenReceiver;
 
 /**
  * Created by brianroper on 8/10/17.

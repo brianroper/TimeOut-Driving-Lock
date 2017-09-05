@@ -1,4 +1,4 @@
-package com.brianroper.putitdown.model;
+package com.brianroper.putitdown.model.realmObjects;
 
 import java.util.Date;
 
