@@ -94,7 +94,7 @@ public class DrivingEventService extends FirebaseMessagingService {
                neuraEventLog.setEventName(event.getEventName());
                neuraEventLog.setTimestamp(event.getEventTimestamp());
                neuraEventLog.setTime(Utils.returnTime(calendar));
-               neuraEventLog.setDate(Utils.returnDate(calendar));
+               neuraEventLog.setDate(Utils.returnDateAsDate());
                realm.copyToRealmOrUpdate(neuraEventLog);
             }
         });
@@ -117,7 +117,7 @@ public class DrivingEventService extends FirebaseMessagingService {
             public void execute(Realm realm) {
                 DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, event.getNeuraId());
                 drivingEventLog.setTime(Utils.returnTime(calendar));
-                drivingEventLog.setDate(Utils.returnDate(calendar));
+                drivingEventLog.setDate(Utils.convertTimeStampToDate(event.getEventTimestamp()));
                 drivingEventLog.setSuccessful(isSuccessful);
                 realm.copyToRealmOrUpdate(drivingEventLog);
             }

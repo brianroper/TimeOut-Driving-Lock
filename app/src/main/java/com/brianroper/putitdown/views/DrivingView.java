@@ -200,7 +200,7 @@ public class DrivingView{
                 public void execute(Realm realm) {
                     DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, mCurrentNeuraEventId);
                     drivingEventLog.setTime(Utils.returnTime(calendar));
-                    drivingEventLog.setDate(Utils.returnDate(calendar));
+                    drivingEventLog.setDate(Utils.returnDateAsDate());
                     drivingEventLog.setSuccessful(false);
                     realm.copyToRealmOrUpdate(drivingEventLog);
                 }

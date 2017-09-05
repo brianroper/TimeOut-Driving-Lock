@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.model.realmObjects.NeuraEventLog;
+import com.brianroper.putitdown.utils.Utils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,7 +52,7 @@ public class NeuraEventAdapter extends RecyclerView.Adapter<NeuraEventAdapter.Ne
         else if(mRealmResults.get(position).getEventName().equals("userFinishedDriving")){
             holder.mEventNameTextView.setText(mContext.getString(R.string.event_finished_driving));
         }
-        holder.mEventDateTextView.setText(mRealmResults.get(position).getDate());
+        holder.mEventDateTextView.setText(Utils.returnDateStringFromDate(mRealmResults.get(position).getDate()));
         holder.mEventTimeTextView.setText(mRealmResults.get(position).getTime());
     }
 

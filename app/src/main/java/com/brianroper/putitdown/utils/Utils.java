@@ -70,18 +70,35 @@ public class Utils {
     }
 
     /**
-     * formats and returns the current date in MM/dd format
+     * formats and returns the current date in MM/dd format as a string
      */
-    static public String returnDate(Calendar calendar){
+    static public String returnDateAsString(Calendar calendar){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd");
         String date = simpleDateFormat.format(calendar.getTime());
         return date;
     }
 
     /**
+     * formats and returns the date as a date object
+     */
+    static public Date returnDateAsDate(){
+        Date date  = new Date(System.currentTimeMillis());
+        return date;
+    }
+
+    /**
+     * returns a formatted string date (MM/dd) from a passed in date object
+     */
+    static public String returnDateStringFromDate(Date date){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd");
+        String formattedDate = simpleDateFormat.format(date);
+        return formattedDate;
+    }
+
+    /**
      * convert the NeuraEventData timestamp into a date object
      */
-    static public Date formatTimeStamp(long timestamp){
+    static public Date convertTimeStampToDate(long timestamp){
         Calendar calendar = Calendar.getInstance();
         TimeZone timeZone = calendar.getTimeZone();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yy");

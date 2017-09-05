@@ -13,7 +13,7 @@ public class DrivingEventLog extends RealmObject {
     @PrimaryKey
     private String id;
     private boolean isSuccessful;
-    private String date;
+    private Date date;
     private String time;
 
     public DrivingEventLog() {}
@@ -26,11 +26,11 @@ public class DrivingEventLog extends RealmObject {
         isSuccessful = successful;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

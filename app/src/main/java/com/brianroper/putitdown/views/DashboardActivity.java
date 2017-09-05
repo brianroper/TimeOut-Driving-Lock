@@ -103,7 +103,6 @@ public class DashboardActivity extends AppCompatActivity {
     private RealmResults<DrivingEventLog> mRealmResults;
     private SharedPreferences mSharedPreferences;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

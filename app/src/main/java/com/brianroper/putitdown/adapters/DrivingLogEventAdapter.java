@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
+import com.brianroper.putitdown.utils.Utils;
 import com.brianroper.putitdown.views.DrivingLogActivity;
 
 import butterknife.BindView;
@@ -67,14 +68,16 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
             }
         }
 
-        if(mRealmResults.get(position).isSuccessful() == true){
-            holder.mEventNameTextView.setText("you had a safe trip");
+        if(mRealmResults.size() >= DASHBOARD_LIST_ITEM_COUNT){
+            if(mRealmResults.get(position).isSuccessful() == true){
+                holder.mEventNameTextView.setText("you had a safe trip");
+            }
+            else if(mRealmResults.get(position).isSuccessful() == false){
+                holder.mEventNameTextView.setText("you used your device while driving");
+            }
+            holder.mEventDateTextView.setText(Utils.returnDateStringFromDate(mRealmResults.get(position).getDate()));
+            holder.mEventTimeTextView.setText(mRealmResults.get(position).getTime());
         }
-        else if(mRealmResults.get(position).isSuccessful() == false){
-            holder.mEventNameTextView.setText("you used your device while driving");
-        }
-        holder.mEventDateTextView.setText(mRealmResults.get(position).getDate());
-        holder.mEventTimeTextView.setText(mRealmResults.get(position).getTime());
     }
 
     @Override
