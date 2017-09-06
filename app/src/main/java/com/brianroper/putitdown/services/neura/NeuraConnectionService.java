@@ -36,7 +36,7 @@ public class NeuraConnectionService extends Service {
     //Define moments you would like to subscribe to.
     List<String> mNeuraMoments = Arrays.asList("userStartedWalking",
             "userStartedDriving", "userFinishedDriving",
-            "userIsAboutToGoToSleep");
+            "userIsAboutToGoToSleep", "userStartedRunning");
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

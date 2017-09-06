@@ -36,6 +36,7 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
     private boolean mPassengerStatus;
     private EventBus mEventBus = EventBus.getDefault();
     private boolean mIsDriving = true;
+    private Intent mDrivingService;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -57,7 +58,7 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
      */
     public void handleNeuraMoment(RemoteMessage remoteMessage){
 
-        final Intent drivingService = new Intent(this, DrivingService.class);
+        initializeDrivingService();
 
         boolean isNeuraPush = NeuraPushCommandFactory.getInstance()
                 .isNeuraPush(getApplicationContext(), remoteMessage.getData(), new NeuraEventCallBack() {
@@ -66,14 +67,29 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
                         String eventText = event != null ? event.toString() : "couldn't parse data";
                         Log.i(getClass().getSimpleName(), "received Neura event - " + eventText);
 
+                        //all driving related moments, events are ignored if passenger mode is enabled
                         if(!mPassengerStatus){
                             if(event.getEventName().equals("userStartedDriving")){
-                                startService(drivingService);
+                                startService(mDrivingService);
                                 mIsDriving = true;
                             }
                             else if(event.getEventName().equals("userFinishedDriving")){
                                 if(mIsDriving == true){
-                                    stopService(drivingService);
+                                    stopService(mDrivingService);
+                                    addSuccessfulDrivingEvent(event, true);
+                                    mIsDriving = false;
+                                }
+                            }
+                            else if(event.getEventName().equals("userStartedRunning")){
+                                if(mIsDriving == true){
+                                    stopService(mDrivingService);
+                                    addSuccessfulDrivingEvent(event, true);
+                                    mIsDriving = false;
+                                }
+                            }
+                            else if(event.getEventName().equals("userStartedWalking")){
+                                if(mIsDriving == true){
+                                    stopService(mDrivingService);
                                     addSuccessfulDrivingEvent(event, true);
                                     mIsDriving = false;
                                 }
@@ -91,7 +107,7 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
      * initializes the driving service
      */
     public void initializeDrivingService(){
-        Intent drivingService = new Intent(this, DrivingService.class);
+        mDrivingService = new Intent(this, DrivingService.class);
     }
 
     /**
