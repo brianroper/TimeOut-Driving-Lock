@@ -27,7 +27,17 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".services.driving.DrivingService">
+        <service
+            android:name=".services.driving.DrivingService">
+        </service>
+        <service
+            android:name=".services.neura.NeuraConnectionService">
+        </service>
+        <service
+            android:name=".services.neura.NeuraMomentMessageService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
         </service>
 
         <receiver android:name=".widgets.CounterProvider">

@@ -15,12 +15,13 @@ import com.neura.resources.authentication.AuthenticationState;
 import com.neura.standalonesdk.service.NeuraApiClient;
 import com.neura.standalonesdk.util.Builder;
 
+import com.neura.standalonesdk.util.SDKUtils;
+
 import com.neura.resources.authentication.AnonymousAuthenticateCallBack;
 import com.neura.resources.authentication.AnonymousAuthenticateData;
 import com.neura.sdk.object.AnonymousAuthenticationRequest;
 import com.neura.sdk.service.SubscriptionRequestCallbacks;
 import com.neura.sdk.object.EventDefinition;
-import com.neura.standalonesdk.util.SDKUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -69,9 +70,38 @@ public class NeuraConnectionService extends Service {
     }
 
     public void callNeura(){
+
         String pushToken = FirebaseInstanceId.getInstance().getToken();
 
         AnonymousAuthenticationRequest request = new AnonymousAuthenticationRequest(pushToken);
+
+        final AnonymousAuthenticationStateListener authStateListener = new AnonymousAuthenticationStateListener() {
+            @Override
+            public void onStateChanged(AuthenticationState state) {
+                switch (state){
+                    case AuthenticatedAnonymously:
+                        //successfully authenticated
+                        Log.i("NeuraAuth: ", "Success");
+                        mNeuraApiClient.unregisterAuthStateListener();
+                        break;
+
+                    case AccessTokenRequested:
+                        break;
+
+                    case NotAuthenticated:
+                        break;
+
+                    case FailedReceivingAccessToken:
+                        //authentication failed indefinitely. Consider retrying authentication flow
+                        Log.i("NeuraAuth: ", "Failed");
+                        mNeuraApiClient.unregisterAuthStateListener();
+                        connectToNeura();
+                        break;
+
+                    default:
+                }
+            }
+        };
 
         mNeuraApiClient.authenticate(request, new AnonymousAuthenticateCallBack() {
             @Override
@@ -79,31 +109,7 @@ public class NeuraConnectionService extends Service {
                 Log.i(getClass().getSimpleName(), "Successfully requested authentication with neura. " +
                         "NeuraUserId = " + authenticationData.getNeuraUserId());
 
-                AnonymousAuthenticationStateListener authStateListener = new AnonymousAuthenticationStateListener() {
-                    @Override
-                    public void onStateChanged(AuthenticationState state) {
-                        switch (state){
-                            case AuthenticatedAnonymously:
-                                //successfully authenticated
-                                mNeuraApiClient.unregisterAuthStateListener();
-                                break;
-
-                            case AccessTokenRequested:
-                                break;
-
-                            case NotAuthenticated:
-                                break;
-
-                            case FailedReceivingAccessToken:
-                                //authentication failed indefinitely. Consider retrying authentication flow
-                                mNeuraApiClient.unregisterAuthStateListener();
-                                break;
-
-                            default:
-                        }
-                    }
-                };
-
+                mNeuraApiClient.registerAuthStateListener(authStateListener);
                 subscribeToNeuraMoments(mNeuraMoments, authenticationData.getNeuraUserId());
             }
 
@@ -116,6 +122,9 @@ public class NeuraConnectionService extends Service {
     }
 
     public void subscribeToNeuraMoments(List<String> moments, String neuraId){
+
+        Log.i("Moment: ", moments.get(0));
+
         for (int i = 0; i < moments.size(); i++) {
             mNeuraApiClient.subscribeToEvent(moments.get(i),
                     neuraId + moments.get(i),

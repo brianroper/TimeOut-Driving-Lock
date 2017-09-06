@@ -35,21 +35,26 @@ import com.brianroper.putitdown.model.events.DrivingMessage;
 import com.brianroper.putitdown.services.neura.NeuraConnectionService;
 import com.brianroper.putitdown.services.screen.ScreenService;
 import com.brianroper.putitdown.utils.Utils;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.neura.sdk.object.AuthenticationRequest;
-import com.neura.sdk.object.Permission;
+import com.neura.resources.authentication.AnonymousAuthenticateCallBack;
+import com.neura.resources.authentication.AnonymousAuthenticateData;
+import com.neura.resources.authentication.AnonymousAuthenticationStateListener;
+import com.neura.resources.authentication.AuthenticationState;
+import com.neura.sdk.object.AnonymousAuthenticationRequest;
 import com.neura.standalonesdk.service.NeuraApiClient;
 import com.neura.standalonesdk.util.Builder;
-import com.neura.resources.authentication.AuthenticateCallback;
-import com.neura.resources.authentication.AuthenticateData;
 import com.neura.sdk.service.SubscriptionRequestCallbacks;
-import com.neura.sdk.object.EventDefinition;
+import com.neura.standalonesdk.util.SDKUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,7 +64,12 @@ import io.realm.RealmResults;
 
 public class DashboardActivity extends AppCompatActivity {
 
+    //neura related variables
     private NeuraApiClient mNeuraApiClient;
+    List<String> mNeuraMoments = Arrays.asList("userStartedWalking",
+            "userStartedDriving", "userFinishedDriving",
+            "userIsAboutToGoToSleep", "userStartedRunning");
+
     public final static int REQUEST_CODE = 5463;
     private EventBus mEventBus = EventBus.getDefault();
 
@@ -186,67 +196,107 @@ public class DashboardActivity extends AppCompatActivity {
     public void monitorNeura(){
         if(mNeuraApiClient==null){
             if(Utils.activeNetworkCheck(this)){
-                connectNeura();
-                initializeNeuraService();
+                connectToNeura();
+                callNeura();
+                //initializeNeuraService();
             }
             else{
                 Utils.noActiveNetworkToast(this);
             }
         }
+        else{
+            Log.i("NeuraClient: ", "Not Null");
+        }
     }
 
-    /**
-     * connects to the Neura Api using AppUid and AppSecret
-     */
-    public void connectNeura() {
+    public void connectToNeura(){
         Builder builder = new Builder(getApplicationContext());
         mNeuraApiClient = builder.build();
         mNeuraApiClient.setAppUid(getString(R.string.app_uid));
         mNeuraApiClient.setAppSecret(getString(R.string.app_secret));
         mNeuraApiClient.connect();
-        callNeura();
     }
 
-    /**
-     * calls the Neura Api and subscribes to the userStartedDriving and userFinishedDriving events
-     */
-    public void callNeura() {
-        AuthenticationRequest request = new AuthenticationRequest(
-                Permission.list(new String[]{Utils.FINISHED_DRIVING, Utils.STARTED_DRIVING}));
+    public void callNeura(){
+        final String pushToken = FirebaseInstanceId.getInstance().getToken();
 
-        mNeuraApiClient.authenticate(request, new AuthenticateCallback() {
+        AnonymousAuthenticationRequest request = new AnonymousAuthenticationRequest(pushToken);
+
+        mNeuraApiClient.registerFirebaseToken(DashboardActivity.this, FirebaseInstanceId.getInstance().getToken());
+
+        final AnonymousAuthenticationStateListener authStateListener = new AnonymousAuthenticationStateListener() {
             @Override
-            public void onSuccess(AuthenticateData authenticateData) {
-                Log.i(getClass().getSimpleName(), "Successfully authenticate with neura. " +
-                        "NeuraUserId = " + authenticateData.getNeuraUserId() + " " +
-                        "AccessToken = " + authenticateData.getAccessToken());
+            public void onStateChanged(AuthenticationState state) {
+                switch (state){
+                    case AccessTokenRequested:
+                        Log.i("NeuraAuth: ", "Token Requested");
+                        break;
 
-                mNeuraApiClient.registerFirebaseToken(
-                        DashboardActivity.this, FirebaseInstanceId.getInstance().getToken());
+                    case AuthenticatedAnonymously:
+                        //successfully authenticated
+                        Log.i("NeuraAuth: ", "Success");
+                        subscribeToNeuraMoments(mNeuraMoments, "randomID");
+                        mNeuraApiClient.unregisterAuthStateListener();
+                        break;
 
-                ArrayList<EventDefinition> events = authenticateData.getEvents();
-                for (int i = 0; i < events.size(); i++) {
-                    mNeuraApiClient.subscribeToEvent(events.get(i).getName(),
-                            "YourEventIdentifier_" + events.get(i).getName(),
-                            new SubscriptionRequestCallbacks() {
-                                @Override
-                                public void onSuccess(String eventName, Bundle bundle, String s1) {
-                                    Log.i(getClass().getSimpleName(), "Successfully subscribed to event " + eventName);
-                                }
+                    case NotAuthenticated:
+                        Log.i("NeuraAuth: ", "Not Authenticated");
+                        break;
 
-                                @Override
-                                public void onFailure(String eventName, Bundle bundle, int i) {
-                                    Log.e(getClass().getSimpleName(), "Failed to subscribe to event " + eventName);
-                                }
-                            });
+                    case FailedReceivingAccessToken:
+                        //authentication failed indefinitely. Consider retrying authentication flow
+                        Log.i("NeuraAuth: ", "Failed Access Token");
+                        mNeuraApiClient.unregisterAuthStateListener();
+                        connectToNeura();
+                        break;
+
+                    default:
                 }
             }
+        };
+
+        mNeuraApiClient.authenticate(request, new AnonymousAuthenticateCallBack() {
+            @Override
+            public void onSuccess(AnonymousAuthenticateData authenticationData) {
+                Log.i(getClass().getSimpleName(), "Successfully requested authentication with neura. " +
+                        "NeuraUserId = " + authenticationData.getNeuraUserId());
+
+                mNeuraApiClient.registerAuthStateListener(authStateListener);
+            }
 
             @Override
-            public void onFailure(int i) {
-                Log.e("Neura Authentication: ", "Failed");
+            public void onFailure(int errorCode) {
+                Log.e(getClass().getSimpleName(), "Failed to authenticate with neura. "
+                        + "Reason : " + SDKUtils.errorCodeToString(errorCode));
+                Log.i("NeuraError: ", errorCode+"");
             }
         });
+    }
+
+    public void subscribeToNeuraMoments(List<String> moments, String neuraId){
+
+        Log.i("Moment: ", moments.get(0));
+
+        if(mNeuraApiClient.isLoggedIn()){
+            for (int i = 0; i < moments.size(); i++) {
+                mNeuraApiClient.subscribeToEvent(moments.get(i),
+                        neuraId + moments.get(i),
+                        new SubscriptionRequestCallbacks() {
+                            @Override
+                            public void onSuccess(String eventName, Bundle bundle, String s1) {
+                                Log.i(getClass().getSimpleName(), "Successfully subscribed to event " + eventName);
+                            }
+
+                            @Override
+                            public void onFailure(String eventName, Bundle bundle, int i) {
+                                Log.e(getClass().getSimpleName(), "Failed to subscribe to event " + eventName);
+                            }
+                        });
+            }
+        }
+        else{
+            Log.i("NeuraClient: ", "User is not logged in");
+        }
     }
 
     /**
@@ -337,14 +387,14 @@ public class DashboardActivity extends AppCompatActivity {
      */
     @OnCheckedChanged(R.id.passenger_switch)
     public void setPassengerSwitchListener(){
-        stopNeuraService();
+        //stopNeuraService();
         if(mPassengerSwitch.isChecked()){
             enablePassengerMode();
-            initializeNeuraService();
+            //initializeNeuraService();
         }
         else if(!mPassengerSwitch.isChecked()){
             disablePassengerMode();
-            initializeNeuraService();
+            //initializeNeuraService();
         }
     }
 
@@ -442,7 +492,14 @@ public class DashboardActivity extends AppCompatActivity {
 
     @OnClick(R.id.test_button)
     public void setTestButton(){
-        mNeuraApiClient.simulateAnEvent();
+        if(Utils.activeNetworkCheck(getApplicationContext())){
+            if(mNeuraApiClient.isLoggedIn()){
+                mNeuraApiClient.simulateAnEvent();
+            }
+        }
+        else{
+            Utils.noActiveNetworkToast(getApplicationContext());
+        }
     }
 
     @Override

@@ -42,6 +42,8 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+        Log.i("EventStatus: ", "Received");
+
         getSharedPreferences();
 
         if(Utils.activeNetworkCheck(this)){
@@ -174,4 +176,6 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
+
+
 }
