@@ -69,6 +69,8 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
                         String eventText = event != null ? event.toString() : "couldn't parse data";
                         Log.i(getClass().getSimpleName(), "received Neura event - " + eventText);
 
+                        mSharedPreferences.edit().putString("currentNeuraEventId", event.getNeuraId()).apply();
+
                         //all driving related moments, events are ignored if passenger mode is enabled
                         if(!mPassengerStatus){
                             if(event.getEventName().equals("userStartedDriving")){
@@ -126,7 +128,7 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, event.getNeuraId());
+                DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, event.getNeuraId() + event.getEventTimestamp());
                 drivingEventLog.setTime(Utils.returnTime(calendar));
                 drivingEventLog.setDate(Utils.convertTimeStampToDate(event.getEventTimestamp()));
                 drivingEventLog.setSuccessful(isSuccessful);
@@ -176,6 +178,4 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
-
-
 }
