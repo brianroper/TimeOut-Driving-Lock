@@ -1,4 +1,4 @@
-package com.brianroper.putitdown.services;
+package com.brianroper.putitdown.services.driving;
 
 import android.app.NotificationManager;
 import android.app.Service;

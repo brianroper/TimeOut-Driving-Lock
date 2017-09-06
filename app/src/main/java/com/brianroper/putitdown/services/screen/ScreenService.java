@@ -1,4 +1,4 @@
-package com.brianroper.putitdown.services;
+package com.brianroper.putitdown.services.screen;
 
 import android.app.Service;
 import android.content.Intent;

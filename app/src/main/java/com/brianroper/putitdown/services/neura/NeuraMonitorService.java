@@ -1,4 +1,4 @@
-package com.brianroper.putitdown.services;
+package com.brianroper.putitdown.services.neura;
 
 import android.app.Service;
 import android.content.Intent;

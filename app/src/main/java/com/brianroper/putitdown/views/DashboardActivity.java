@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.View;
@@ -26,14 +25,16 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.adapters.DrivingLogEventAdapter;
 import com.brianroper.putitdown.model.Constants;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.model.events.DrivingMessage;
-import com.brianroper.putitdown.services.NeuraMonitorService;
-import com.brianroper.putitdown.services.ScreenService;
+import com.brianroper.putitdown.services.neura.NeuraConnectionService;
+import com.brianroper.putitdown.services.neura.NeuraMonitorService;
+import com.brianroper.putitdown.services.screen.ScreenService;
 import com.brianroper.putitdown.utils.Utils;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.neura.sdk.object.AuthenticationRequest;
@@ -365,7 +366,7 @@ public class DashboardActivity extends AppCompatActivity {
      * begins a new NeuraMonitorService
      */
     private void initializeNeuraService(){
-        Intent neuraService = new Intent(getApplicationContext(), NeuraMonitorService.class);
+        Intent neuraService = new Intent(getApplicationContext(), NeuraConnectionService.class);
         startService(neuraService);
     }
 
@@ -373,7 +374,7 @@ public class DashboardActivity extends AppCompatActivity {
      * stops a running NeuraMonitorService
      */
     private void stopNeuraService(){
-        Intent neuraService = new Intent(getApplicationContext(), NeuraMonitorService.class);
+        Intent neuraService = new Intent(getApplicationContext(), NeuraConnectionService.class);
         stopService(neuraService);
     }
 
@@ -392,6 +393,8 @@ public class DashboardActivity extends AppCompatActivity {
                 .edit()
                 .putBoolean(getString(R.string.passenger_mode_key), true)
                 .apply();
+
+        Toast.makeText(getApplicationContext(), "Passenger mode enabled", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -402,6 +405,8 @@ public class DashboardActivity extends AppCompatActivity {
                 .edit()
                 .putBoolean(getString(R.string.passenger_mode_key), false)
                 .apply();
+
+        Toast.makeText(getApplicationContext(), "Passenger mode disabled", Toast.LENGTH_LONG).show();
     }
 
     /**

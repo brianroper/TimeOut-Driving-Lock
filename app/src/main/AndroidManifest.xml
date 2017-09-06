@@ -27,15 +27,15 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".services.DrivingEventService">
+        <service android:name=".services.driving.DrivingEventService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-        <service android:name=".services.DrivingService">
+        <service android:name=".services.driving.DrivingService">
         </service>
         <service
-            android:name=".services.NeuraMonitorService"
+            android:name=".services.neura.NeuraMonitorService"
             android:label="NeuraMonitorService">
         </service>
 
@@ -50,7 +50,7 @@
             </meta-data>
         </receiver>
 
-        <service android:name=".services.ScreenService"/>
+        <service android:name=".services.screen.ScreenService"/>
 
         <activity
             android:name=".views.DrivingLogActivity"

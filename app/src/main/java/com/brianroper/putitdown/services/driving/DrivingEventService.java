@@ -1,4 +1,4 @@
-package com.brianroper.putitdown.services;
+package com.brianroper.putitdown.services.driving;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +10,7 @@ import com.brianroper.putitdown.model.Constants;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.model.events.DrivingMessage;
 import com.brianroper.putitdown.model.realmObjects.NeuraEventLog;
+import com.brianroper.putitdown.services.driving.DrivingService;
 import com.brianroper.putitdown.utils.Utils;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
