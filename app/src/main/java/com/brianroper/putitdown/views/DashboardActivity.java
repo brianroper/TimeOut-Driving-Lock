@@ -33,7 +33,6 @@ import com.brianroper.putitdown.model.Constants;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.model.events.DrivingMessage;
 import com.brianroper.putitdown.services.neura.NeuraConnectionService;
-import com.brianroper.putitdown.services.neura.NeuraMonitorService;
 import com.brianroper.putitdown.services.screen.ScreenService;
 import com.brianroper.putitdown.utils.Utils;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -178,6 +177,7 @@ public class DashboardActivity extends AppCompatActivity {
         setTripDateTextView();
         setTripDayOfWeekTextView();
         setGoalCountTextView();
+        setTripLogViews(mRealmResults);
     }
 
     /**
@@ -363,7 +363,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
-     * begins a new NeuraMonitorService
+     * begins a new NeuraConnectionService
      */
     private void initializeNeuraService(){
         Intent neuraService = new Intent(getApplicationContext(), NeuraConnectionService.class);
@@ -371,7 +371,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
-     * stops a running NeuraMonitorService
+     * stops a running NeuraConnectionService
      */
     private void stopNeuraService(){
         Intent neuraService = new Intent(getApplicationContext(), NeuraConnectionService.class);
@@ -458,7 +458,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
-     * listens for a DrivingMessage from the DrivingEventService when it completes
+     * listens for a DrivingMessage from the NeuraMomentMessageService when it completes
      */
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onDrivingMessageEvent(DrivingMessage drivingMessage){
