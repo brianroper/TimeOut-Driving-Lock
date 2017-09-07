@@ -80,8 +80,6 @@ public class DashboardActivity extends AppCompatActivity {
     RelativeLayout mEmptyView;
     @BindView(R.id.log_view)
     RelativeLayout mLogView;
-    @BindView(R.id.test_button)
-    Button mButton;
 
     //Redesign Views
     @BindView(R.id.trip_success_count)
@@ -487,7 +485,7 @@ public class DashboardActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.test_button)
+    @OnClick(R.id.simulate_button)
     public void setTestButton(){
         if(Utils.activeNetworkCheck(getApplicationContext())){
             if(NeuraManager.getInstance().getClient().isLoggedIn()){
