@@ -7,4 +7,5 @@ package com.brianroper.putitdown.model;
 public class Constants {
     public String DRIVING_EVENT_FINISHED = "finished";
     public String DRIVING_EVENT_STOPPED = "interrupted";
+    public String SCREEN_COUNTER_UPDATED = "updated";
 }

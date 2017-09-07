@@ -66,7 +66,6 @@ import io.realm.RealmResults;
 public class DashboardActivity extends AppCompatActivity {
 
     //neura related variables
-    private NeuraApiClient mNeuraApiClient;
     List<String> mNeuraMoments = Arrays.asList("userStartedWalking",
             "userStartedDriving", "userFinishedDriving",
             "userIsAboutToGoToSleep", "userStartedRunning");
@@ -351,29 +350,34 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void setTripLogViews(RealmResults<DrivingEventLog> results){
 
-        if(mRealmResults.size() != 0){
-            int topLog = results.size() - 1;
-            int bottomLog = results.size() - 2;
+        try{
+            if(mRealmResults.size() != 0){
+                int topLog = results.size() - 1;
+                int bottomLog = results.size() - 2;
 
-            mTripLogTopEventDate.setText(Utils.returnDateStringFromDate(results.get(topLog).getDate()));
-            mTripBottomEventDate.setText(Utils.returnDateStringFromDate(results.get(bottomLog).getDate()));
+                mTripLogTopEventDate.setText(Utils.returnDateStringFromDate(results.get(topLog).getDate()));
+                mTripBottomEventDate.setText(Utils.returnDateStringFromDate(results.get(bottomLog).getDate()));
 
-            mTripBottomEventTime.setText(results.get(bottomLog).getTime());
-            mTripLogTopEventTime.setText(results.get(topLog).getTime());
+                mTripBottomEventTime.setText(results.get(bottomLog).getTime());
+                mTripLogTopEventTime.setText(results.get(topLog).getTime());
 
-            if(results.get(topLog).isSuccessful()){
-                mTripLogTopEventName.setText("you had a safe trip");
-            }
-            else{
-                mTripLogTopEventName.setText("you used your device while driving");
-            }
+                if(results.get(topLog).isSuccessful()){
+                    mTripLogTopEventName.setText("you had a safe trip");
+                }
+                else{
+                    mTripLogTopEventName.setText("you used your device while driving");
+                }
 
-            if(results.get(bottomLog).isSuccessful()){
-                mTripBottomEventName.setText("you had a safe trip");
+                if(results.get(bottomLog).isSuccessful()){
+                    mTripBottomEventName.setText("you had a safe trip");
+                }
+                else{
+                    mTripBottomEventName.setText("you used your device while driving");
+                }
             }
-            else{
-                mTripBottomEventName.setText("you used your device while driving");
-            }
+        }
+        catch (Exception e){
+
         }
     }
 
