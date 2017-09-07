@@ -9,6 +9,7 @@ import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.model.Constants;
 import com.brianroper.putitdown.model.events.DrivingMessage;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
+import com.brianroper.putitdown.model.realmObjects.NeuraEventLog;
 import com.brianroper.putitdown.services.driving.DrivingService;
 import com.brianroper.putitdown.utils.Utils;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -75,12 +76,14 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
                         if(!mPassengerStatus){
                             if(event.getEventName().equals("userStartedDriving")){
                                 startService(mDrivingService);
+                                addNeuraEventLog(event);
                                 mIsDriving = true;
                             }
                             else if(event.getEventName().equals("userFinishedDriving")){
                                 if(mIsDriving == true){
                                     stopService(mDrivingService);
                                     addSuccessfulDrivingEvent(event, true);
+                                    addNeuraEventLog(event);
                                     mIsDriving = false;
                                 }
                             }
@@ -88,6 +91,7 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
                                 if(mIsDriving == true){
                                     stopService(mDrivingService);
                                     addSuccessfulDrivingEvent(event, true);
+                                    addNeuraEventLog(event);
                                     mIsDriving = false;
                                 }
                             }
@@ -95,6 +99,7 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
                                 if(mIsDriving == true){
                                     stopService(mDrivingService);
                                     addSuccessfulDrivingEvent(event, true);
+                                    addNeuraEventLog(event);
                                     mIsDriving = false;
                                 }
                             }
@@ -133,6 +138,28 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
                 drivingEventLog.setDate(Utils.convertTimeStampToDate(event.getEventTimestamp()));
                 drivingEventLog.setSuccessful(isSuccessful);
                 realm.copyToRealmOrUpdate(drivingEventLog);
+            }
+        });
+        realm.close();
+    }
+
+    private void addNeuraEventLog(final NeuraEvent event){
+        final Calendar calendar = Calendar.getInstance();
+        Realm realm;
+        Realm.init(getApplicationContext());
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        realm = Realm.getInstance(realmConfiguration);
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                NeuraEventLog neuraEventLog = realm.createObject(NeuraEventLog.class, event.getNeuraId());
+                neuraEventLog.setEventName(event.getEventName());
+                neuraEventLog.setTimestamp(event.getEventTimestamp());
+                neuraEventLog.setTime(Utils.returnTime(calendar));
+                neuraEventLog.setDate(Utils.returnDateAsDate());
+                realm.copyToRealmOrUpdate(neuraEventLog);
             }
         });
         realm.close();

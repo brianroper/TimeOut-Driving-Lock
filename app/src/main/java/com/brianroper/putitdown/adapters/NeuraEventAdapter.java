@@ -47,10 +47,16 @@ public class NeuraEventAdapter extends RecyclerView.Adapter<NeuraEventAdapter.Ne
         }
 
         if(mRealmResults.get(position).getEventName().equals("userStartedDriving")){
-            holder.mEventNameTextView.setText(mContext.getString(R.string.event_started_driving));
+            holder.mEventNameTextView.setText("userStartedDriving");
         }
         else if(mRealmResults.get(position).getEventName().equals("userFinishedDriving")){
-            holder.mEventNameTextView.setText(mContext.getString(R.string.event_finished_driving));
+            holder.mEventNameTextView.setText("userFinishedDriving");
+        }
+        else if(mRealmResults.get(position).getEventName().equals("userStartedWalking")){
+            holder.mEventNameTextView.setText("userStartedWalking");
+        }
+        else if(mRealmResults.get(position).getEventName().equals("userStartedRunning")){
+            holder.mEventNameTextView.setText("userStartedRunning");
         }
         holder.mEventDateTextView.setText(Utils.returnDateStringFromDate(mRealmResults.get(position).getDate()));
         holder.mEventTimeTextView.setText(mRealmResults.get(position).getTime());
@@ -58,7 +64,7 @@ public class NeuraEventAdapter extends RecyclerView.Adapter<NeuraEventAdapter.Ne
 
     @Override
     public int getItemCount() {
-        return 2;
+        return mRealmResults.size();
     }
 
     public class NeuraEventViewHolder extends RecyclerView.ViewHolder{

@@ -27,14 +27,11 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".services.driving.DrivingService">
+        <service android:name=".services.driving.DrivingService">
         </service>
-        <service
-            android:name=".services.neura.NeuraConnectionService">
+        <service android:name=".services.neura.NeuraConnectionService">
         </service>
-        <service
-            android:name=".services.neura.NeuraMomentMessageService">
+        <service android:name=".services.neura.NeuraMomentMessageService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
@@ -59,6 +56,8 @@
             android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
         <activity android:name=".views.ContinueDriveActivity">
+        </activity>
+        <activity android:name=".views.MomentTestActivity">
         </activity>
     </application>
 

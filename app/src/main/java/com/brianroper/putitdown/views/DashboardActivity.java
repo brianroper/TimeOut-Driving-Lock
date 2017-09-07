@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.adapters.DrivingLogEventAdapter;
 import com.brianroper.putitdown.model.Constants;
+import com.brianroper.putitdown.model.neura.NeuraManager;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.model.events.DrivingMessage;
 import com.brianroper.putitdown.services.neura.NeuraConnectionService;
@@ -194,7 +195,7 @@ public class DashboardActivity extends AppCompatActivity {
      * manages the calls to the Neura api
      */
     public void monitorNeura(){
-        if(mNeuraApiClient==null){
+        if(NeuraManager.getInstance().getClient()==null){
             if(Utils.activeNetworkCheck(this)){
                 connectToNeura();
                 callNeura();
@@ -210,11 +211,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void connectToNeura(){
-        Builder builder = new Builder(getApplicationContext());
-        mNeuraApiClient = builder.build();
-        mNeuraApiClient.setAppUid(getString(R.string.app_uid));
-        mNeuraApiClient.setAppSecret(getString(R.string.app_secret));
-        mNeuraApiClient.connect();
+        NeuraManager.getInstance().initNeuraConnection(getApplicationContext());
     }
 
     public void callNeura(){
@@ -222,7 +219,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         AnonymousAuthenticationRequest request = new AnonymousAuthenticationRequest(pushToken);
 
-        mNeuraApiClient.registerFirebaseToken(DashboardActivity.this, FirebaseInstanceId.getInstance().getToken());
+        NeuraManager.getInstance().getClient().registerFirebaseToken(DashboardActivity.this, FirebaseInstanceId.getInstance().getToken());
 
         final AnonymousAuthenticationStateListener authStateListener = new AnonymousAuthenticationStateListener() {
             @Override
@@ -236,7 +233,7 @@ public class DashboardActivity extends AppCompatActivity {
                         //successfully authenticated
                         Log.i("NeuraAuth: ", "Success");
                         subscribeToNeuraMoments(mNeuraMoments, "randomID");
-                        mNeuraApiClient.unregisterAuthStateListener();
+                        NeuraManager.getInstance().getClient().unregisterAuthStateListener();
                         break;
 
                     case NotAuthenticated:
@@ -246,7 +243,7 @@ public class DashboardActivity extends AppCompatActivity {
                     case FailedReceivingAccessToken:
                         //authentication failed indefinitely. Consider retrying authentication flow
                         Log.i("NeuraAuth: ", "Failed Access Token");
-                        mNeuraApiClient.unregisterAuthStateListener();
+                        NeuraManager.getInstance().getClient().unregisterAuthStateListener();
                         connectToNeura();
                         break;
 
@@ -255,13 +252,13 @@ public class DashboardActivity extends AppCompatActivity {
             }
         };
 
-        mNeuraApiClient.authenticate(request, new AnonymousAuthenticateCallBack() {
+        NeuraManager.getInstance().getClient().authenticate(request, new AnonymousAuthenticateCallBack() {
             @Override
             public void onSuccess(AnonymousAuthenticateData authenticationData) {
                 Log.i(getClass().getSimpleName(), "Successfully requested authentication with neura. " +
                         "NeuraUserId = " + authenticationData.getNeuraUserId());
 
-                mNeuraApiClient.registerAuthStateListener(authStateListener);
+                NeuraManager.getInstance().getClient().registerAuthStateListener(authStateListener);
             }
 
             @Override
@@ -277,9 +274,9 @@ public class DashboardActivity extends AppCompatActivity {
 
         Log.i("Moment: ", moments.get(0));
 
-        if(mNeuraApiClient.isLoggedIn()){
+        if(NeuraManager.getInstance().getClient().isLoggedIn()){
             for (int i = 0; i < moments.size(); i++) {
-                mNeuraApiClient.subscribeToEvent(moments.get(i),
+                NeuraManager.getInstance().getClient().subscribeToEvent(moments.get(i),
                         neuraId + moments.get(i),
                         new SubscriptionRequestCallbacks() {
                             @Override
@@ -493,8 +490,8 @@ public class DashboardActivity extends AppCompatActivity {
     @OnClick(R.id.test_button)
     public void setTestButton(){
         if(Utils.activeNetworkCheck(getApplicationContext())){
-            if(mNeuraApiClient.isLoggedIn()){
-                mNeuraApiClient.simulateAnEvent();
+            if(NeuraManager.getInstance().getClient().isLoggedIn()){
+                NeuraManager.getInstance().getClient().simulateAnEvent();
             }
         }
         else{
@@ -629,5 +626,15 @@ public class DashboardActivity extends AppCompatActivity {
         mSharedPreferences.edit().putInt("goal", progress).apply();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NeuraManager.getInstance().getClient().disconnect();
+    }
 
+    @OnClick(R.id.test_list_button)
+    public void setTestButtonListener(){
+        Intent testIntent = new Intent(getApplicationContext(), MomentTestActivity.class);
+        startActivity(testIntent);
+    }
 }

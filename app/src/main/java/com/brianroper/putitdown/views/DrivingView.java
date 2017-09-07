@@ -226,7 +226,6 @@ public class DrivingView{
         Intent drivingIntent = new Intent(mContext, ContinueDriveActivity.class);
         drivingIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, drivingIntent, 0);
-        //TODO: continue timeout session when notification button is clicked
 
         //builds the basic notification using the array stored in strings.xml
         //TODO: randomly generate a fact based on array size and index
