@@ -196,7 +196,6 @@ public class DashboardActivity extends AppCompatActivity {
             if(Utils.activeNetworkCheck(this)){
                 connectToNeura();
                 callNeura();
-                //initializeNeuraService();
             }
             else{
                 Utils.noActiveNetworkToast(this);
@@ -638,5 +637,10 @@ public class DashboardActivity extends AppCompatActivity {
     public void setTestButtonListener(){
         Intent testIntent = new Intent(getApplicationContext(), MomentTestActivity.class);
         startActivity(testIntent);
+    }
+
+    @OnClick(R.id.authenticate_button)
+    public void setAuthButton(){
+        NeuraManager.getInstance().authenticateWithNeura();
     }
 }

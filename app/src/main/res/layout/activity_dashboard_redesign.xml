@@ -51,6 +51,17 @@
                 android:layout_toLeftOf="@+id/test_list_button"
                 android:id="@+id/simulate_button"/>
 
+            <ImageButton
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_audiotrack"
+                android:background="@color/colorPrimary"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_toLeftOf="@+id/simulate_button"
+                android:id="@+id/authenticate_button"/>
+
 
         </RelativeLayout>
 
