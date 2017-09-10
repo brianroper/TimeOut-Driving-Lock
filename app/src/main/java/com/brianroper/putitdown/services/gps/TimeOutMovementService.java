@@ -1,4 +1,4 @@
-package com.brianroper.putitdown.services;
+package com.brianroper.putitdown.services.gps;
 
 import android.app.Service;
 import android.content.Context;
@@ -11,8 +11,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 
-import com.brianroper.putitdown.model.TimeOutGpsListener;
-import com.brianroper.putitdown.model.TimeOutLocation;
+import com.brianroper.putitdown.model.gps.TimeOutGpsListener;
+import com.brianroper.putitdown.model.gps.TimeOutLocation;
 import com.brianroper.putitdown.services.driving.DrivingService;
 
 /**
@@ -27,6 +27,8 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        initializeDrivingService();
+
         LocationManager locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -39,7 +41,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         this.updateSpeed(null);
 
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     @Nullable

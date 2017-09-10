@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -35,21 +34,16 @@ import com.brianroper.putitdown.model.events.TokenRefreshedMessage;
 import com.brianroper.putitdown.model.neura.NeuraManager;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.model.events.DrivingMessage;
+import com.brianroper.putitdown.services.gps.TimeOutMovementService;
 import com.brianroper.putitdown.services.neura.NeuraConnectionService;
 import com.brianroper.putitdown.services.screen.ScreenService;
 import com.brianroper.putitdown.utils.Utils;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdReceiver;
 import com.neura.resources.authentication.AnonymousAuthenticateCallBack;
 import com.neura.resources.authentication.AnonymousAuthenticateData;
 import com.neura.resources.authentication.AnonymousAuthenticationStateListener;
 import com.neura.resources.authentication.AuthenticationState;
 import com.neura.sdk.object.AnonymousAuthenticationRequest;
-import com.neura.sdk.object.Permission;
-import com.neura.standalonesdk.service.NeuraApiClient;
-import com.neura.standalonesdk.util.Builder;
 import com.neura.sdk.service.SubscriptionRequestCallbacks;
 import com.neura.standalonesdk.util.SDKUtils;
 
@@ -57,7 +51,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -153,6 +146,7 @@ public class DashboardActivity extends AppCompatActivity {
         setSwipeFreshListener();
 
         initializeScreenService();
+        initializeMovementService();
 
         handleUIUtilities();
     }
@@ -567,6 +561,14 @@ public class DashboardActivity extends AppCompatActivity {
     public void initializeScreenService(){
         Intent screenService = new Intent(getApplicationContext(), ScreenService.class);
         startService(screenService);
+    }
+
+    /**
+     * starts the service that monitors vehicle movement
+     */
+    public void initializeMovementService(){
+        Intent locationIntent = new Intent(getApplicationContext(), TimeOutMovementService.class);
+        startService(locationIntent);
     }
 
     /**

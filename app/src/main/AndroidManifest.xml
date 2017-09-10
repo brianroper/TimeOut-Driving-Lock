@@ -51,7 +51,7 @@
         </receiver>
 
         <service android:name=".services.screen.ScreenService"/>
-        <service android:name=".services.neura.NeuraTokenManager"/>
+        <service android:name=".services.gps.TimeOutMovementService"/>
 
         <activity
             android:name=".views.DrivingLogActivity"
