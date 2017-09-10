@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.adapters.DrivingLogEventAdapter;
 import com.brianroper.putitdown.model.Constants;
+import com.brianroper.putitdown.model.events.TokenRefreshedMessage;
 import com.brianroper.putitdown.model.neura.NeuraManager;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.model.events.DrivingMessage;
@@ -39,11 +41,13 @@ import com.brianroper.putitdown.utils.Utils;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.FirebaseInstanceIdReceiver;
 import com.neura.resources.authentication.AnonymousAuthenticateCallBack;
 import com.neura.resources.authentication.AnonymousAuthenticateData;
 import com.neura.resources.authentication.AnonymousAuthenticationStateListener;
 import com.neura.resources.authentication.AuthenticationState;
 import com.neura.sdk.object.AnonymousAuthenticationRequest;
+import com.neura.sdk.object.Permission;
 import com.neura.standalonesdk.service.NeuraApiClient;
 import com.neura.standalonesdk.util.Builder;
 import com.neura.sdk.service.SubscriptionRequestCallbacks;
@@ -136,6 +140,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         //TODO: move overlay permission check to on boarding
         checkDrawOverlayPermission();
+        handleDoNotDisturbPermissions();
 
         getSharedPreferences();
         setPassengerSwitchPosition();
@@ -147,12 +152,9 @@ public class DashboardActivity extends AppCompatActivity {
 
         setSwipeFreshListener();
 
-        handleDoNotDisturbPermissions();
-
         initializeScreenService();
 
-        handleSeekBar();
-        handleStatusBarColor();
+        handleUIUtilities();
     }
 
     /**
@@ -178,6 +180,14 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
+     * handles all the ui updating methods
+     */
+    public void handleUIUtilities(){
+        handleSeekBar();
+        handleStatusBarColor();
+    }
+
+    /**
      * populates all the views for this activity
      */
     public void populateAllViews(){
@@ -193,13 +203,8 @@ public class DashboardActivity extends AppCompatActivity {
      */
     public void monitorNeura(){
         if(NeuraManager.getInstance().getClient()==null){
-            if(Utils.activeNetworkCheck(this)){
-                connectToNeura();
-                callNeura();
-            }
-            else{
-                Utils.noActiveNetworkToast(this);
-            }
+            connectToNeura();
+            callNeura();
         }
         else{
             Log.i("NeuraClient: ", "Not Null");
@@ -207,10 +212,12 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void connectToNeura(){
+        FirebaseInstanceId.getInstance().getToken();
         NeuraManager.getInstance().initNeuraConnection(getApplicationContext());
     }
 
     public void callNeura(){
+
         final String pushToken = FirebaseInstanceId.getInstance().getToken();
 
         AnonymousAuthenticationRequest request = new AnonymousAuthenticationRequest(pushToken);
@@ -228,7 +235,7 @@ public class DashboardActivity extends AppCompatActivity {
                     case AuthenticatedAnonymously:
                         //successfully authenticated
                         Log.i("NeuraAuth: ", "Success");
-                        subscribeToNeuraMoments(mNeuraMoments, "randomID");
+                        NeuraManager.getInstance().getClient().registerFirebaseToken(DashboardActivity.this, FirebaseInstanceId.getInstance().getToken());
                         NeuraManager.getInstance().getClient().unregisterAuthStateListener();
                         break;
 
@@ -255,6 +262,7 @@ public class DashboardActivity extends AppCompatActivity {
                         "NeuraUserId = " + authenticationData.getNeuraUserId());
 
                 NeuraManager.getInstance().getClient().registerAuthStateListener(authStateListener);
+                subscribeToNeuraMoments(mNeuraMoments, authenticationData.getNeuraUserId() + "_");
             }
 
             @Override
@@ -262,6 +270,15 @@ public class DashboardActivity extends AppCompatActivity {
                 Log.e(getClass().getSimpleName(), "Failed to authenticate with neura. "
                         + "Reason : " + SDKUtils.errorCodeToString(errorCode));
                 Log.i("NeuraError: ", errorCode+"");
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        FirebaseInstanceId.getInstance().getToken();
+                        connectToNeura();
+                    }
+                }, 2000);
             }
         });
     }
@@ -524,6 +541,17 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
+     * listens for a DrivingMessage from the NeuraMomentMessageService when it completes
+     */
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onTokenRefreshedMessageEvent(TokenRefreshedMessage tokenRefreshedMessage){
+        Constants constants = new Constants();
+        if(tokenRefreshedMessage.message == constants.TOKEN_REFRESHED) {
+            //connectToNeura();
+        }
+    }
+
+    /**
      * refreshes the data in the adapter
      */
     public void handleAdapterDataSet(){
@@ -641,6 +669,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     @OnClick(R.id.authenticate_button)
     public void setAuthButton(){
+        NeuraManager.getInstance().initNeuraConnection(getApplicationContext());
         NeuraManager.getInstance().authenticateWithNeura();
     }
 }

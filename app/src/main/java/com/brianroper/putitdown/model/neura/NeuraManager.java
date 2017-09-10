@@ -17,10 +17,12 @@ import com.neura.resources.authentication.AuthenticationState;
 import com.neura.sdk.callbacks.SubscriptionRequestCallbacks;
 import com.neura.sdk.object.AnonymousAuthenticationRequest;
 import com.neura.sdk.object.AuthenticationRequest;
+import com.neura.sdk.object.Permission;
 import com.neura.standalonesdk.service.NeuraApiClient;
 import com.neura.standalonesdk.util.Builder;
 import com.neura.standalonesdk.util.SDKUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,7 +58,15 @@ public class NeuraManager {
     }
 
     public void authenticateWithNeura(){
-        AuthenticationRequest request = new AuthenticationRequest();
+        ArrayList<Permission> permissions = new ArrayList<>();
+        Permission physicalActivity = new Permission();
+        physicalActivity.mName = "physicalActivity";
+        Permission drivingActivity = new Permission();
+        drivingActivity.mName = "drivingHabits";
+        permissions.add(physicalActivity);
+        permissions.add(drivingActivity);
+
+        AuthenticationRequest request = new AuthenticationRequest(permissions);
 
         mNeuraApiClient.authenticate(request, new AuthenticateCallback() {
             @Override

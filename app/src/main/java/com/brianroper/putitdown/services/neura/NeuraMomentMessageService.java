@@ -36,7 +36,6 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
     private SharedPreferences mSharedPreferences;
     private boolean mPassengerStatus;
     private EventBus mEventBus = EventBus.getDefault();
-    private boolean mIsDriving = true;
     private Intent mDrivingService;
 
     @Override
@@ -47,13 +46,8 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
 
         getSharedPreferences();
 
-        if(Utils.activeNetworkCheck(this)){
-            handleNeuraMoment(remoteMessage);
-            postEventMessage();
-        }
-        else{
-            Utils.noActiveNetworkNotification(this);
-        }
+        handleNeuraMoment(remoteMessage);
+        postEventMessage();
     }
 
     /**
@@ -77,31 +71,21 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
                             if(event.getEventName().equals("userStartedDriving")){
                                 startService(mDrivingService);
                                 addNeuraEventLog(event);
-                                mIsDriving = true;
                             }
                             else if(event.getEventName().equals("userFinishedDriving")){
-                                if(mIsDriving == true){
-                                    stopService(mDrivingService);
-                                    addSuccessfulDrivingEvent(event, true);
-                                    addNeuraEventLog(event);
-                                    mIsDriving = false;
-                                }
+                                stopService(mDrivingService);
+                                addSuccessfulDrivingEvent(event, true);
+                                addNeuraEventLog(event);
                             }
                             else if(event.getEventName().equals("userStartedRunning")){
-                                if(mIsDriving == true){
-                                    stopService(mDrivingService);
-                                    addSuccessfulDrivingEvent(event, true);
-                                    addNeuraEventLog(event);
-                                    mIsDriving = false;
-                                }
+                                stopService(mDrivingService);
+                                addSuccessfulDrivingEvent(event, true);
+                                addNeuraEventLog(event);
                             }
                             else if(event.getEventName().equals("userStartedWalking")){
-                                if(mIsDriving == true){
-                                    stopService(mDrivingService);
-                                    addSuccessfulDrivingEvent(event, true);
-                                    addNeuraEventLog(event);
-                                    mIsDriving = false;
-                                }
+                                stopService(mDrivingService);
+                                addSuccessfulDrivingEvent(event, true);
+                                addNeuraEventLog(event);
                             }
                         }
                     }
@@ -154,7 +138,7 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                NeuraEventLog neuraEventLog = realm.createObject(NeuraEventLog.class, event.getNeuraId());
+                NeuraEventLog neuraEventLog = realm.createObject(NeuraEventLog.class, event.getNeuraId() + event.getEventTimestamp());
                 neuraEventLog.setEventName(event.getEventName());
                 neuraEventLog.setTimestamp(event.getEventTimestamp());
                 neuraEventLog.setTime(Utils.returnTime(calendar));
@@ -190,7 +174,7 @@ public class NeuraMomentMessageService extends FirebaseMessagingService {
     public void onDrivingMessageEvent(DrivingMessage drivingMessage){
         Constants constants = new Constants();
         if(drivingMessage.message == constants.DRIVING_EVENT_STOPPED) {
-            mIsDriving = false;
+            //mIsDriving = false;
         }
     }
 

@@ -51,6 +51,7 @@
         </receiver>
 
         <service android:name=".services.screen.ScreenService"/>
+        <service android:name=".services.neura.NeuraTokenManager"/>
 
         <activity
             android:name=".views.DrivingLogActivity"
