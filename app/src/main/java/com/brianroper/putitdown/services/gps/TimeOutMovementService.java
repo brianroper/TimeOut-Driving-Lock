@@ -102,7 +102,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
      *
      * if the users speed is above 5mph we begin the lockout,
      * when the users device drops below 5mph it unlocks,
-     * if the user manually unlocks their device we wait 5000ms and then re start the driving lockout 
+     * if the user manually unlocks their device we wait 5000ms and then re start the driving lockout
      */
     private void updateSpeed(TimeOutLocation location){
         float currentSpeed = 0;

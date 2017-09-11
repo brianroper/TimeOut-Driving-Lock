@@ -19,17 +19,13 @@ public class ScreenService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        //auto generated method 
         return null;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return START_STICKY;
-    }
-
-    @Override
-    public void onTaskRemoved(Intent rootIntent) {
-        super.onTaskRemoved(rootIntent);
     }
 
     @Override
@@ -44,6 +40,9 @@ public class ScreenService extends Service {
         unregisterScreenStatusReceiver();
     }
 
+    /**
+     * registers the ScreenStatusReceiver, broadcast receiver to this service
+     */
     private void registerScreenStatusReceiver() {
         mScreenReceiver = new ScreenReceiver();
         IntentFilter filter = new IntentFilter();
@@ -52,15 +51,14 @@ public class ScreenService extends Service {
         registerReceiver(mScreenReceiver, filter);
     }
 
+    /**
+     * un-registers the ScreenStatusReceiver, broadcast receiver from this service
+     */
     private void unregisterScreenStatusReceiver() {
         try {
             if (mScreenReceiver != null) {
                 unregisterReceiver(mScreenReceiver);
             }
         } catch (IllegalArgumentException e) {}
-    }
-
-    private void incrementScreenCounter(){
-
     }
 }
