@@ -28,7 +28,6 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.3.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.theneura:android-sdk:+'
     compile 'com.jakewharton:butterknife:8.5.1'
     compile 'com.google.firebase:firebase-messaging:10.2.4'
     compile 'com.google.firebase:firebase-core:10.2.4'
