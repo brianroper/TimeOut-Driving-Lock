@@ -41,12 +41,23 @@ public class DrivingLogActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        handleToolbarBehavior(mLogToolbar);
-        handleCardViewBackgroundColors();
+        handleUIUtilities();
 
         initializeAdapter();
 
         populateAllViews();
+    }
+
+    /**
+     * UI UTILITIES
+     */
+
+    /**
+     * handles all ui ulititles for this activity
+     */
+    public void handleUIUtilities(){
+        handleToolbarBehavior(mLogToolbar);
+        handleCardViewBackgroundColors();
     }
 
     /**
@@ -69,12 +80,28 @@ public class DrivingLogActivity extends AppCompatActivity {
     }
 
     /**
+     * END UI UTILITIES
+     */
+
+    /**
+     * EXTERNAL ACTIVITY COMPONENTS
+     */
+
+    /**
      * initializes the driving log event adapter
      */
     public void initializeAdapter(){
         mDLogAdapter = new DrivingLogEventAdapter(getApplicationContext());
         mDLogAdapter.getDrivingEventLogFromRealm();
     }
+
+    /**
+     * END EXTERNAL ACTIVITY COMPONENETS
+     */
+
+    /**
+     * VIEW UPDATING
+     */
 
     /**
      * populates all views for this activity
@@ -123,4 +150,8 @@ public class DrivingLogActivity extends AppCompatActivity {
         mDLogAdapter.returnAllTimeDrivingEventLogs();
         mDLogAdapter.notifyDataSetChanged();
     }
+
+    /**
+     * END VIEW UPDATING
+     */
 }
