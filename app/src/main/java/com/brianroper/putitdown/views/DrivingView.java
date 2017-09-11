@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.os.Build;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
@@ -140,6 +141,7 @@ public class DrivingView{
                 addFailedDrivingEvent();
                 Utils.enableDeviceRinger(mContext);
                 stopDriving();
+                postDrivingEventStatus("false");
             }
         });
 
@@ -251,5 +253,12 @@ public class DrivingView{
         NotificationManager manager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(001, builder.build());
+    }
+
+    /**
+     * broadcast a message that driving is in progress or stopped
+     */
+    public void postDrivingEventStatus(final String isDriving){
+        EventBus.getDefault().postSticky(new DrivingMessage(isDriving));
     }
 }

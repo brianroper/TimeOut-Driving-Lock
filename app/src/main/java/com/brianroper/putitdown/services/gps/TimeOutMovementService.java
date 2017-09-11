@@ -7,13 +7,28 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 
+import com.brianroper.putitdown.model.Constants;
+import com.brianroper.putitdown.model.events.DrivingMessage;
 import com.brianroper.putitdown.model.gps.TimeOutGpsListener;
 import com.brianroper.putitdown.model.gps.TimeOutLocation;
+import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.services.driving.DrivingService;
+import com.brianroper.putitdown.utils.Utils;
+import com.neura.standalonesdk.events.NeuraEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.Calendar;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 /**
  * Created by brianroper on 9/10/17.
@@ -22,7 +37,7 @@ import com.brianroper.putitdown.services.driving.DrivingService;
 public class TimeOutMovementService extends Service implements TimeOutGpsListener {
 
     private Intent mDrivingService;
-
+    private boolean mIsDriving = true;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -86,12 +101,24 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
             currentSpeed = location.getSpeed();
         }
 
-        if(currentSpeed > 5){
-            //if current speed is greater than 5 mph do something
-            startService(mDrivingService);
+        if(mIsDriving){
+            if(currentSpeed > 5){
+                //if current speed is greater than 5 mph do something
+                startService(mDrivingService);
+            }
+            else if(currentSpeed < 5){
+                stopService(mDrivingService);
+                addSuccessfulDrivingEvent(true);
+            }
         }
-        else if(currentSpeed < 5){
-            stopService(mDrivingService);
+        else if(!mIsDriving){
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mIsDriving = true;
+                }
+            }, 5000);
         }
     }
 
@@ -104,5 +131,55 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
      */
     public void initializeDrivingService(){
         mDrivingService = new Intent(this, DrivingService.class);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    /**
+     * listens for a DrivingMessage from the NeuraMomentMessageService when it completes
+     */
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onDrivingMessageEvent(DrivingMessage drivingMessage){
+        Constants constants = new Constants();
+        if(drivingMessage.message == constants.DRIVING_STATUS_FALSE) {
+            mIsDriving = false;
+        }
+        if (drivingMessage.message == constants.DRIVING_STATUS_TRUE){
+            mIsDriving = true;
+        }
+    }
+
+    /**
+     * adds the successful driving event data to the local storage
+     */
+    private void addSuccessfulDrivingEvent(final boolean isSuccessful){
+        final Calendar calendar = Calendar.getInstance();
+        Realm realm;
+        Realm.init(getApplicationContext());
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        realm = Realm.getInstance(realmConfiguration);
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, Utils.returnDateAsDate().getTime() + Utils.returnDateAsDate().getTime() + "");
+                drivingEventLog.setTime(Utils.returnTime(calendar));
+                drivingEventLog.setDate(Utils.convertTimeStampToDate(Utils.returnDateAsDate().getTime()));
+                drivingEventLog.setSuccessful(isSuccessful);
+                realm.copyToRealmOrUpdate(drivingEventLog);
+            }
+        });
+        realm.close();
     }
 }

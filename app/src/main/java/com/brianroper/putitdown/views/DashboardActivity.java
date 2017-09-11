@@ -1,16 +1,21 @@
 package com.brianroper.putitdown.views;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -62,12 +67,9 @@ import io.realm.RealmResults;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    //neura related variables
-    List<String> mNeuraMoments = Arrays.asList("userStartedWalking",
-            "userStartedDriving", "userFinishedDriving",
-            "userIsAboutToGoToSleep", "userStartedRunning");
-
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public final static int REQUEST_CODE = 5463;
+
     private EventBus mEventBus = EventBus.getDefault();
 
     @BindView(R.id.passenger_switch)
@@ -77,7 +79,6 @@ public class DashboardActivity extends AppCompatActivity {
     @BindView(R.id.log_view)
     RelativeLayout mLogView;
 
-    //Redesign Views
     @BindView(R.id.trip_success_count)
     TextView mTripSuccessCount;
     @BindView(R.id.trip_failed_count)
@@ -129,57 +130,33 @@ public class DashboardActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        handleCardViewBackgroundColors();
-
-        //TODO: move overlay permission check to on boarding
-        checkDrawOverlayPermission();
-        handleDoNotDisturbPermissions();
+        checkPermissions();
 
         getSharedPreferences();
         setPassengerSwitchPosition();
 
-        monitorNeura();
-
-        initializeAdapter();
+        initializeExternalActivityComponents();
         populateAllViews();
 
         setSwipeFreshListener();
-
-        initializeScreenService();
-        initializeMovementService();
 
         handleUIUtilities();
     }
 
     /**
-     * handles cardview background colors
+     * 1) UI UPDATING
+     * 2) EXTERNAL ACTIVITY COMPONENTS
+     * 3) USER PREFERENCES
+     * 4) LIFE CYCLE METHODS
+     * 5) EVENT BUS SUBSCRIPTIONS (WORMHOLES)
+     * 6) PERMISSIONS
+     * 7) VIEW LISTENERS
+     * 8) VIEW UTILITY 
      */
-    public void handleCardViewBackgroundColors(){
-        mSurfaceGoal.setCardBackgroundColor(getResources().getColor(R.color.white));
-        mSurfaceLog.setCardBackgroundColor(getResources().getColor(R.color.white));
-        mSurfaceSwitch.setCardBackgroundColor(getResources().getColor(R.color.white));
-        mSurfaceTrips.setCardBackgroundColor(getResources().getColor(R.color.white));
-    }
 
     /**
-     * sets the color of the status bar
+     * UI UPDATING
      */
-    public void handleStatusBarColor(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            Window window = getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-        }
-    }
-
-    /**
-     * handles all the ui updating methods
-     */
-    public void handleUIUtilities(){
-        handleSeekBar();
-        handleStatusBarColor();
-    }
 
     /**
      * populates all the views for this activity
@@ -193,146 +170,12 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
-     * manages the calls to the Neura api
-     */
-    public void monitorNeura(){
-        if(NeuraManager.getInstance().getClient()==null){
-            connectToNeura();
-            callNeura();
-        }
-        else{
-            Log.i("NeuraClient: ", "Not Null");
-        }
-    }
-
-    public void connectToNeura(){
-        FirebaseInstanceId.getInstance().getToken();
-        NeuraManager.getInstance().initNeuraConnection(getApplicationContext());
-    }
-
-    public void callNeura(){
-
-        final String pushToken = FirebaseInstanceId.getInstance().getToken();
-
-        AnonymousAuthenticationRequest request = new AnonymousAuthenticationRequest(pushToken);
-
-        NeuraManager.getInstance().getClient().registerFirebaseToken(DashboardActivity.this, FirebaseInstanceId.getInstance().getToken());
-
-        final AnonymousAuthenticationStateListener authStateListener = new AnonymousAuthenticationStateListener() {
-            @Override
-            public void onStateChanged(AuthenticationState state) {
-                switch (state){
-                    case AccessTokenRequested:
-                        Log.i("NeuraAuth: ", "Token Requested");
-                        break;
-
-                    case AuthenticatedAnonymously:
-                        //successfully authenticated
-                        Log.i("NeuraAuth: ", "Success");
-                        NeuraManager.getInstance().getClient().registerFirebaseToken(DashboardActivity.this, FirebaseInstanceId.getInstance().getToken());
-                        NeuraManager.getInstance().getClient().unregisterAuthStateListener();
-                        break;
-
-                    case NotAuthenticated:
-                        Log.i("NeuraAuth: ", "Not Authenticated");
-                        break;
-
-                    case FailedReceivingAccessToken:
-                        //authentication failed indefinitely. Consider retrying authentication flow
-                        Log.i("NeuraAuth: ", "Failed Access Token");
-                        NeuraManager.getInstance().getClient().unregisterAuthStateListener();
-                        connectToNeura();
-                        break;
-
-                    default:
-                }
-            }
-        };
-
-        NeuraManager.getInstance().getClient().authenticate(request, new AnonymousAuthenticateCallBack() {
-            @Override
-            public void onSuccess(AnonymousAuthenticateData authenticationData) {
-                Log.i(getClass().getSimpleName(), "Successfully requested authentication with neura. " +
-                        "NeuraUserId = " + authenticationData.getNeuraUserId());
-
-                NeuraManager.getInstance().getClient().registerAuthStateListener(authStateListener);
-                subscribeToNeuraMoments(mNeuraMoments, authenticationData.getNeuraUserId() + "_");
-            }
-
-            @Override
-            public void onFailure(int errorCode) {
-                Log.e(getClass().getSimpleName(), "Failed to authenticate with neura. "
-                        + "Reason : " + SDKUtils.errorCodeToString(errorCode));
-                Log.i("NeuraError: ", errorCode+"");
-
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        FirebaseInstanceId.getInstance().getToken();
-                        connectToNeura();
-                    }
-                }, 2000);
-            }
-        });
-    }
-
-    public void subscribeToNeuraMoments(List<String> moments, String neuraId){
-
-        Log.i("Moment: ", moments.get(0));
-
-        if(NeuraManager.getInstance().getClient().isLoggedIn()){
-            for (int i = 0; i < moments.size(); i++) {
-                NeuraManager.getInstance().getClient().subscribeToEvent(moments.get(i),
-                        neuraId + moments.get(i),
-                        new SubscriptionRequestCallbacks() {
-                            @Override
-                            public void onSuccess(String eventName, Bundle bundle, String s1) {
-                                Log.i(getClass().getSimpleName(), "Successfully subscribed to event " + eventName);
-                            }
-
-                            @Override
-                            public void onFailure(String eventName, Bundle bundle, int i) {
-                                Log.e(getClass().getSimpleName(), "Failed to subscribe to event " + eventName);
-                            }
-                        });
-            }
-        }
-        else{
-            Log.i("NeuraClient: ", "User is not logged in");
-        }
-    }
-
-    /**
-     * checks for overlay permission
-     */
-    public void checkDrawOverlayPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Settings.canDrawOverlays(this)) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + getPackageName()));
-                startActivityForResult(intent, REQUEST_CODE);
-            }
-        }
-    }
-
-    /**
-     * initializes the adapter to the Neura Log Data recycler view
-     */
-    private void initializeAdapter(){
-        mDrivingLogEventAdapter = new DrivingLogEventAdapter(getApplicationContext());
-        mRealmResults = mDrivingLogEventAdapter.getDrivingEventLogFromRealm();
-        handleEmptyView(mRealmResults);
-        setTripLogViews(mRealmResults);
-    }
-
-    /**
      * changes empty view to visible when there is no data in adapter
      */
     private void handleEmptyView(RealmResults<DrivingEventLog> results){
         if(results.size()==0){
-           mEmptyView.setVisibility(View.VISIBLE);
-           mLogView.setVisibility(View.GONE);
+            mEmptyView.setVisibility(View.VISIBLE);
+            mLogView.setVisibility(View.GONE);
         }
         else{
             mEmptyView.setVisibility(View.GONE);
@@ -358,6 +201,9 @@ public class DashboardActivity extends AppCompatActivity {
         mTripFailedCount.setText(failedTrips + "");
     }
 
+    /**
+     * updates the data in the trip log views using the realm results
+     */
     private void setTripLogViews(RealmResults<DrivingEventLog> results){
 
         try{
@@ -386,56 +232,92 @@ public class DashboardActivity extends AppCompatActivity {
                 }
             }
         }
-        catch (Exception e){
-
-        }
+        catch (Exception e){e.printStackTrace();}
     }
 
     /**
-     * handle switch event for passenger switch
+     * sets the text for the date textview
      */
-    @OnCheckedChanged(R.id.passenger_switch)
-    public void setPassengerSwitchListener(){
-        //stopNeuraService();
-        if(mPassengerSwitch.isChecked()){
-            enablePassengerMode();
-            //initializeNeuraService();
-        }
-        else if(!mPassengerSwitch.isChecked()){
-            disablePassengerMode();
-            //initializeNeuraService();
-        }
+    public void setTripDateTextView(){
+        mTripDate.setText(Utils.returnFullDate());
     }
 
     /**
-     * sets the on swipe listener for the refresh view
+     * sets the text for the day of the week textview
      */
-    public void setSwipeFreshListener(){
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                populateAllViews();
-                handleAdapterDataSet();
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });
+    public void setTripDayOfWeekTextView(){
+        mTripDayOfWeek.setText(Utils.returnDayOfWeek());
     }
 
     /**
-     * begins a new NeuraConnectionService
+     * sets the stored value for the goal amount
      */
-    private void initializeNeuraService(){
-        Intent neuraService = new Intent(getApplicationContext(), NeuraConnectionService.class);
-        startService(neuraService);
+    public void setGoalCountTextView(){
+        int goal = mSharedPreferences.getInt("goal", 25);
+        mGoalCount.setText(goal + "");
+        mGoalSeekbar.setProgress(goal);
     }
 
     /**
-     * stops a running NeuraConnectionService
+     * refreshes the data in the adapter
      */
-    private void stopNeuraService(){
-        Intent neuraService = new Intent(getApplicationContext(), NeuraConnectionService.class);
-        stopService(neuraService);
+    public void handleAdapterDataSet(){
+        //mDrivingLogEventAdapter.getDrivingEventLogFromRealm();
+        mDrivingLogEventAdapter.notifyDataSetChanged();
+        setTripTextView();
+        handleEmptyView(mRealmResults);
     }
+
+    /**
+     * END OF UI UPDATES
+     */
+
+    /**
+     * EXTERNAL ACTIVITY COMPONENTS
+     */
+
+    /**
+     * initializes all adapters and services
+     */
+    public void initializeExternalActivityComponents(){
+        initializeAdapter();
+        initializeMovementService();
+        initializeScreenService();
+    }
+
+    /**
+     * initializes the adapter to the Neura Log Data recycler view
+     */
+    private void initializeAdapter(){
+        mDrivingLogEventAdapter = new DrivingLogEventAdapter(getApplicationContext());
+        mRealmResults = mDrivingLogEventAdapter.getDrivingEventLogFromRealm();
+        handleEmptyView(mRealmResults);
+        setTripLogViews(mRealmResults);
+    }
+
+    /**
+     * starts the service that monitors screen counts for the widget
+     */
+    public void initializeScreenService(){
+        Intent screenService = new Intent(getApplicationContext(), ScreenService.class);
+        startService(screenService);
+    }
+
+    /**
+     * starts the service that monitors vehicle movement
+     */
+    public void initializeMovementService(){
+        Intent locationIntent = new Intent(getApplicationContext(), TimeOutMovementService.class);
+        startService(locationIntent);
+    }
+
+    /**
+     * END OF  EXTERNAL ACTIVITY COMPONENTS
+     */
+
+    /**
+     * USER PREFERENCES
+     */
 
     /**
      * returns shared preferences and sets default passenger value
@@ -483,33 +365,20 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
-     * checks for the do not disturb permission
+     * stores goal number in shared preferences
      */
-    public void handleDoNotDisturbPermissions(){
-        NotificationManager notificationManager =
-                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && !notificationManager.isNotificationPolicyAccessGranted()) {
-
-            Intent intent = new Intent(
-                    android.provider.Settings
-                            .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-            startActivity(intent);
-        }
+    public void storeGoal(int progress){
+        mSharedPreferences.edit().putInt("goal", progress).apply();
     }
 
-    @OnClick(R.id.simulate_button)
-    public void setTestButton(){
-        if(Utils.activeNetworkCheck(getApplicationContext())){
-            if(NeuraManager.getInstance().getClient().isLoggedIn()){
-                NeuraManager.getInstance().getClient().simulateAnEvent();
-            }
-        }
-        else{
-            Utils.noActiveNetworkToast(getApplicationContext());
-        }
-    }
+    /**
+     * END OF USER PREFERENCES
+     */
+
+    /**
+     * LIFE CYCLE METHODS
+     * excludes OnCreate()
+     */
 
     @Override
     protected void onStart() {
@@ -524,6 +393,14 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
+     * END OF LIFE CYCLE METHODS
+     */
+
+    /**
+     * EVENT BUS SUBSCRIPTIONS (WORMHOLES)
+     */
+
+    /**
      * listens for a DrivingMessage from the NeuraMomentMessageService when it completes
      */
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -535,40 +412,79 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
-     * listens for a DrivingMessage from the NeuraMomentMessageService when it completes
+     * END OF EVENT BUS SUBSCRIPTIONS
      */
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onTokenRefreshedMessageEvent(TokenRefreshedMessage tokenRefreshedMessage){
-        Constants constants = new Constants();
-        if(tokenRefreshedMessage.message == constants.TOKEN_REFRESHED) {
-            //connectToNeura();
+
+    /**
+     * PERMISSIONS
+     */
+
+    /**
+     * checks all permissions required
+     */
+    public void checkPermissions(){
+        checkDrawOverlayPermission();
+        checkDoNotDisturbPermissions();
+        checkLocationPermission();
+    }
+
+    /**
+     * checks for the do not disturb permission
+     */
+    public void checkDoNotDisturbPermissions(){
+        NotificationManager notificationManager =
+                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && !notificationManager.isNotificationPolicyAccessGranted()) {
+
+            Intent intent = new Intent(
+                    android.provider.Settings
+                            .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+            startActivity(intent);
         }
     }
 
     /**
-     * refreshes the data in the adapter
+     * checks for overlay permission
      */
-    public void handleAdapterDataSet(){
-        //mDrivingLogEventAdapter.getDrivingEventLogFromRealm();
-        mDrivingLogEventAdapter.notifyDataSetChanged();
-        setTripTextView();
-        handleEmptyView(mRealmResults);
+    public void checkDrawOverlayPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        }
     }
 
     /**
-     * starts the service that monitors screen counts for the widget
+     * checks for overlay permission
      */
-    public void initializeScreenService(){
-        Intent screenService = new Intent(getApplicationContext(), ScreenService.class);
-        startService(screenService);
+    public void checkLocationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED){
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission. ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+        }
     }
 
     /**
-     * starts the service that monitors vehicle movement
+     * END OF PERMISSIONS
      */
-    public void initializeMovementService(){
-        Intent locationIntent = new Intent(getApplicationContext(), TimeOutMovementService.class);
-        startService(locationIntent);
+
+    /**
+     * VIEW LISTENERS
+     */
+
+    @OnClick(R.id.test_list_button)
+    public void setTestButtonListener(){
+        Intent testIntent = new Intent(getApplicationContext(), MomentTestActivity.class);
+        startActivity(testIntent);
     }
 
     /**
@@ -589,27 +505,82 @@ public class DashboardActivity extends AppCompatActivity {
         startActivity(logIntent);
     }
 
-    /**
-     * sets the text for the date textview
-     */
-    public void setTripDateTextView(){
-        mTripDate.setText(Utils.returnFullDate());
+    @OnClick(R.id.simulate_button)
+    public void setTestButton(){
+        if(Utils.activeNetworkCheck(getApplicationContext())){
+            if(NeuraManager.getInstance().getClient().isLoggedIn()){
+                NeuraManager.getInstance().getClient().simulateAnEvent();
+            }
+        }
+        else{
+            Utils.noActiveNetworkToast(getApplicationContext());
+        }
     }
 
     /**
-     * sets the text for the day of the week textview
+     * handle switch event for passenger switch
      */
-    public void setTripDayOfWeekTextView(){
-        mTripDayOfWeek.setText(Utils.returnDayOfWeek());
+    @OnCheckedChanged(R.id.passenger_switch)
+    public void setPassengerSwitchListener(){
+        if(mPassengerSwitch.isChecked()){
+            enablePassengerMode();
+        }
+        else if(!mPassengerSwitch.isChecked()){
+            disablePassengerMode();
+        }
     }
 
     /**
-     * sets the stored value for the goal amount
+     * sets the on swipe listener for the refresh view
      */
-    public void setGoalCountTextView(){
-        int goal = mSharedPreferences.getInt("goal", 25);
-        mGoalCount.setText(goal + "");
-        mGoalSeekbar.setProgress(goal);
+    public void setSwipeFreshListener(){
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                populateAllViews();
+                handleAdapterDataSet();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
+    /**
+     * END OF VIEW LISTENERS
+     */
+
+    /**
+     * VIEW UTILITY
+     */
+
+    /**
+     * handles all the ui updating methods
+     */
+    public void handleUIUtilities(){
+        handleSeekBar();
+        handleStatusBarColor();
+        handleCardViewBackgroundColors();
+    }
+
+    /**
+     * handles cardview background colors
+     */
+    public void handleCardViewBackgroundColors(){
+        mSurfaceGoal.setCardBackgroundColor(getResources().getColor(R.color.white));
+        mSurfaceLog.setCardBackgroundColor(getResources().getColor(R.color.white));
+        mSurfaceSwitch.setCardBackgroundColor(getResources().getColor(R.color.white));
+        mSurfaceTrips.setCardBackgroundColor(getResources().getColor(R.color.white));
+    }
+
+    /**
+     * sets the color of the status bar
+     */
+    public void handleStatusBarColor(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
     }
 
     /**
@@ -651,27 +622,6 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
-     * stores goal number in shared preferences
+     * END OF VIEW UTILITY
      */
-    public void storeGoal(int progress){
-        mSharedPreferences.edit().putInt("goal", progress).apply();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        NeuraManager.getInstance().getClient().disconnect();
-    }
-
-    @OnClick(R.id.test_list_button)
-    public void setTestButtonListener(){
-        Intent testIntent = new Intent(getApplicationContext(), MomentTestActivity.class);
-        startActivity(testIntent);
-    }
-
-    @OnClick(R.id.authenticate_button)
-    public void setAuthButton(){
-        NeuraManager.getInstance().initNeuraConnection(getApplicationContext());
-        NeuraManager.getInstance().authenticateWithNeura();
-    }
 }
