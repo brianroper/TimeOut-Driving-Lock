@@ -10,12 +10,37 @@
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/background">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="112dp"
+            android:id="@+id/dashboard_toolbar"
+            android:background="@color/colorPrimary">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TimeOut"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:layout_marginStart="16dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="16dp"/>
+
+            <!-- put settings button here -->
+
+        </RelativeLayout>
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_height="180dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="56dp"
+            android:elevation="2dp"
             android:id="@+id/surface_trips"
             android:focusableInTouchMode="true">
 
@@ -23,57 +48,117 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:layout_width="180dp"
-                    android:layout_height="130dp"
-                    android:src="@drawable/ic_truck"
-                    android:id="@+id/car_image"
-                    android:layout_centerHorizontal="true"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="55dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_marginEnd="4dp"
+                        android:padding="8dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="33"
+                                android:textSize="55sp"
+                                android:textColor="@color/primaryText"
+                                android:id="@+id/trip_success_count"/>
+
+                            <ImageView
+                                android:id="@+id/trip_succes_icon"
+                                android:layout_width="38dp"
+                                android:layout_height="38dp"
+                                android:src="@drawable/ic_trip_success"
+                                android:layout_gravity="bottom"
+                                android:layout_marginBottom="8dp"/>
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Completed safe trips"
+                            android:textSize="14dp"
+                            android:textColor="@color/primaryText"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_marginStart="4dp"
+                        android:padding="8dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textSize="55sp"
+                                android:id="@+id/trip_failed_count"
+                                android:textColor="@color/primaryText"/>
+
+                            <ImageView
+                                android:id="@+id/trip_failed_icon"
+                                android:layout_width="38dp"
+                                android:layout_height="38dp"
+                                android:src="@drawable/ic_trip_failed"
+                                android:layout_gravity="bottom"
+                                android:layout_marginBottom="8dp"/>
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Interrupted trips"
+                            android:textSize="14dp"
+                            android:textColor="@color/primaryText"/>
+
+                    </LinearLayout>
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Completed Trips"
-                    android:layout_below="@+id/car_image"
-                    android:paddingTop="16dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingBottom="4dp"
-                    android:id="@+id/completed_title"
-                    android:textSize="16dp"
-                    android:fontFamily="sans-serif-medium"
+                    android:text="Monday"
+                    android:id="@+id/trip_day_of_week"
+                    android:layout_marginStart="16dp"
+                    android:paddingBottom="16dp"
+                    android:layout_alignParentBottom="true"
                     android:layout_alignParentStart="true"
-                    android:textColor="@color/colorAccent"/>
+                    android:textColor="@color/primaryText"/>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/completed_title">
-
-                    <TextView
-                        android:layout_width="280dp"
-                        android:layout_height="wrap_content"
-                        android:text="The number of trips completed while using Put It Down as a driver"
-                        android:fontFamily="sans-serif"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:paddingBottom="16dp"
-                        android:paddingTop="4dp"
-                        android:textSize="14dp"
-                        android:id="@+id/trip_detail"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="10"
-                        android:id="@+id/trip_count"
-                        android:textColor="@color/colorAccent"
-                        android:layout_alignParentEnd="true"
-                        android:padding="16dp"
-                        android:textSize="20sp"
-                        android:fontFamily="sans-serif-medium"/>
-
-                </RelativeLayout>
+                    android:text="7 August 2017"
+                    android:id="@+id/trip_date"
+                    android:layout_marginEnd="14dp"
+                    android:paddingBottom="16dp"
+                    android:paddingTop="16dp"
+                    android:layout_alignParentBottom="true"
+                    android:textColor="@color/primaryText"
+                    android:layout_alignParentEnd="true"/>
 
             </RelativeLayout>
 
@@ -83,8 +168,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/surface_switch"
-            android:id="@+id/surface_log">
+            android:id="@+id/surface_log"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp"
+            android:elevation="2dp">
 
+            <!-- empty view -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -107,6 +198,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/primaryText"
                     android:text="You currently have no saved trip data. Start driving to change that!"
                     android:layout_below="@+id/empty_title"
                     android:layout_centerHorizontal="true"
@@ -117,6 +209,7 @@
 
             </RelativeLayout>
 
+            <!-- date visible view  -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,7 +220,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/log_title"
-                    android:text="Trip Log"
+                    android:text="Recent Trips"
                     android:textColor="@color/colorAccent"
                     android:fontFamily="sans-serif-medium"
                     android:paddingBottom="4dp"
@@ -136,12 +229,164 @@
                     android:paddingTop="16dp"
                     android:textSize="16sp"/>
 
-                <android.support.v7.widget.RecyclerView
+                <RelativeLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="vertical"
+                    android:id="@+id/dashboard_log_top"
+                    android:layout_below="@+id/log_title"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/log_recycler"
-                    android:layout_below="@+id/log_title">
-                </android.support.v7.widget.RecyclerView>
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="you had a safe trip"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:id="@+id/top_event_name"
+                        android:textColor="@color/primaryText"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentStart="true"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/top_date_layout"
+                        android:layout_alignParentEnd="true"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/top_event_date"
+                            android:layout_gravity="center"
+                            android:text="5/15"
+                            android:textColor="@color/primaryText"/>
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@mipmap/ic_date"
+                            android:layout_gravity="center"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/top_time_layout"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@+id/top_date_layout"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/top_event_time"
+                            android:text="10:58 AM"
+                            android:layout_gravity="center"
+                            android:textColor="@color/primaryText"/>
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@mipmap/ic_time"
+                            android:layout_gravity="center"/>
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/top_time_layout"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@color/grey"
+                        android:id="@+id/divider">
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="vertical"
+                    android:layout_below="@+id/dashboard_log_top"
+                    android:id="@+id/dashboard_log_bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="you had a safe trip"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:id="@+id/bottom_event_name"
+                        android:textColor="@color/primaryText"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/bottom_date_layout"
+                        android:layout_alignParentEnd="true"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/bottom_event_date"
+                            android:layout_gravity="center"
+                            android:text="5/15"
+                            android:textColor="@color/primaryText"/>
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@mipmap/ic_date"
+                            android:layout_gravity="center"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/bottom_time_layout"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@+id/bottom_date_layout"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/bottom_event_time"
+                            android:text="10:58 AM"
+                            android:layout_gravity="center"
+                            android:textColor="@color/primaryText"/>
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@mipmap/ic_time"
+                            android:layout_gravity="center"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
 
             </RelativeLayout>
 
@@ -151,7 +396,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/surface_trips"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp"
+            android:elevation="2dp"
             android:id="@+id/surface_switch">
 
             <RelativeLayout
@@ -177,11 +426,12 @@
                     android:layout_height="wrap_content"
                     android:text="Enable passenger mode when your aren't behind the wheel"
                     android:layout_below="@+id/passenger_title"
-                    android:paddingTop="4dp"
+                    android:paddingTop="2dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:paddingBottom="16dp"
-                    android:id="@+id/passenger_detail"/>
+                    android:id="@+id/passenger_detail"
+                    android:textColor="@color/primaryText"/>
 
                 <android.support.v7.widget.SwitchCompat
                     android:layout_width="wrap_content"
@@ -189,17 +439,79 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:padding="16dp"
-                    android:id="@+id/passenger_switch"/>
+                    android:id="@+id/passenger_switch"
+                    android:theme="@style/AccessoryTheme"/>
 
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
-        <Button
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="test"
             android:layout_below="@+id/surface_log"
-            android:id="@+id/test_button"/>
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp"
+            android:elevation="2dp"
+            android:id="@+id/surface_goal">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/goal_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingBottom="4dp"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingTop="16dp"
+                    android:text="Personal Goal"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/goal_content"
+                    android:layout_width="340dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/goal_title"
+                    android:paddingBottom="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingTop="2dp"
+                    android:text="Set a personal goal for minimum interrupted trips"
+                    android:textColor="@color/primaryText"/>
+
+                <android.support.v7.widget.AppCompatSeekBar
+                    android:layout_width="315dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/goal_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:id="@+id/goal_seek_bar"
+                    android:progress="25"
+                    android:max="50"
+                    android:theme="@style/AccessoryTheme"
+                    android:secondaryProgressTint="@color/grey"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="16dp"
+                    android:text="25"
+                    android:id="@+id/goal_seek_bar_count"
+                    android:textColor="@color/primaryText"
+                    android:textSize="28sp"/>
+
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
 
     </RelativeLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

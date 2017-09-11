@@ -110,7 +110,7 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard_redesign);
+        setContentView(R.layout.activity_dashboard);
 
         ButterKnife.bind(this);
 
@@ -464,12 +464,6 @@ public class DashboardActivity extends AppCompatActivity {
     /**
      * VIEW LISTENERS
      */
-
-    @OnClick(R.id.test_list_button)
-    public void setTestButtonListener(){
-        Intent testIntent = new Intent(getApplicationContext(), MomentTestActivity.class);
-        startActivity(testIntent);
-    }
 
     /**
      * listener for the surface log
