@@ -41,7 +41,8 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
     final int TARGET_STOPPED_SPEED = 0;
 
     private Intent mDrivingService;
-    private boolean mIsDriving = true;
+    private boolean mIsUnlocked = true;
+    private boolean mIsDriving = false;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -121,10 +122,11 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
             currentSpeed = location.getSpeed();
         }
 
-        if(mIsDriving){
+        if(!mIsUnlocked){
             if(currentSpeed > TARGET_LOCKOUT_SPEED){
                 //if current speed is greater than 5 mph do something
                 startService(mDrivingService);
+                mIsDriving = true;
             }
             else if(currentSpeed < TARGET_LOCKOUT_SPEED){
                 stopService(mDrivingService);
@@ -132,25 +134,28 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
             else if(currentSpeed == TARGET_STOPPED_SPEED){
                 final float stoppedSpeed = currentSpeed;
 
-                //check after set seconds if speed is still 0. If so we log a successful driving session
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (stoppedSpeed == TARGET_STOPPED_SPEED){
-                            addSuccessfulDrivingEvent(true);
-                            //TODO: add notification for successful safe driving
+                if(mIsDriving){
+                    //check after set seconds if speed is still 0. If so we log a successful driving session
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (stoppedSpeed == TARGET_STOPPED_SPEED){
+                                addSuccessfulDrivingEvent(true);
+                                mIsDriving = false;
+                                //TODO: add notification for successful safe driving
+                            }
                         }
-                    }
-                }, DRIVING_STOPPED_DOUBLE_CHECK_TIME);
+                    }, DRIVING_STOPPED_DOUBLE_CHECK_TIME);
+                }
             }
         }
-        else if(!mIsDriving){
+        else if(mIsUnlocked){
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mIsDriving = true;
+                    mIsUnlocked = false;
                 }
             }, DRIVING_LOCKOUT_RETRY_TIME);
         }
@@ -189,10 +194,10 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
     public void onDrivingMessageEvent(DrivingMessage drivingMessage){
         Constants constants = new Constants();
         if(drivingMessage.message == constants.DRIVING_STATUS_FALSE) {
-            mIsDriving = false;
+            mIsUnlocked = true;
         }
         if (drivingMessage.message == constants.DRIVING_STATUS_TRUE){
-            mIsDriving = true;
+            mIsUnlocked = false;
         }
     }
 

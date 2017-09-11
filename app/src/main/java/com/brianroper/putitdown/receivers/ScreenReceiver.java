@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.brianroper.putitdown.model.realmObjects.ScreenCounter;
+import com.brianroper.putitdown.utils.Utils;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -45,6 +46,9 @@ public class ScreenReceiver extends BroadcastReceiver {
     /**
      * creates a new ScreenCounter object in realm when one does not exist. If one does exisit
      * we update the existing value with the new one.
+     *
+     * to store in realm we are using the utils method return date as id which returns a string in the
+     * mmyyyydd format for today's date
      */
     public void updateCounterInRealm(){
         Realm realm;
@@ -59,10 +63,10 @@ public class ScreenReceiver extends BroadcastReceiver {
             public void execute(Realm realm) {
 
                 try{
-                    ScreenCounter screenCounter = realm.where(ScreenCounter.class).equalTo("id", "001").findFirst();
+                    ScreenCounter screenCounter = realm.where(ScreenCounter.class).equalTo("id", Utils.returnDateAsId()).findFirst();
 
                     if(screenCounter != null){
-                        ScreenCounter counterData = realm.where(ScreenCounter.class).equalTo("id", "001").findFirst();
+                        ScreenCounter counterData = realm.where(ScreenCounter.class).equalTo("id", Utils.returnDateAsId()).findFirst();
                         counterData.setCounter(counterData.getCounter() + 1);
                         realm.copyToRealmOrUpdate(counterData);
                     }
@@ -71,7 +75,7 @@ public class ScreenReceiver extends BroadcastReceiver {
 
                     Log.i("ScreenCount: ", "null");
 
-                    ScreenCounter screenCounter = realm.createObject(ScreenCounter.class, "001");
+                    ScreenCounter screenCounter = realm.createObject(ScreenCounter.class, Utils.returnDateAsId());
                     screenCounter.setCounter(1);
                     realm.copyToRealmOrUpdate(screenCounter);
                 }
