@@ -10,10 +10,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -35,29 +33,15 @@ import android.widget.Toast;
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.adapters.DrivingLogEventAdapter;
 import com.brianroper.putitdown.model.Constants;
-import com.brianroper.putitdown.model.events.TokenRefreshedMessage;
-import com.brianroper.putitdown.model.neura.NeuraManager;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.model.events.DrivingMessage;
 import com.brianroper.putitdown.services.gps.TimeOutMovementService;
-import com.brianroper.putitdown.services.neura.NeuraConnectionService;
 import com.brianroper.putitdown.services.screen.ScreenService;
 import com.brianroper.putitdown.utils.Utils;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.neura.resources.authentication.AnonymousAuthenticateCallBack;
-import com.neura.resources.authentication.AnonymousAuthenticateData;
-import com.neura.resources.authentication.AnonymousAuthenticationStateListener;
-import com.neura.resources.authentication.AuthenticationState;
-import com.neura.sdk.object.AnonymousAuthenticationRequest;
-import com.neura.sdk.service.SubscriptionRequestCallbacks;
-import com.neura.standalonesdk.util.SDKUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.Arrays;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -151,7 +135,7 @@ public class DashboardActivity extends AppCompatActivity {
      * 5) EVENT BUS SUBSCRIPTIONS (WORMHOLES)
      * 6) PERMISSIONS
      * 7) VIEW LISTENERS
-     * 8) VIEW UTILITY 
+     * 8) VIEW UTILITY
      */
 
     /**
@@ -503,18 +487,6 @@ public class DashboardActivity extends AppCompatActivity {
     public void setSurfaceTripListener(){
         Intent logIntent = new Intent(getApplicationContext(), DrivingLogActivity.class);
         startActivity(logIntent);
-    }
-
-    @OnClick(R.id.simulate_button)
-    public void setTestButton(){
-        if(Utils.activeNetworkCheck(getApplicationContext())){
-            if(NeuraManager.getInstance().getClient().isLoggedIn()){
-                NeuraManager.getInstance().getClient().simulateAnEvent();
-            }
-        }
-        else{
-            Utils.noActiveNetworkToast(getApplicationContext());
-        }
     }
 
     /**

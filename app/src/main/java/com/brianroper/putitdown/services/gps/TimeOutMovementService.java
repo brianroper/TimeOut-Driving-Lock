@@ -146,7 +146,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
     }
 
     /**
-     * listens for a DrivingMessage from the NeuraMomentMessageService when it completes
+     * listens for a DrivingMessage from when it completes
      */
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onDrivingMessageEvent(DrivingMessage drivingMessage){
