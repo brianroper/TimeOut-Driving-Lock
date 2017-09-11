@@ -1,5 +1,8 @@
 package com.brianroper.putitdown.services.gps;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +14,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 
+import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.utils.Constants;
 import com.brianroper.putitdown.model.events.DrivingMessage;
 import com.brianroper.putitdown.model.gps.TimeOutGpsListener;
@@ -19,6 +24,8 @@ import com.brianroper.putitdown.model.gps.TimeOutLocation;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.services.driving.DrivingLockService;
 import com.brianroper.putitdown.utils.Utils;
+import com.brianroper.putitdown.views.ContinueDriveActivity;
+import com.brianroper.putitdown.views.DrivingLogActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -113,6 +120,11 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
      * when speed hits 0mph we wait 30 seconds and do a second check to see if speed is still 0mph.
      * if this check passes we log a successful driving session. we are assuming here that the vehicle
      * is parked and is no longer driving.
+     *
+     * boolean mIsDriving is used to determine if the user has indeed stopped driving. It is set to
+     * true when the user goes above 5mph and is set to false after the double 0mph check returns
+     * successful. This prevents inaccurate log reporting due to the user consistently staying at
+     * 0mph when not driving.
      */
     private void updateSpeed(TimeOutLocation location){
         float currentSpeed = 0;
@@ -142,8 +154,8 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
                         public void run() {
                             if (stoppedSpeed == TARGET_STOPPED_SPEED){
                                 addSuccessfulDrivingEvent(true);
+                                sendSuccessNotification();
                                 mIsDriving = false;
-                                //TODO: add notification for successful safe driving
                             }
                         }
                     }, DRIVING_STOPPED_DOUBLE_CHECK_TIME);
@@ -223,5 +235,40 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
             }
         });
         realm.close();
+    }
+
+    /**
+     * sends a notification to the user when they complete a safe driving session
+     */
+    private void sendSuccessNotification(){
+
+        //notification will open the DrivingLogActivity when clicked
+        Intent logIntent = new Intent(getApplicationContext(), DrivingLogActivity.class);
+        logIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, logIntent, 0);
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(getApplicationContext())
+                        .setSmallIcon(R.drawable.ic_trip_success)
+                        .setContentTitle(
+                                getApplicationContext()
+                                        .getResources()
+                                        .getString(R.string.notification_success_title))
+                        .setContentText(
+                                getApplicationContext()
+                                        .getResources()
+                                        .getString(R.string.notification_success_content))
+                        .addAction(R.drawable.redcar,
+                                getApplicationContext().getString(R.string.notification_success_button),
+                                pendingIntent);
+
+        //shows notification text on the status bar when received
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setDefaults(Notification.DEFAULT_VIBRATE);
+
+        //sends the notification
+        NotificationManager manager =
+                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(002, builder.build());
     }
 }

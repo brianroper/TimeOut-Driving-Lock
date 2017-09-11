@@ -36,4 +36,9 @@
     <string name="auto_reply_text">is currently driving safely using TimeOut. They will get back to
         you when they are finished.
     </string>
+
+    <!-- successful driving session notification -->
+    <string name="notification_success_title">Way to go</string>
+    <string name="notification_success_content">You drove safely and didnt use your phone</string>
+    <string name="notification_success_button">view driving logs</string>
 </resources>
