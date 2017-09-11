@@ -45,6 +45,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
 
         LocationManager locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 
+        //permissions check is required before accessing locationManager.requestLocationUpdates()
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -61,9 +62,13 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        //auto generated service method
         return null;
     }
 
+    /**
+     * When the device location is changed we create a new Location object and update its speed
+     */
     @Override
     public void onLocationChanged(Location location) {
         if(location != null){
@@ -92,6 +97,13 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         //Auto-generated method stub
     }
 
+    /**
+     * updates the device speed according to gps sensor data
+     *
+     * if the users speed is above 5mph we begin the lockout,
+     * when the users device drops below 5mph it unlocks,
+     * if the user manually unlocks their device we wait 5000ms and then re start the driving lockout 
+     */
     private void updateSpeed(TimeOutLocation location){
         float currentSpeed = 0;
 
@@ -108,6 +120,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
             else if(currentSpeed < 5){
                 stopService(mDrivingService);
                 addSuccessfulDrivingEvent(true);
+                //TODO improve logging accuracy
             }
         }
         else if(!mIsDriving){
@@ -121,6 +134,9 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         }
     }
 
+    /**
+     * determines if we want to use metric units
+     */
     private boolean useMetricUnits(){
         return false;
     }
