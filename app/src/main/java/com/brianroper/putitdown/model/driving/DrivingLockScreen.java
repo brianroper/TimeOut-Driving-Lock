@@ -52,7 +52,6 @@ public class DrivingLockScreen {
     private ImageView mCarImageView;
 
     private SharedPreferences mSharedPreferences;
-    private String mCurrentNeuraEventId = "";
 
     public DrivingLockScreen(Context context) {
         mContext = context;
@@ -197,11 +196,11 @@ public class DrivingLockScreen {
                     .deleteRealmIfMigrationNeeded()
                     .build();
             realm = Realm.getInstance(realmConfiguration);
-            getSharedPreferences();
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, mCurrentNeuraEventId);
+                    DrivingEventLog drivingEventLog = realm.createObject(
+                            DrivingEventLog.class, Utils.returnDateAsDate().getTime() + "");
                     drivingEventLog.setTime(Utils.returnTime(calendar));
                     drivingEventLog.setDate(Utils.returnDateAsDate());
                     drivingEventLog.setSuccessful(false);
@@ -210,14 +209,6 @@ public class DrivingLockScreen {
             });
             realm.close();
         }catch (Exception e){e.printStackTrace();}
-    }
-
-    /**
-     * returns the devices shared preferences
-     */
-    public void getSharedPreferences(){
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        mCurrentNeuraEventId = mSharedPreferences.getString("currentNeuraEventId", "");
     }
 
     /**
