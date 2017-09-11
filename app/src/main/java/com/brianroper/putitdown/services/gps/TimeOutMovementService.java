@@ -6,17 +6,21 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.brianroper.putitdown.R;
+import com.brianroper.putitdown.model.events.PreferenceMessage;
 import com.brianroper.putitdown.utils.Constants;
 import com.brianroper.putitdown.model.events.DrivingMessage;
 import com.brianroper.putitdown.model.gps.TimeOutGpsListener;
@@ -50,10 +54,13 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
     private boolean mIsUnlocked = true;
     private boolean mIsDriving = false;
 
+    private boolean mIsPassengerMode = false;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         initializeDrivingService();
+        returnSharedPreferences();
 
         LocationManager locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -124,6 +131,9 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
      * true when the user goes above 5mph and is set to false after the double 0mph check returns
      * successful. This prevents inaccurate log reporting due to the user consistently staying at
      * 0mph when not driving.
+     *
+     * boolean mIsPassengerMode is used to determine if passenger mode is enabled. If so we ignore the
+     * speed activity until it is disabled
      */
     private void updateSpeed(TimeOutLocation location){
         float currentSpeed = 0;
@@ -133,42 +143,44 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
             currentSpeed = location.getSpeed();
         }
 
-        if(!mIsUnlocked){
-            if(currentSpeed > TARGET_LOCKOUT_SPEED){
-                //if current speed is greater than 5 mph do something
-                startService(mDrivingService);
-                mIsDriving = true;
-            }
-            else if(currentSpeed < TARGET_LOCKOUT_SPEED){
-                stopService(mDrivingService);
-            }
-            else if(currentSpeed == TARGET_STOPPED_SPEED){
-                final float stoppedSpeed = currentSpeed;
+        if(!mIsPassengerMode){
+            if(!mIsUnlocked){
+                if(currentSpeed > TARGET_LOCKOUT_SPEED){
+                    //if current speed is greater than 5 mph do something
+                    startService(mDrivingService);
+                    mIsDriving = true;
+                }
+                else if(currentSpeed < TARGET_LOCKOUT_SPEED){
+                    stopService(mDrivingService);
+                }
+                else if(currentSpeed == TARGET_STOPPED_SPEED){
+                    final float stoppedSpeed = currentSpeed;
 
-                if(mIsDriving){
-                    //check after set seconds if speed is still 0. If so we log a successful driving session
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (stoppedSpeed == TARGET_STOPPED_SPEED){
-                                addSuccessfulDrivingEvent(true);
-                                sendSuccessNotification();
-                                mIsDriving = false;
+                    if(mIsDriving){
+                        //check after set seconds if speed is still 0. If so we log a successful driving session
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (stoppedSpeed == TARGET_STOPPED_SPEED){
+                                    addSuccessfulDrivingEvent(true);
+                                    sendSuccessNotification();
+                                    mIsDriving = false;
+                                }
                             }
-                        }
-                    }, DRIVING_STOPPED_DOUBLE_CHECK_TIME);
+                        }, DRIVING_STOPPED_DOUBLE_CHECK_TIME);
+                    }
                 }
             }
-        }
-        else if(mIsUnlocked){
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mIsUnlocked = false;
-                }
-            }, DRIVING_LOCKOUT_RETRY_TIME);
+            else if(mIsUnlocked){
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mIsUnlocked = false;
+                    }
+                }, DRIVING_LOCKOUT_RETRY_TIME);
+            }
         }
     }
 
@@ -269,5 +281,25 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         NotificationManager manager =
                 (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(002, builder.build());
+    }
+
+    public void returnSharedPreferences(){
+        SharedPreferences sharedPreferences
+                = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        mIsPassengerMode = sharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false);
+    }
+
+    /**
+     * listens for changes to the passenger mode preference while service is running
+     */
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onPreferenceMessageEvent(PreferenceMessage preferenceMessage){
+        Constants constants = new Constants();
+        if(preferenceMessage.message.equals(constants.PREFERENCE_TRUE)) {
+            mIsPassengerMode = true;
+        }
+        else if(preferenceMessage.message.equals(constants.PREFERENCE_FALSE)){
+            mIsPassengerMode = false;
+        }
     }
 }

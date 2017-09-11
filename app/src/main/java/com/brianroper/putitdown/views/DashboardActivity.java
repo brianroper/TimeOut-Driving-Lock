@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.adapters.DrivingLogEventAdapter;
+import com.brianroper.putitdown.model.events.PreferenceMessage;
 import com.brianroper.putitdown.utils.Constants;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.model.events.DrivingMessage;
@@ -319,6 +320,7 @@ public class DashboardActivity extends AppCompatActivity {
                 .putBoolean(getString(R.string.passenger_mode_key), true)
                 .apply();
 
+        mEventBus.postSticky(new PreferenceMessage("true"));
         Toast.makeText(getApplicationContext(), "Passenger mode enabled", Toast.LENGTH_LONG).show();
     }
 
@@ -331,6 +333,7 @@ public class DashboardActivity extends AppCompatActivity {
                 .putBoolean(getString(R.string.passenger_mode_key), false)
                 .apply();
 
+        mEventBus.postSticky(new PreferenceMessage("false"));
         Toast.makeText(getApplicationContext(), "Passenger mode disabled", Toast.LENGTH_LONG).show();
     }
 

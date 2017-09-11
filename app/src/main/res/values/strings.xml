@@ -5,22 +5,8 @@
     <string name="app_secret">fcbb0c283f3c44298d5da6ef339d5245f753781a6bb233a44424a18587692a1b
     </string>
 
-    <string name="event_started_driving">you started driving</string>
-    <string name="event_finished_driving">you finished driving</string>
-
+    <!-- shared preference keys -->
     <string name="passenger_mode_key">passengerStatus</string>
-
-    <string name="no_active_network">No network connection detected! Put it down requires a network
-        connection to track your driving patterns
-    </string>
-    <string name="no_active_network_notification_title">No network connection detected</string>
-    <string name="no_active_network_notification_content">Put it down requires a network connection
-        to track your driving patterns
-    </string>
-
-    <string name="auto_reply_text">is currently driving safely using TimeOut. They will get back to
-        you when they are finished.
-    </string>
 
     <!-- successful driving session notification -->
     <string name="notification_success_title">Way to go</string>
@@ -43,4 +29,19 @@
             involving distracted drivers.
         </item>
     </array>
+
+    <!-- sms auto reply -->
+    <string name="auto_reply_text">is currently driving safely using TimeOut. They will get back to
+        you when they are finished.
+    </string>
+
+    <!-- network activity -->
+    <string name="no_active_network">No network connection detected! Put it down requires a network
+        connection to track your driving patterns
+    </string>
+    <string name="no_active_network_notification_title">No network connection detected</string>
+    <string name="no_active_network_notification_content">Put it down requires a network connection
+        to track your driving patterns
+    </string>
+
 </resources>
