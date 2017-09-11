@@ -1,7 +1,6 @@
 package com.brianroper.putitdown.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +11,6 @@ import android.widget.TextView;
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.utils.Utils;
-import com.brianroper.putitdown.views.DrivingLogActivity;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +34,7 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
     @Override
     public DrivingLogEventAdapter.DrivingLogEventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View root = inflater.inflate(R.layout.neura_log_item, parent, false);
+        View root = inflater.inflate(R.layout.driving_log_item, parent, false);
         final DrivingLogEventViewHolder drivingLogEventViewHolder = new DrivingLogEventViewHolder(root);
         return drivingLogEventViewHolder;
     }
