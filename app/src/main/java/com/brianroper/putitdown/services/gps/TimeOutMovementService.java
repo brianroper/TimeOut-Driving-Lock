@@ -24,7 +24,6 @@ import com.brianroper.putitdown.model.gps.TimeOutLocation;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.services.driving.DrivingLockService;
 import com.brianroper.putitdown.utils.Utils;
-import com.brianroper.putitdown.views.ContinueDriveActivity;
 import com.brianroper.putitdown.views.DrivingLogActivity;
 
 import org.greenrobot.eventbus.EventBus;

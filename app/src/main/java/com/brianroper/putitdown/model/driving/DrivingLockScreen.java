@@ -31,6 +31,7 @@ import com.brianroper.putitdown.views.ContinueDriveActivity;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
+import java.util.Random;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -224,19 +225,23 @@ public class DrivingLockScreen {
      */
     public void sendFactNotification(){
 
+        Random random = new Random();
+        int randomIndex = random.nextInt(mContext.getResources().getStringArray(R.array.timeout_facts).length);
+
         //creates pending intent that notification action will perform
         Intent drivingIntent = new Intent(mContext, ContinueDriveActivity.class);
         drivingIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, drivingIntent, 0);
 
         //builds the basic notification using the array stored in strings.xml
-        //TODO: randomly generate a fact based on array size and index
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(mContext)
                 .setSmallIcon(R.drawable.ic_trip_failed)
-                .setContentTitle("Don't text and drive!")
-                .setContentText(mContext.getResources().getStringArray(R.array.timeout_facts)[0])
-                .addAction(R.drawable.redcar, "Continue TimeOut", pendingIntent);
+                .setContentTitle(mContext.getResources().getString(R.string.notification_failed_title))
+                .setContentText(mContext.getResources().getStringArray(R.array.timeout_facts)[randomIndex])
+                .addAction(R.drawable.redcar,
+                        mContext.getResources().getString(R.string.notification_failed_button),
+                        pendingIntent);
 
         //shows notification text on the status bar when received
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);

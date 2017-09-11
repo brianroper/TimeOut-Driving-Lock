@@ -18,7 +18,18 @@
         to track your driving patterns
     </string>
 
+    <string name="auto_reply_text">is currently driving safely using TimeOut. They will get back to
+        you when they are finished.
+    </string>
 
+    <!-- successful driving session notification -->
+    <string name="notification_success_title">Way to go</string>
+    <string name="notification_success_content">You drove safely and didnt use your phone</string>
+    <string name="notification_success_button">view driving logs</string>
+
+    <!-- failed driving session notification -->
+    <string name="notification_failed_title">Stop texting and driving</string>
+    <string name="notification_failed_button">Continue driving with TimeOut</string>
     <array name="timeout_facts">
         <item>Because text messaging requires visual, manual, and cognitive attention from the
             driver, it is by far one of the most alarming distractions.
@@ -32,13 +43,4 @@
             involving distracted drivers.
         </item>
     </array>
-
-    <string name="auto_reply_text">is currently driving safely using TimeOut. They will get back to
-        you when they are finished.
-    </string>
-
-    <!-- successful driving session notification -->
-    <string name="notification_success_title">Way to go</string>
-    <string name="notification_success_content">You drove safely and didnt use your phone</string>
-    <string name="notification_success_button">view driving logs</string>
 </resources>
