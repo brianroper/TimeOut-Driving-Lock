@@ -15,8 +15,19 @@ import io.realm.RealmConfiguration;
  */
 
 public class ScreenReceiver extends BroadcastReceiver {
+
+    private Context mContext;
+
+    /**
+     * Listens for screen on and off activity
+     *
+     * When the device is off we do nothing.
+     * When the device is powered on we update the counter total in Realm
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        mContext = context;
 
         if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
             Log.d("ScreenStatus", "Screen Off");
@@ -24,41 +35,49 @@ public class ScreenReceiver extends BroadcastReceiver {
         } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
             Log.d("ScreenStatus", "Screen On");
 
-            Realm realm;
-            Realm.init(context);
-            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
-                    .deleteRealmIfMigrationNeeded()
-                    .build();
-            realm = Realm.getInstance(realmConfiguration);
-
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-
-                    try{
-                        ScreenCounter screenCounter = realm.where(ScreenCounter.class).equalTo("id", "001").findFirst();
-
-                        if(screenCounter != null){
-                            ScreenCounter counterData = realm.where(ScreenCounter.class).equalTo("id", "001").findFirst();
-                            counterData.setCounter(counterData.getCounter() + 1);
-                            realm.copyToRealmOrUpdate(counterData);
-                        }
-                    }
-                    catch (Exception e){
-
-                        Log.i("ScreenCount: ", "null");
-
-                        ScreenCounter screenCounter = realm.createObject(ScreenCounter.class, "001");
-                        screenCounter.setCounter(1);
-                        realm.copyToRealmOrUpdate(screenCounter);
-                    }
-                }
-            });
-            realm.close();
+            updateCounterInRealm();
         }
         else{
             Log.d("ScreenStatus", "Inactive");
         }
+    }
+
+    /**
+     * creates a new ScreenCounter object in realm when one does not exist. If one does exisit
+     * we update the existing value with the new one.
+     */
+    public void updateCounterInRealm(){
+        Realm realm;
+        Realm.init(mContext);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        realm = Realm.getInstance(realmConfiguration);
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+
+                try{
+                    ScreenCounter screenCounter = realm.where(ScreenCounter.class).equalTo("id", "001").findFirst();
+
+                    if(screenCounter != null){
+                        ScreenCounter counterData = realm.where(ScreenCounter.class).equalTo("id", "001").findFirst();
+                        counterData.setCounter(counterData.getCounter() + 1);
+                        realm.copyToRealmOrUpdate(counterData);
+                    }
+                }
+                catch (Exception e){
+
+                    Log.i("ScreenCount: ", "null");
+
+                    ScreenCounter screenCounter = realm.createObject(ScreenCounter.class, "001");
+                    screenCounter.setCounter(1);
+                    realm.copyToRealmOrUpdate(screenCounter);
+                }
+            }
+        });
+        realm.close();
     }
 }
 

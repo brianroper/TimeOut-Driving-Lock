@@ -19,10 +19,14 @@ public class ScreenService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        //auto generated method 
+        //auto generated method
         return null;
     }
 
+    /**
+     * note: START_STICKY allows for the service to be restarted when the Android OS destroys it
+     * in order to conserve memory. This ensures the service will always be active to monitor screen activity
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return START_STICKY;

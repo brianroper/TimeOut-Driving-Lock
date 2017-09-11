@@ -23,8 +23,6 @@ import static android.content.Context.AUDIO_SERVICE;
  */
 
 public class Utils {
-    public static final String STARTED_DRIVING = "userStartedDriving";
-    public static final String FINISHED_DRIVING = "userFinishedDriving";
 
     /**
      * error toast displayed to user when there is no available network

@@ -13,6 +13,9 @@ import com.brianroper.putitdown.R;
  * Created by brianroper on 1/16/17.
  */
 
+/**
+ * class that adds a divider to any recycler view as an item decoration
+ */
 public class RecyclerViewDivider extends RecyclerView.ItemDecoration {
     private Drawable mDivider;
 
