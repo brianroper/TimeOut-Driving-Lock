@@ -5,12 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.brianroper.putitdown.model.Constants;
-import com.brianroper.putitdown.model.events.ScreenMessage;
 import com.brianroper.putitdown.model.realmObjects.ScreenCounter;
-import com.brianroper.putitdown.utils.Utils;
-
-import org.greenrobot.eventbus.EventBus;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;

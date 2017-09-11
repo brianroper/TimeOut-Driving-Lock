@@ -12,14 +12,13 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 
-import com.brianroper.putitdown.model.Constants;
+import com.brianroper.putitdown.utils.Constants;
 import com.brianroper.putitdown.model.events.DrivingMessage;
 import com.brianroper.putitdown.model.gps.TimeOutGpsListener;
 import com.brianroper.putitdown.model.gps.TimeOutLocation;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
-import com.brianroper.putitdown.services.driving.DrivingService;
+import com.brianroper.putitdown.services.driving.DrivingLockService;
 import com.brianroper.putitdown.utils.Utils;
-import com.neura.standalonesdk.events.NeuraEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -130,7 +129,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
      * initializes the driving service
      */
     public void initializeDrivingService(){
-        mDrivingService = new Intent(this, DrivingService.class);
+        mDrivingService = new Intent(this, DrivingLockService.class);
     }
 
     @Override

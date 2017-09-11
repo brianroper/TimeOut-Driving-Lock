@@ -1,4 +1,4 @@
-package com.brianroper.putitdown.views;
+package com.brianroper.putitdown.model.driving;
 
 import android.animation.ObjectAnimator;
 import android.app.Notification;
@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.os.Build;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
@@ -23,10 +22,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.brianroper.putitdown.R;
-import com.brianroper.putitdown.model.Constants;
+import com.brianroper.putitdown.utils.Constants;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.model.events.DrivingMessage;
 import com.brianroper.putitdown.utils.Utils;
+import com.brianroper.putitdown.views.ContinueDriveActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -42,7 +42,7 @@ import static android.content.Context.WINDOW_SERVICE;
  * Created by brianroper on 5/2/17.
  */
 
-public class DrivingView{
+public class DrivingLockScreen {
 
     private Context mContext;
     private RelativeLayout mRelativeLayout;
@@ -53,7 +53,7 @@ public class DrivingView{
     private SharedPreferences mSharedPreferences;
     private String mCurrentNeuraEventId = "";
 
-    public DrivingView(Context context) {
+    public DrivingLockScreen(Context context) {
         mContext = context;
     }
 

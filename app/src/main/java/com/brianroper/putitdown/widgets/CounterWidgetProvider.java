@@ -8,15 +8,8 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.brianroper.putitdown.R;
-import com.brianroper.putitdown.model.Constants;
-import com.brianroper.putitdown.model.events.DrivingMessage;
-import com.brianroper.putitdown.model.events.ScreenMessage;
 import com.brianroper.putitdown.model.realmObjects.ScreenCounter;
 import com.brianroper.putitdown.utils.Utils;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;

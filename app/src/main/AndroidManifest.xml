@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".services.driving.DrivingService">
+        <service android:name=".services.driving.DrivingLockService">
         </service>
 
         <receiver android:name=".widgets.CounterWidgetProvider">

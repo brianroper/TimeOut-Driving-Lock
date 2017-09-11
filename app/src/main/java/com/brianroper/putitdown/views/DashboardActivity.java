@@ -32,7 +32,7 @@ import android.widget.Toast;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.adapters.DrivingLogEventAdapter;
-import com.brianroper.putitdown.model.Constants;
+import com.brianroper.putitdown.utils.Constants;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.model.events.DrivingMessage;
 import com.brianroper.putitdown.services.gps.TimeOutMovementService;

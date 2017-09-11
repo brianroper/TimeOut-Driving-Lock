@@ -1,4 +1,4 @@
-package com.brianroper.putitdown.model;
+package com.brianroper.putitdown.utils;
 
 import android.content.Context;
 import android.graphics.Canvas;
