@@ -35,6 +35,11 @@ import io.realm.RealmConfiguration;
 
 public class TimeOutMovementService extends Service implements TimeOutGpsListener {
 
+    final int DRIVING_LOCKOUT_RETRY_TIME = 5000;
+    final int DRIVING_STOPPED_DOUBLE_CHECK_TIME = 30000;
+    final int TARGET_LOCKOUT_SPEED = 5;
+    final int TARGET_STOPPED_SPEED = 0;
+
     private Intent mDrivingService;
     private boolean mIsDriving = true;
 
@@ -103,6 +108,10 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
      * if the users speed is above 5mph we begin the lockout,
      * when the users device drops below 5mph it unlocks,
      * if the user manually unlocks their device we wait 5000ms and then re start the driving lockout
+     *
+     * when speed hits 0mph we wait 30 seconds and do a second check to see if speed is still 0mph.
+     * if this check passes we log a successful driving session. we are assuming here that the vehicle
+     * is parked and is no longer driving.
      */
     private void updateSpeed(TimeOutLocation location){
         float currentSpeed = 0;
@@ -113,14 +122,27 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         }
 
         if(mIsDriving){
-            if(currentSpeed > 5){
+            if(currentSpeed > TARGET_LOCKOUT_SPEED){
                 //if current speed is greater than 5 mph do something
                 startService(mDrivingService);
             }
-            else if(currentSpeed < 5){
+            else if(currentSpeed < TARGET_LOCKOUT_SPEED){
                 stopService(mDrivingService);
-                addSuccessfulDrivingEvent(true);
-                //TODO improve logging accuracy
+            }
+            else if(currentSpeed == TARGET_STOPPED_SPEED){
+                final float stoppedSpeed = currentSpeed;
+
+                //check after set seconds if speed is still 0. If so we log a successful driving session
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (stoppedSpeed == TARGET_STOPPED_SPEED){
+                            addSuccessfulDrivingEvent(true);
+                            //TODO: add notification for successful safe driving
+                        }
+                    }
+                }, DRIVING_STOPPED_DOUBLE_CHECK_TIME);
             }
         }
         else if(!mIsDriving){
@@ -130,7 +152,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
                 public void run() {
                     mIsDriving = true;
                 }
-            }, 5000);
+            }, DRIVING_LOCKOUT_RETRY_TIME);
         }
     }
 
