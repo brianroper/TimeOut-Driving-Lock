@@ -2,7 +2,9 @@ package com.brianroper.putitdown.views;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +16,7 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -481,12 +484,47 @@ public class DashboardActivity extends AppCompatActivity {
                 else{
                     //location permission was denied and we need to notify the user that the app
                     //will no function properly without it
-                    //TODO: build notification to notify user
+                    sendPermissionDeniedNotification();
                 }
             }
         }
-
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    /**
+     * send a notification to the user informing them that the app will not function properly
+     * without the permissions being granted. User will have option to gran permissions from
+     * notification
+     */
+    public void sendPermissionDeniedNotification(){
+        //notification will offer permissions when clicked
+        Intent permissionIntent = new Intent(getApplicationContext(), DashboardActivity.class);
+        permissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, permissionIntent, 0);
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(getApplicationContext())
+                        .setSmallIcon(R.drawable.redcar)
+                        .setContentTitle(
+                                getApplicationContext()
+                                        .getResources()
+                                        .getString(R.string.notification_permission_denied_title))
+                        .setContentText(
+                                getApplicationContext()
+                                        .getResources()
+                                        .getString(R.string.notification_permission_denied_content))
+                        .addAction(R.drawable.redcar,
+                                getApplicationContext().getString(R.string.notification_permission_denied_button),
+                                pendingIntent);
+
+        //shows notification text on the status bar when received
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setDefaults(Notification.DEFAULT_VIBRATE);
+
+        //sends the notification
+        NotificationManager manager =
+                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(003, builder.build());
     }
 
     /**

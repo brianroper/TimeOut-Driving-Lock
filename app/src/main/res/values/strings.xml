@@ -30,6 +30,11 @@
         </item>
     </array>
 
+    <!-- permissions denied notification -->
+    <string name="notification_permission_denied_title">You denied the required permissions</string>
+    <string name="notification_permission_denied_content">TimeOut requires permissions that you denied in order to function properly. Please allow these permissions so you can use our awesome app.</string>
+    <string name="notification_permission_denied_button">Review permissions</string>
+
     <!-- sms auto reply -->
     <string name="auto_reply_text">is currently driving safely using TimeOut. They will get back to
         you when they are finished.
