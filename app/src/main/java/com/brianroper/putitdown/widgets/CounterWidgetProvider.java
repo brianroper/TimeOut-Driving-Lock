@@ -44,6 +44,7 @@ public class CounterWidgetProvider extends AppWidgetProvider{
 
         }catch (Exception e){
             e.printStackTrace();
+            Log.i("CounterRealm", "Error");
         }
 
         ComponentName counterWidget = new ComponentName(context, CounterWidgetProvider.class);
@@ -54,20 +55,27 @@ public class CounterWidgetProvider extends AppWidgetProvider{
     /**
      * gets todays screen counter data from realm
      */
-    public ScreenCounter getTodayCounterDataFromRealm(){
+    public void getTodayCounterDataFromRealm(){
         Realm realm;
         Realm.init(mContext);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
                 .deleteRealmIfMigrationNeeded()
                 .build();
         realm = Realm.getInstance(realmConfiguration);
-        ScreenCounter screenCounter = realm
+        RealmResults<ScreenCounter> counterData = realm
                 .where(ScreenCounter.class)
-                .equalTo("id", "001")
-                .findFirst();
-        Log.i("Counter: ", screenCounter.getCounter()+"");
+                .findAll();
+
+        for (int i = 0; i < mRealmResults.size(); i++) {
+            if(mRealmResults.get(i).getId() == Utils.returnDateAsId()){
+                mScreenCounter = mRealmResults.get(i);
+                Log.i("CounterToday: ", mRealmResults.get(i).getCounter()+"");
+            }
+            else{
+                Log.i("CounterToday: ", "There is no counter data stored for today");
+            }
+        }
         realm.close();
-        return screenCounter;
     }
 
     public void populateAllViews(RemoteViews remoteViews){

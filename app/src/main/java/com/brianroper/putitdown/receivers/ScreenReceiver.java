@@ -1,5 +1,7 @@
 package com.brianroper.putitdown.receivers;
 
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProvider;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +9,7 @@ import android.util.Log;
 
 import com.brianroper.putitdown.model.realmObjects.ScreenCounter;
 import com.brianroper.putitdown.utils.Utils;
+import com.brianroper.putitdown.widgets.CounterWidgetProvider;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -64,11 +67,13 @@ public class ScreenReceiver extends BroadcastReceiver {
 
                 try{
                     ScreenCounter screenCounter = realm.where(ScreenCounter.class).equalTo("id", Utils.returnDateAsId()).findFirst();
+                    Log.i("ScreenReciever: ", screenCounter.getCounter()+"");
 
                     if(screenCounter != null){
                         ScreenCounter counterData = realm.where(ScreenCounter.class).equalTo("id", Utils.returnDateAsId()).findFirst();
                         counterData.setCounter(counterData.getCounter() + 1);
                         realm.copyToRealmOrUpdate(counterData);
+                        Log.i("ScreenReciever: ", counterData.getCounter()+"");
                     }
                 }
                 catch (Exception e){
@@ -82,6 +87,21 @@ public class ScreenReceiver extends BroadcastReceiver {
             }
         });
         realm.close();
+    }
+
+    public void onNotifyWidgetDataChange(){
+            //Intent intent = new Intent(mContext, CounterWidgetProvider.class);
+            //intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+
+        /**
+         * Intent intent = new Intent(this,MyAppWidgetProvider.class);
+         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+         // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
+         // since it seems the onUpdate() is only fired on that:
+         int[] ids = {widgetId};
+         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
+         sendBroadcast(intent);
+         */
     }
 }
 

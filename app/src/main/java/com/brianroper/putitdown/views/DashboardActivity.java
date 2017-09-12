@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -119,9 +120,6 @@ public class DashboardActivity extends AppCompatActivity {
 
         getSharedPreferences();
         setPassengerSwitchPosition();
-
-        initializeExternalActivityComponents();
-        populateAllViews();
 
         setSwipeFreshListener();
 
@@ -458,6 +456,37 @@ public class DashboardActivity extends AppCompatActivity {
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
         }
+    }
+
+    /**
+     * handles the result of the permissions request
+     * if the grantResults array size is greater than zero than the permission
+     * was granted by the user and we can start the app services that depend on these
+     * permissions.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode){
+            case 99: {
+                if(grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
+                    //location permission was granted, time to start our services
+                    initializeExternalActivityComponents();
+                    populateAllViews();
+                    Log.i("Permissions: ", "Granted");
+                }
+                else{
+                    //location permission was denied and we need to notify the user that the app
+                    //will no function properly without it
+                    //TODO: build notification to notify user
+                }
+            }
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     /**

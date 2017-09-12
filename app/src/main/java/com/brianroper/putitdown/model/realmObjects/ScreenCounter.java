@@ -19,4 +19,8 @@ public class ScreenCounter extends RealmObject{
     public void setCounter(int counter) {
         this.counter = counter;
     }
+
+    public String getId() {
+        return id;
+    }
 }
