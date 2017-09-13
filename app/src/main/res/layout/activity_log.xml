@@ -1,218 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v4.widget.NestedScrollView
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:id="@+id/log_view_container"
+    tools:context="com.brianroper.putitdown.views.DrivingLogActivity"
+    android:background="@color/background">
 
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.brianroper.putitdown.views.DrivingLogActivity"
-        android:background="@color/background">
+        android:layout_height="56dp"
+        android:background="@color/colorPrimary"
+        android:id="@+id/log_toolbar">
+    </android.support.v7.widget.Toolbar>
 
-        <android.support.v7.widget.Toolbar
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/log_view_pager"
+        android:layout_width="match_parent"
+        android:layout_below="@id/log_toolbar"
+        android:layout_height="match_parent">
+
+        <android.support.v4.view.PagerTitleStrip
+            android:id="@+id/pager_title_strip"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@color/colorPrimary"
-            android:id="@+id/log_toolbar">
-        </android.support.v7.widget.Toolbar>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/log_toolbar"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="4dp"
-            android:id="@+id/this_week_surface">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/this_week_title"
-                    android:text="This Week"
-                    android:textColor="@color/colorAccent"
-                    android:fontFamily="sans-serif-medium"
-                    android:paddingBottom="4dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingTop="16dp"
-                    android:textSize="16sp"/>
-
-                <android.support.v7.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/this_week_log"
-                    android:visibility="gone"
-                    android:layout_below="@+id/this_week_title">
-                </android.support.v7.widget.RecyclerView>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_below="@+id/this_week_title"
-                    android:id="@+id/empty_view_this_week">
-
-                    <ImageView
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:src="@drawable/emoticon_sad"
-                        android:layout_centerInParent="true"
-                        android:id="@+id/empty_view_this_week_icon"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="You currently have no trip data saved"
-                        android:layout_centerHorizontal="true"
-                        android:layout_below="@+id/empty_view_this_week_icon"
-                        android:layout_marginTop="4dp"
-                        android:textSize="14sp"
-                        android:textColor="@color/primaryText"/>
-
-                </RelativeLayout>
-
-            </RelativeLayout>
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/this_week_surface"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:id="@+id/this_month_surface">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/this_month_title"
-                    android:text="This Month"
-                    android:textColor="@color/colorAccent"
-                    android:fontFamily="sans-serif-medium"
-                    android:paddingBottom="4dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingTop="16dp"
-                    android:textSize="16sp"/>
-
-                <android.support.v7.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/this_month_log"
-                    android:layout_below="@id/this_month_title"
-                    android:visibility="gone">
-                </android.support.v7.widget.RecyclerView>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_below="@+id/this_month_title"
-                    android:id="@+id/empty_view_this_month">
-
-                    <ImageView
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:src="@drawable/emoticon_sad"
-                        android:layout_centerInParent="true"
-                        android:id="@+id/empty_view_this_month_icon"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="You currently have no trip data saved"
-                        android:layout_centerHorizontal="true"
-                        android:layout_below="@+id/empty_view_this_month_icon"
-                        android:layout_marginTop="4dp"
-                        android:textSize="14sp"
-                        android:textColor="@color/primaryText"/>
-
-                </RelativeLayout>
-
-            </RelativeLayout>
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/this_month_surface"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:id="@+id/all_time_surface">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/all_time_title"
-                    android:text="All Time"
-                    android:textColor="@color/colorAccent"
-                    android:fontFamily="sans-serif-medium"
-                    android:paddingBottom="4dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingTop="16dp"
-                    android:textSize="16sp"/>
-
-                <android.support.v7.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/all_time_log"
-                    android:layout_below="@id/all_time_title"
-                    android:visibility="gone">
-                </android.support.v7.widget.RecyclerView>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_below="@+id/all_time_title"
-                    android:id="@+id/empty_view_all_time">
-
-                    <ImageView
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:src="@drawable/emoticon_sad"
-                        android:layout_centerInParent="true"
-                        android:id="@+id/empty_view_all_time_icon"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="You currently have no trip data saved"
-                        android:layout_centerHorizontal="true"
-                        android:layout_below="@+id/empty_view_all_time_icon"
-                        android:layout_marginTop="4dp"
-                        android:textSize="14sp"
-                        android:textColor="@color/primaryText"/>
-
-                </RelativeLayout>
-
-            </RelativeLayout>
-
-        </android.support.v7.widget.CardView>
-
-    </RelativeLayout>
-
-</android.support.v4.widget.NestedScrollView>
+            android:layout_height="35dp"
+            android:layout_gravity="top"
+            android:padding="4dp"
+            android:textColor="#fff"
+            android:paddingTop="5dp"
+            android:textSize="24sp"
+            android:background="@color/colorPrimary"/>
+    </android.support.v4.view.ViewPager>
+</RelativeLayout>
