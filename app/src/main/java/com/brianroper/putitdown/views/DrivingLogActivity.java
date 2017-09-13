@@ -1,5 +1,6 @@
 package com.brianroper.putitdown.views;
 
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import com.brianroper.putitdown.R;
@@ -61,6 +64,7 @@ public class DrivingLogActivity extends AppCompatActivity {
     public void handleUIUtilities(){
         handleToolbarBehavior(mLogToolbar);
         handleViewPagerBehavior(mLogViewPager);
+        handleStatusBarColor();
     }
 
     /**
@@ -74,6 +78,21 @@ public class DrivingLogActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /**
+     * sets the color of the status bar
+     */
+    public void handleStatusBarColor(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
+    }
+
+    /**
+     * handles the swipe behavior for the fragments
+     */
     public void handleViewPagerBehavior(ViewPager viewPager) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         viewPager.setAdapter(new LogPagerAdapter(fragmentManager));
