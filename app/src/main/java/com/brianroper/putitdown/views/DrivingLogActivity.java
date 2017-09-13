@@ -1,38 +1,48 @@
 package com.brianroper.putitdown.views;
 
+import android.os.Build;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.RelativeLayout;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.adapters.DrivingLogEventAdapter;
+import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.RealmResults;
 
 public class DrivingLogActivity extends AppCompatActivity {
 
-    @BindView(R.id.all_time_surface)
-    CardView mAllTimeSurface;
-    @BindView(R.id.this_month_surface)
-    CardView mThisMonthSurface;
-    @BindView(R.id.this_week_surface)
-    CardView mThisWeekSurface;
-
-    @BindView(R.id.all_time_log)
-    RecyclerView mAllTimeRecycler;
-    @BindView(R.id.this_month_log)
-    RecyclerView mThisMonthRecycler;
-    @BindView(R.id.this_week_log)
-    RecyclerView mThisWeekRecycler;
-
     @BindView(R.id.log_toolbar)
     Toolbar mLogToolbar;
+    @BindView(R.id.log_view_pager)
+    ViewPager mLogViewPager;
 
-    private DrivingLogEventAdapter mDLogAdapter;
+    final int THIS_WEEK_FRAGMENT = 001;
+    final int THIS_MONTH_FRAGMENT = 002;
+    final int ALL_TIME_FRAGMENT = 003;
+
+    private DrivingLogFragment[] mDrivingLogFragments = {
+            DrivingLogFragment.newInstance(THIS_WEEK_FRAGMENT),
+            DrivingLogFragment.newInstance(THIS_MONTH_FRAGMENT),
+            DrivingLogFragment.newInstance(ALL_TIME_FRAGMENT),
+    };
+
+    private String[] mFragmentNames = {"This Week", "This Month", "All Time"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +51,20 @@ public class DrivingLogActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        handleUIUtilities();
+    }
+
+    /**
+     * UI UTILITIES
+     */
+
+    /**
+     * handles all ui utilities for this activity
+     */
+    public void handleUIUtilities(){
         handleToolbarBehavior(mLogToolbar);
-        handleCardViewBackgroundColors();
-
-        initializeAdapter();
-
-        populateAllViews();
+        handleViewPagerBehavior(mLogViewPager);
+        handleStatusBarColor();
     }
 
     /**
@@ -54,73 +72,71 @@ public class DrivingLogActivity extends AppCompatActivity {
      */
     public void handleToolbarBehavior(Toolbar toolbar){
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Trip Logs");
+        //getSupportActionBar().setTitle("Trip Logs");
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
-     * handles cardview background colors
+     * sets the color of the status bar
      */
-    public void handleCardViewBackgroundColors(){
-        mAllTimeSurface.setCardBackgroundColor(getResources().getColor(R.color.white));
-        mThisWeekSurface.setCardBackgroundColor(getResources().getColor(R.color.white));
-        mThisMonthSurface.setCardBackgroundColor(getResources().getColor(R.color.white));
+    public void handleStatusBarColor(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
     }
 
     /**
-     * initializes the driving log event adapter
+     * handles the swipe behavior for the fragments
      */
-    public void initializeAdapter(){
-        mDLogAdapter = new DrivingLogEventAdapter(getApplicationContext());
-        mDLogAdapter.getDrivingEventLogFromRealm();
+    public void handleViewPagerBehavior(ViewPager viewPager) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        viewPager.setAdapter(new LogPagerAdapter(fragmentManager));
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position,
+                                       float positionOffset,
+                                       int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
-    /**
-     * populates all views for this activity
-     */
-    public void populateAllViews(){
-        populateThisWeekRecycler();
-        populateAllTimeRecycler();
-        populateThisMonthRecycler();
+    public class LogPagerAdapter extends FragmentPagerAdapter {
+
+        public LogPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mDrivingLogFragments[position];
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentNames[position];
+        }
     }
 
-    /**
-     * populates this weeks recycler data
-     */
-    public void populateThisWeekRecycler(){
-        mThisWeekRecycler.setAdapter(mDLogAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
-        mThisWeekRecycler.setLayoutManager(layoutManager);
-        mDLogAdapter.returnThisWeekDrivingEventLogs();
-        mDLogAdapter.notifyDataSetChanged();
-    }
-
-    /**
-     * populates this months recycler data
-     */
-    public void populateThisMonthRecycler(){
-        mThisMonthRecycler.setAdapter(mDLogAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
-        mThisMonthRecycler.setLayoutManager(layoutManager);
-        mDLogAdapter.returnThisMonthDrivingEventLogs();
-        mDLogAdapter.notifyDataSetChanged();
-    }
-
-    /**
-     * populates all time recycler data
-     */
-    public void populateAllTimeRecycler(){
-        mAllTimeRecycler.setAdapter(mDLogAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
-        mAllTimeRecycler.setLayoutManager(layoutManager);
-        mDLogAdapter.returnAllTimeDrivingEventLogs();
-        mDLogAdapter.notifyDataSetChanged();
-    }
 }

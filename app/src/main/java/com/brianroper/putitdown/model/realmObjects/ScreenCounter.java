@@ -1,4 +1,4 @@
-package com.brianroper.putitdown.model;
+package com.brianroper.putitdown.model.realmObjects;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -18,5 +18,9 @@ public class ScreenCounter extends RealmObject{
 
     public void setCounter(int counter) {
         this.counter = counter;
+    }
+
+    public String getId() {
+        return id;
     }
 }

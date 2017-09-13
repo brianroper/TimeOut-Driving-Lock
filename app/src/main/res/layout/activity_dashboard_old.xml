@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dashboard_swipe_refresh_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:context="com.brianroper.putitdown.views.DashboardActivity">
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:id="@+id/surface_trips"
+            android:focusableInTouchMode="true">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="180dp"
+                    android:layout_height="130dp"
+                    android:src="@drawable/ic_truck"
+                    android:id="@+id/car_image"
+                    android:layout_centerHorizontal="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Completed Trips"
+                    android:layout_below="@+id/car_image"
+                    android:paddingTop="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="4dp"
+                    android:id="@+id/completed_title"
+                    android:textSize="16dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_alignParentStart="true"
+                    android:textColor="@color/colorAccent"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/completed_title">
+
+                    <TextView
+                        android:layout_width="280dp"
+                        android:layout_height="wrap_content"
+                        android:text="The number of trips completed while using Put It Down as a driver"
+                        android:fontFamily="sans-serif"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="16dp"
+                        android:paddingTop="4dp"
+                        android:textSize="14dp"
+                        android:id="@+id/trip_detail"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10"
+                        android:id="@+id/trip_count"
+                        android:textColor="@color/colorAccent"
+                        android:layout_alignParentEnd="true"
+                        android:padding="16dp"
+                        android:textSize="20sp"
+                        android:fontFamily="sans-serif-medium"/>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/surface_switch"
+            android:id="@+id/surface_log">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/empty_view"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/empty_title"
+                    android:text="Trip Log"
+                    android:textColor="@color/colorAccent"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingBottom="4dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="16dp"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="You currently have no saved trip data. Start driving to change that!"
+                    android:layout_below="@+id/empty_title"
+                    android:layout_centerHorizontal="true"
+                    android:paddingTop="4dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="16dp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:id="@+id/log_view">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/log_title"
+                    android:text="Trip Log"
+                    android:textColor="@color/colorAccent"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingBottom="4dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="16dp"
+                    android:textSize="16sp"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/log_recycler"
+                    android:layout_below="@+id/log_title">
+                </android.support.v7.widget.RecyclerView>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/surface_trips"
+            android:layout_marginBottom="16dp"
+            android:id="@+id/surface_switch">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Passenger Mode"
+                    android:id="@+id/passenger_title"
+                    android:textColor="@color/colorAccent"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="16sp"
+                    android:paddingTop="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="4dp"
+                    android:layout_alignParentStart="true"/>
+
+                <TextView
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:text="Enable passenger mode when your aren't behind the wheel"
+                    android:layout_below="@+id/passenger_title"
+                    android:paddingTop="4dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="16dp"
+                    android:id="@+id/passenger_detail"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:padding="16dp"
+                    android:id="@+id/passenger_switch"/>
+
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="test"
+            android:layout_below="@+id/surface_log"
+            android:id="@+id/test_button"/>
+
+    </RelativeLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

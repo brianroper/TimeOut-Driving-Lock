@@ -1,4 +1,6 @@
-package com.brianroper.putitdown.model;
+package com.brianroper.putitdown.model.realmObjects;
+
+import java.util.Date;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -12,7 +14,7 @@ public class NeuraEventLog extends RealmObject {
     private String id;
     private String eventName;
     private long timestamp;
-    private String date;
+    private Date date;
     private String time;
 
     public NeuraEventLog() {
@@ -34,11 +36,11 @@ public class NeuraEventLog extends RealmObject {
         this.timestamp = timestamp;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

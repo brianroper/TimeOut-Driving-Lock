@@ -1,4 +1,4 @@
-package com.brianroper.putitdown.views;
+package com.brianroper.putitdown.model.driving;
 
 import android.animation.ObjectAnimator;
 import android.app.Notification;
@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
-import android.media.AudioManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -23,15 +22,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.brianroper.putitdown.R;
-import com.brianroper.putitdown.model.Constants;
-import com.brianroper.putitdown.model.DrivingEventLog;
-import com.brianroper.putitdown.model.DrivingMessage;
+import com.brianroper.putitdown.utils.Constants;
+import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
+import com.brianroper.putitdown.model.events.DrivingMessage;
 import com.brianroper.putitdown.utils.Utils;
-import com.neura.standalonesdk.events.NeuraEvent;
+import com.brianroper.putitdown.views.ContinueDriveActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
+import java.util.Random;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -43,7 +43,7 @@ import static android.content.Context.WINDOW_SERVICE;
  * Created by brianroper on 5/2/17.
  */
 
-public class DrivingView{
+public class DrivingLockScreen {
 
     private Context mContext;
     private RelativeLayout mRelativeLayout;
@@ -52,9 +52,8 @@ public class DrivingView{
     private ImageView mCarImageView;
 
     private SharedPreferences mSharedPreferences;
-    private String mCurrentNeuraEventId = "";
 
-    public DrivingView(Context context) {
+    public DrivingLockScreen(Context context) {
         mContext = context;
     }
 
@@ -142,6 +141,7 @@ public class DrivingView{
                 addFailedDrivingEvent();
                 Utils.enableDeviceRinger(mContext);
                 stopDriving();
+                postDrivingEventStatus("false");
             }
         });
 
@@ -196,13 +196,13 @@ public class DrivingView{
                     .deleteRealmIfMigrationNeeded()
                     .build();
             realm = Realm.getInstance(realmConfiguration);
-            getSharedPreferences();
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, mCurrentNeuraEventId);
+                    DrivingEventLog drivingEventLog = realm.createObject(
+                            DrivingEventLog.class, Utils.returnDateAsDate().getTime() + "");
                     drivingEventLog.setTime(Utils.returnTime(calendar));
-                    drivingEventLog.setDate(Utils.returnDate(calendar));
+                    drivingEventLog.setDate(Utils.returnDateAsDate());
                     drivingEventLog.setSuccessful(false);
                     realm.copyToRealmOrUpdate(drivingEventLog);
                 }
@@ -212,32 +212,27 @@ public class DrivingView{
     }
 
     /**
-     * returns the devices shared preferences
-     */
-    public void getSharedPreferences(){
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        mCurrentNeuraEventId = mSharedPreferences.getString("currentNeuraEventId", "");
-    }
-
-    /**
      * builds and sends notification containing texting and driving facts
      */
     public void sendFactNotification(){
+
+        Random random = new Random();
+        int randomIndex = random.nextInt(mContext.getResources().getStringArray(R.array.timeout_facts).length);
 
         //creates pending intent that notification action will perform
         Intent drivingIntent = new Intent(mContext, ContinueDriveActivity.class);
         drivingIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, drivingIntent, 0);
-        //TODO: continue timeout session when notification button is clicked
 
         //builds the basic notification using the array stored in strings.xml
-        //TODO: randomly generate a fact based on array size and index
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(mContext)
                 .setSmallIcon(R.drawable.ic_trip_failed)
-                .setContentTitle("Don't text and drive!")
-                .setContentText(mContext.getResources().getStringArray(R.array.timeout_facts)[0])
-                .addAction(R.drawable.redcar, "Continue TimeOut", pendingIntent);
+                .setContentTitle(mContext.getResources().getString(R.string.notification_failed_title))
+                .setContentText(mContext.getResources().getStringArray(R.array.timeout_facts)[randomIndex])
+                .addAction(R.drawable.redcar,
+                        mContext.getResources().getString(R.string.notification_failed_button),
+                        pendingIntent);
 
         //shows notification text on the status bar when received
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
@@ -254,5 +249,12 @@ public class DrivingView{
         NotificationManager manager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(001, builder.build());
+    }
+
+    /**
+     * broadcast a message that driving is in progress or stopped
+     */
+    public void postDrivingEventStatus(final String isDriving){
+        EventBus.getDefault().postSticky(new DrivingMessage(isDriving));
     }
 }

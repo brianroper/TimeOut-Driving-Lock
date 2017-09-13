@@ -6,6 +6,10 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -25,21 +29,13 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".services.DrivingEventService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
-        <service android:name=".services.DrivingService">
-        </service>
-        <service
-            android:name=".services.NeuraMonitorService"
-            android:label="NeuraMonitorService">
+        <service android:name=".services.driving.DrivingLockService">
         </service>
 
-        <receiver android:name=".widgets.CounterProvider">
+        <receiver android:name=".widgets.CounterWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="com.brianroper.putitdown.TEXT_CHANGED" />
             </intent-filter>
 
             <meta-data
@@ -48,7 +44,8 @@
             </meta-data>
         </receiver>
 
-        <service android:name=".services.ScreenService"/>
+        <service android:name=".services.screen.ScreenService"/>
+        <service android:name=".services.gps.TimeOutMovementService"/>
 
         <activity
             android:name=".views.DrivingLogActivity"
