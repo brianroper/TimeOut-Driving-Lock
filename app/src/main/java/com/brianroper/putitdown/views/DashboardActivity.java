@@ -129,6 +129,9 @@ public class DashboardActivity extends AppCompatActivity {
         setSwipeFreshListener();
 
         handleUIUtilities();
+
+        onPermissionRetryIntent();
+        populateAllViews();
     }
 
     /**
@@ -415,7 +418,6 @@ public class DashboardActivity extends AppCompatActivity {
         checkDrawOverlayPermission();
         checkDoNotDisturbPermissions();
         checkLocationPermission();
-        //onPermissionRetryIntent();
     }
 
     /**
@@ -486,7 +488,7 @@ public class DashboardActivity extends AppCompatActivity {
                 else{
                     //location permission was denied and we need to notify the user that the app
                     //will no function properly without it
-                    //sendPermissionDeniedNotification();
+                    sendPermissionDeniedNotification();
                 }
             }
         }
@@ -523,6 +525,13 @@ public class DashboardActivity extends AppCompatActivity {
         //shows notification text on the status bar when received
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
         builder.setDefaults(Notification.DEFAULT_VIBRATE);
+
+        //allows for the full content of longer facts to be displayed in the notification
+        NotificationCompat.BigTextStyle bigTextStyle =
+                new NotificationCompat.BigTextStyle();
+        bigTextStyle.setBigContentTitle(getString(R.string.notification_permission_denied_title));
+        bigTextStyle.bigText(getString(R.string.notification_permission_denied_content));
+        builder.setStyle(bigTextStyle);
 
         //sends the notification
         NotificationManager manager =

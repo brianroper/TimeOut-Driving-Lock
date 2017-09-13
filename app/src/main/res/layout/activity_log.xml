@@ -53,8 +53,34 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/this_week_log"
+                    android:visibility="gone"
                     android:layout_below="@+id/this_week_title">
                 </android.support.v7.widget.RecyclerView>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_below="@+id/this_week_title"
+                    android:id="@+id/empty_view_this_week">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/emoticon_sad"
+                        android:layout_centerInParent="true"
+                        android:id="@+id/empty_view_this_week_icon"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="You currently have no trip data saved"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@+id/empty_view_this_week_icon"
+                        android:layout_marginTop="4dp"
+                        android:textSize="14sp"
+                        android:textColor="@color/primaryText"/>
+
+                </RelativeLayout>
 
             </RelativeLayout>
 
@@ -91,8 +117,34 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/this_month_log"
-                    android:layout_below="@id/this_month_title">
+                    android:layout_below="@id/this_month_title"
+                    android:visibility="gone">
                 </android.support.v7.widget.RecyclerView>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_below="@+id/this_month_title"
+                    android:id="@+id/empty_view_this_month">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/emoticon_sad"
+                        android:layout_centerInParent="true"
+                        android:id="@+id/empty_view_this_month_icon"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="You currently have no trip data saved"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@+id/empty_view_this_month_icon"
+                        android:layout_marginTop="4dp"
+                        android:textSize="14sp"
+                        android:textColor="@color/primaryText"/>
+
+                </RelativeLayout>
 
             </RelativeLayout>
 
@@ -129,8 +181,34 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/all_time_log"
-                    android:layout_below="@id/all_time_title">
+                    android:layout_below="@id/all_time_title"
+                    android:visibility="gone">
                 </android.support.v7.widget.RecyclerView>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_below="@+id/all_time_title"
+                    android:id="@+id/empty_view_all_time">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/emoticon_sad"
+                        android:layout_centerInParent="true"
+                        android:id="@+id/empty_view_all_time_icon"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="You currently have no trip data saved"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@+id/empty_view_all_time_icon"
+                        android:layout_marginTop="4dp"
+                        android:textSize="14sp"
+                        android:textColor="@color/primaryText"/>
+
+                </RelativeLayout>
 
             </RelativeLayout>
 

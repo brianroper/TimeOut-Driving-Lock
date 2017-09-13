@@ -90,6 +90,7 @@ public class ScreenReceiver extends BroadcastReceiver {
         Intent intent = new Intent(CounterWidgetProvider.ACTION_TEXT_CHANGED);
         intent.putExtra("CounterToday", counter.getCounter() + "");
         mContext.sendBroadcast(intent);
+        Log.i("CounterBroadcast: ", "sent");
     }
 
     public void onNotifyWidgetDataChange(){
