@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.adapters.DrivingLogEventAdapter;
+import com.brianroper.putitdown.model.events.PermissionsMessage;
 import com.brianroper.putitdown.model.events.PreferenceMessage;
 import com.brianroper.putitdown.utils.Constants;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
@@ -59,8 +60,8 @@ import io.realm.RealmResults;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    public final static int REQUEST_CODE = 5463;
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 5499;
+    public final static int MY_PERMISSIONS_REQUEST_OVERLAY = 5463;
 
     private EventBus mEventBus = EventBus.getDefault();
 
@@ -109,6 +110,8 @@ public class DashboardActivity extends AppCompatActivity {
     TextView mTripBottomEventTime;
     @BindView(R.id.bottom_event_name)
     TextView mTripBottomEventName;
+    @BindView(R.id.dashboard_log_bottom)
+    RelativeLayout mTripLogBottomLayout;
 
     private DrivingLogEventAdapter mDrivingLogEventAdapter;
     private LinearLayoutManager mLinearLayoutManager;
@@ -133,7 +136,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         handleUIUtilities();
 
-        onPermissionRetryIntent();
+        //onPermissionRetryIntent();
         populateAllViews();
     }
 
@@ -210,7 +213,7 @@ public class DashboardActivity extends AppCompatActivity {
     private void setTripLogViews(RealmResults<DrivingEventLog> results){
 
         try{
-            if(mRealmResults.size() != 0){
+            if(mRealmResults.size() != 0 && mRealmResults.size() != 1){
                 int topLog = results.size() - 1;
                 int bottomLog = results.size() - 2;
 
@@ -233,6 +236,20 @@ public class DashboardActivity extends AppCompatActivity {
                 else{
                     mTripBottomEventName.setText("you used your device while driving");
                 }
+            }
+            else if(mRealmResults.size() == 1){
+                int topLog = results.size() - 1;
+
+                mTripLogTopEventDate.setText(Utils.returnDateStringFromDate(results.get(topLog).getDate()));
+                mTripLogTopEventTime.setText(results.get(topLog).getTime());
+
+                if(results.get(topLog).isSuccessful()){
+                    mTripLogTopEventName.setText("you had a safe trip");
+                }
+                else{
+                    mTripLogTopEventName.setText("you used your device while driving");
+                }
+                mTripLogBottomLayout.setVisibility(View.GONE);
             }
         }
         catch (Exception e){e.printStackTrace();}
@@ -416,6 +433,19 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
+     * listens for permission denied/retry message
+     */
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onPermissionsMessageEvent(PermissionsMessage permissionsMessage){
+        if(permissionsMessage.message.equals("denied")) {
+            sendPermissionDeniedNotification();
+        }
+        else if(permissionsMessage.message.equals("retry")){
+            checkPermissions();
+        }
+    }
+
+    /**
      * END OF EVENT BUS SUBSCRIPTIONS
      */
 
@@ -457,7 +487,7 @@ public class DashboardActivity extends AppCompatActivity {
             if (!Settings.canDrawOverlays(this)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + getPackageName()));
-                startActivityForResult(intent, REQUEST_CODE);
+                startActivityForResult(intent, MY_PERMISSIONS_REQUEST_OVERLAY);
             }
         }
     }
@@ -488,19 +518,18 @@ public class DashboardActivity extends AppCompatActivity {
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         switch (requestCode){
-            case 99: {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
                 if(grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED){
 
                     //location permission was granted, time to start our services
                     initializeExternalActivityComponents();
                     populateAllViews();
-                    Log.i("Permissions: ", "Granted");
                 }
                 else{
                     //location permission was denied and we need to notify the user that the app
                     //will no function properly without it
-                    sendPermissionDeniedNotification();
+                    mEventBus.postSticky(new PermissionsMessage("denied"));
                 }
             }
         }
@@ -516,7 +545,7 @@ public class DashboardActivity extends AppCompatActivity {
         //notification will offer permissions when clicked
         Intent permissionIntent = new Intent(getApplicationContext(), DashboardActivity.class);
         permissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        permissionIntent.putExtra("retryPermission", true);
+        permissionIntent.putExtra("retryPermission", "retry");
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, permissionIntent, 0);
 
         NotificationCompat.Builder builder =
@@ -688,6 +717,34 @@ public class DashboardActivity extends AppCompatActivity {
                             }
                         })
                         .show();
+            }
+        });
+    }
+
+    public void handleAppInto(){
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferences getPrefs = PreferenceManager
+                        .getDefaultSharedPreferences(getBaseContext());
+
+                boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
+
+                if(isFirstStart){
+                    final Intent introIntent = new Intent(DashboardActivity.this, IntroActivity.class);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            startActivity(introIntent);
+                        }
+                    });
+
+                    SharedPreferences.Editor editor = getPrefs.edit();
+                    editor.putBoolean("firstStart", false);
+                    editor.apply();
+                }
             }
         });
     }

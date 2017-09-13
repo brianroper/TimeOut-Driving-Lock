@@ -52,7 +52,12 @@
             android:parentActivityName=".views.DashboardActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
-        <activity android:name=".views.ContinueDriveActivity">
+        <activity
+            android:name=".views.ContinueDriveActivity">
+        </activity>
+
+        <activity
+            android:name=".views.IntroActivity">
         </activity>
     </application>
 
