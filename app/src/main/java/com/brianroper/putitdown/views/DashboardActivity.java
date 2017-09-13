@@ -48,6 +48,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -180,12 +183,21 @@ public class DashboardActivity extends AppCompatActivity {
     private void setTripTextView(){
         int successfulTrips = 0;
         int failedTrips = 0;
+        Date currentDate = Utils.returnDateAsDate();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String currentStringDate = sdf.format(currentDate);
+
         for (int i = 0; i < mRealmResults.size(); i++) {
-            if(mRealmResults.get(i).isSuccessful() == true){
-                successfulTrips++;
-            }
-            else if(mRealmResults.get(i).isSuccessful() == false){
-                failedTrips++;
+
+            String logDateString = sdf.format(mRealmResults.get(i).getDate());
+
+            if(logDateString.equals(currentStringDate)){
+                if(mRealmResults.get(i).isSuccessful() == true){
+                    successfulTrips++;
+                }
+                else if(mRealmResults.get(i).isSuccessful() == false){
+                    failedTrips++;
+                }
             }
         }
         mTripSuccessCount.setText(successfulTrips + "");
