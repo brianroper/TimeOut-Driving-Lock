@@ -150,23 +150,24 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:id="@+id/empty_view_this_week">
+                    android:id="@+id/empty_view">
 
                     <ImageView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:src="@drawable/emoticon_sad"
                         android:layout_centerInParent="true"
-                        android:id="@+id/empty_view_this_week_icon"/>
+                        android:id="@+id/empty_view_icon"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="You currently have no trip data saved"
                         android:layout_centerHorizontal="true"
-                        android:layout_below="@+id/empty_view_this_week_icon"
+                        android:layout_below="@+id/empty_view_icon"
                         android:layout_marginTop="4dp"
                         android:textSize="14sp"
+                        android:id="@+id/empty_view_text"
                         android:textColor="@color/primaryText"/>
 
                 </RelativeLayout>

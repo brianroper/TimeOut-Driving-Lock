@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.adapters.DrivingLogEventAdapter;
@@ -33,8 +34,15 @@ public class DrivingLogFragment extends Fragment {
     @BindView(R.id.this_week_log)
     RecyclerView mLogRecycler;
 
-    @BindView(R.id.empty_view_this_week)
+    @BindView(R.id.empty_view)
     RelativeLayout mLogEmptyView;
+    @BindView(R.id.empty_view_text)
+    TextView mLogEmptyViewTextView;
+
+    @BindView(R.id.log_trip_failed_count)
+    TextView mLogTripFailedCountTextView;
+    @BindView(R.id.log_trip_success_count)
+    TextView mLogTripSuccessCountTextView;
 
     private DrivingLogEventAdapter mDLogAdapter;
     private RealmResults<DrivingEventLog> mRealmResults;
@@ -58,7 +66,7 @@ public class DrivingLogFragment extends Fragment {
 
         initializeAdapter();
 
-        handleEmptyViews(mRealmResults);
+        handleEmptyViews(mRealmResults, mCurrentFragment);
         populateAllViews();
 
         return root;
@@ -100,7 +108,7 @@ public class DrivingLogFragment extends Fragment {
      * note: currently mRealmResults serves as a place holder until TJ finished the logic algorithms
      * different lists of results will be passed in with the appropriate data
      */
-    public void handleEmptyViews(RealmResults<DrivingEventLog> results){
+    public void handleEmptyViews(RealmResults<DrivingEventLog> results, int currentFragment){
         if(results.size() != 0){
             mLogRecycler.setVisibility(View.VISIBLE);
             mLogEmptyView.setVisibility(View.GONE);
@@ -108,6 +116,15 @@ public class DrivingLogFragment extends Fragment {
         else{
             mLogRecycler.setVisibility(View.GONE);
             mLogEmptyView.setVisibility(View.VISIBLE);
+            if(currentFragment == THIS_WEEK_FRAGMENT){
+                mLogEmptyViewTextView.setText("You have no trip data for this week");
+            }
+            else if(currentFragment == THIS_MONTH_FRAGMENT){
+                mLogEmptyViewTextView.setText("You have no trip data for this month");
+            }
+            else if(currentFragment == ALL_TIME_FRAGMENT){
+                mLogEmptyViewTextView.setText("You currently have no trip data");
+            }
         }
     }
 
@@ -162,6 +179,7 @@ public class DrivingLogFragment extends Fragment {
      */
     public void populateAllViews(){
         populateLogRecycler();
+        populateTripViews();
     }
 
     /**
@@ -175,6 +193,27 @@ public class DrivingLogFragment extends Fragment {
         mLogRecycler.setLayoutManager(layoutManager);
         mDLogAdapter.returnThisWeekDrivingEventLogs();
         mDLogAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * populates trip text views. Checks to make sure realm results aren't null before
+     * incrementing values
+     */
+    public void populateTripViews(){
+        int failedCount = 0;
+        int successCount = 0;
+        if(mRealmResults.size() != 0){
+            for (int i = 0; i < mRealmResults.size(); i++) {
+                if(mRealmResults.get(i).isSuccessful()){
+                    successCount++;
+                }
+                else{
+                    failedCount++;
+                }
+            }
+        }
+        mLogTripFailedCountTextView.setText(failedCount + "");
+        mLogTripSuccessCountTextView.setText(successCount + "");
     }
 
     /**

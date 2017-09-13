@@ -68,7 +68,8 @@ public class DrivingLogActivity extends AppCompatActivity {
      */
     public void handleToolbarBehavior(Toolbar toolbar){
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Trip Logs");
+        //getSupportActionBar().setTitle("Trip Logs");
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
