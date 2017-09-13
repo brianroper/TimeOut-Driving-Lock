@@ -67,26 +67,29 @@ public class ScreenReceiver extends BroadcastReceiver {
 
                 try{
                     ScreenCounter screenCounter = realm.where(ScreenCounter.class).equalTo("id", Utils.returnDateAsId()).findFirst();
-                    Log.i("ScreenReciever: ", screenCounter.getCounter()+"");
 
                     if(screenCounter != null){
                         ScreenCounter counterData = realm.where(ScreenCounter.class).equalTo("id", Utils.returnDateAsId()).findFirst();
                         counterData.setCounter(counterData.getCounter() + 1);
                         realm.copyToRealmOrUpdate(counterData);
-                        Log.i("ScreenReciever: ", counterData.getCounter()+"");
+                        sendCounterBroadcastToWidget(counterData);
                     }
                 }
                 catch (Exception e){
-
-                    Log.i("ScreenCount: ", "null");
-
                     ScreenCounter screenCounter = realm.createObject(ScreenCounter.class, Utils.returnDateAsId());
                     screenCounter.setCounter(1);
                     realm.copyToRealmOrUpdate(screenCounter);
+                    sendCounterBroadcastToWidget(screenCounter);
                 }
             }
         });
         realm.close();
+    }
+
+    public void sendCounterBroadcastToWidget(ScreenCounter counter){
+        Intent intent = new Intent(CounterWidgetProvider.ACTION_TEXT_CHANGED);
+        intent.putExtra("CounterToday", counter.getCounter() + "");
+        mContext.sendBroadcast(intent);
     }
 
     public void onNotifyWidgetDataChange(){

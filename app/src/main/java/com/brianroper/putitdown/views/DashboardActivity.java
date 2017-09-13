@@ -124,6 +124,8 @@ public class DashboardActivity extends AppCompatActivity {
         getSharedPreferences();
         setPassengerSwitchPosition();
 
+        initializeAdapter();
+
         setSwipeFreshListener();
 
         handleUIUtilities();
@@ -266,7 +268,6 @@ public class DashboardActivity extends AppCompatActivity {
      * initializes all adapters and services
      */
     public void initializeExternalActivityComponents(){
-        initializeAdapter();
         initializeMovementService();
         initializeScreenService();
     }
@@ -414,6 +415,7 @@ public class DashboardActivity extends AppCompatActivity {
         checkDrawOverlayPermission();
         checkDoNotDisturbPermissions();
         checkLocationPermission();
+        //onPermissionRetryIntent();
     }
 
     /**
@@ -484,7 +486,7 @@ public class DashboardActivity extends AppCompatActivity {
                 else{
                     //location permission was denied and we need to notify the user that the app
                     //will no function properly without it
-                    sendPermissionDeniedNotification();
+                    //sendPermissionDeniedNotification();
                 }
             }
         }
@@ -500,6 +502,7 @@ public class DashboardActivity extends AppCompatActivity {
         //notification will offer permissions when clicked
         Intent permissionIntent = new Intent(getApplicationContext(), DashboardActivity.class);
         permissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        permissionIntent.putExtra("retryPermission", true);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, permissionIntent, 0);
 
         NotificationCompat.Builder builder =
@@ -525,6 +528,17 @@ public class DashboardActivity extends AppCompatActivity {
         NotificationManager manager =
                 (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(003, builder.build());
+    }
+
+    /**
+     * watches for the incoming intent extra that indicates we want to retry the permission requests
+     */
+    public void onPermissionRetryIntent(){
+        Intent incomingIntent = getIntent();
+        boolean isRetryPermission = incomingIntent.getBooleanExtra("retryPermission", true);
+        if(isRetryPermission){
+            checkPermissions();
+        }
     }
 
     /**

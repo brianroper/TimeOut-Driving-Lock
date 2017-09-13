@@ -35,6 +35,7 @@
         <receiver android:name=".widgets.CounterWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="com.brianroper.putitdown.TEXT_CHANGED" />
             </intent-filter>
 
             <meta-data

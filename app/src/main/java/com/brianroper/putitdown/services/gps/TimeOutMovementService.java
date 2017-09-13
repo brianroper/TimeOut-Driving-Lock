@@ -283,6 +283,9 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         manager.notify(002, builder.build());
     }
 
+    /**
+     * returns the current shared preferences
+     */
     public void returnSharedPreferences(){
         SharedPreferences sharedPreferences
                 = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
