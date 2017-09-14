@@ -29,6 +29,13 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="16dp"/>
 
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_device_lock"
+                android:id="@+id/test_button"
+                android:layout_alignParentEnd="true"/>
+
             <!-- put settings button here -->
 
         </RelativeLayout>

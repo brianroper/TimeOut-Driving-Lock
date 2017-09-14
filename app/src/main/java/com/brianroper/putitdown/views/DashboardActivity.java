@@ -50,12 +50,15 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
 public class DashboardActivity extends AppCompatActivity {
@@ -321,7 +324,13 @@ public class DashboardActivity extends AppCompatActivity {
      */
     public void initializeScreenService(){
         Intent screenService = new Intent(getApplicationContext(), ScreenService.class);
-        startService(screenService);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            startForegroundService(screenService);
+        }
+        else{
+            startService(screenService);
+        }
     }
 
     /**
@@ -329,7 +338,13 @@ public class DashboardActivity extends AppCompatActivity {
      */
     public void initializeMovementService(){
         Intent locationIntent = new Intent(getApplicationContext(), TimeOutMovementService.class);
-        startService(locationIntent);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            startForegroundService(locationIntent);
+        }
+        else{
+            startService(locationIntent);
+        }
     }
 
     /**
@@ -526,6 +541,7 @@ public class DashboardActivity extends AppCompatActivity {
 
                     //location permission was granted, time to start our services
                     initializeExternalActivityComponents();
+                    Log.i("GPS_Service: ", "initialized");
                     populateAllViews();
                 }
                 else{
@@ -758,4 +774,28 @@ public class DashboardActivity extends AppCompatActivity {
     /**
      * END OF VIEW UTILITY
      */
+
+    @OnClick(R.id.test_button)
+    public void setTestListener(){
+
+        final boolean isSuccessful = true;
+        final Calendar calendar = Calendar.getInstance();
+        Realm realm;
+        Realm.init(getApplicationContext());
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        realm = Realm.getInstance(realmConfiguration);
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, Utils.returnDateAsDate().getTime() + "");
+                drivingEventLog.setTime(Utils.returnTime(calendar));
+                drivingEventLog.setDate(Utils.returnDateAsDate());
+                drivingEventLog.setSuccessful(isSuccessful);
+                realm.copyToRealmOrUpdate(drivingEventLog);
+            }
+        });
+        realm.close();
+    }
 }

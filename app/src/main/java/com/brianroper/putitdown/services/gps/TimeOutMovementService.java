@@ -59,6 +59,8 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        Log.i("GPS_Service: ", "Started");
+
         initializeDrivingService();
         returnSharedPreferences();
 
@@ -93,6 +95,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         if(location != null){
             TimeOutLocation currentLocation = new TimeOutLocation(location, this.useMetricUnits());
             this.updateSpeed(currentLocation);
+            Log.i("CurrentSpeed: ", currentLocation + "");
         }
     }
 
@@ -208,6 +211,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        Log.i("GPS_Service: ", "Destroyed");
     }
 
     /**
@@ -238,9 +242,9 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, Utils.returnDateAsDate().getTime() + Utils.returnDateAsDate().getTime() + "");
+                DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, Utils.returnDateAsDate().getTime() + "");
                 drivingEventLog.setTime(Utils.returnTime(calendar));
-                drivingEventLog.setDate(Utils.convertTimeStampToDate(Utils.returnDateAsDate().getTime()));
+                drivingEventLog.setDate(Utils.returnDateAsDate());
                 drivingEventLog.setSuccessful(isSuccessful);
                 realm.copyToRealmOrUpdate(drivingEventLog);
             }

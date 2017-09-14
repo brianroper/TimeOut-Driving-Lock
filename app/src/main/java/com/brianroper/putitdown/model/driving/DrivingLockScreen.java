@@ -83,6 +83,10 @@ public class DrivingLockScreen {
             layoutParams.flags = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
         }
 
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            layoutParams.flags = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        }
+
         int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
