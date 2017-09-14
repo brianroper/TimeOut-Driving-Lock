@@ -38,6 +38,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     compile 'com.github.apl-devs:appintro:v4.2.2'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+
 }
 
 

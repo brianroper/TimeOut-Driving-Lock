@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:background="@color/background">
 
-        <ImageView
+        <android.support.v4.widget.CircleImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_lock_open"
+            android:layout_marginStart="8dp"
+            android:id="@+id/unlock_icon"
+            android:layout_centerVertical="true"
+            app:civ_border_width="2dp"
+            app:civ_border_color="@color/colorAccent"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Unlock"
             android:textSize="22sp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"
-            android:textColor="@color/primaryText"/>
+            android:textColor="@color/primaryText"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/unlock_icon"/>
 
     </RelativeLayout>
 

@@ -125,6 +125,8 @@ public class DashboardActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        handleAppInto();
+
         checkPermissions();
 
         getSharedPreferences();
@@ -721,6 +723,9 @@ public class DashboardActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * decides if the app is running for the first time or not
+     */
     public void handleAppInto(){
 
         Thread thread = new Thread(new Runnable() {
@@ -747,6 +752,7 @@ public class DashboardActivity extends AppCompatActivity {
                 }
             }
         });
+        thread.start();
     }
 
     /**
