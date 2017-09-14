@@ -8,4 +8,10 @@
     <color name="grey">#e6e6e6</color>
     <color name="dark_grey">#6f6f6f</color>
     <color name="primaryText">#47525E</color>
+
+    <!-- slider colors -->
+    <color name="slide3Color">#673ab7</color>
+    <color name="slide4Color">#ffc107</color>
+    <color name="slide5Color">#4caf50</color>
+    <color name="slide6Color">#607d8b</color>
 </resources>
