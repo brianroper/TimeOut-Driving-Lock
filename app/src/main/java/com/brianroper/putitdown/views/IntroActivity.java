@@ -38,7 +38,7 @@ public class IntroActivity extends AppIntro2 {
                 R.drawable.redcar,
                 getResources().getColor(R.color.slide3Color)));
 
-        //askForPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 3);
+        askForPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 3);
 
 
         addSlide(AppIntro2Fragment.newInstance("App Overlay",
@@ -47,7 +47,7 @@ public class IntroActivity extends AppIntro2 {
                 R.drawable.redcar,
                 getResources().getColor(R.color.slide4Color)));
 
-        //askForPermissions(new String[]{Manifest.permission.SYSTEM_ALERT_WINDOW}, 4);
+        askForPermissions(new String[]{Manifest.permission.SYSTEM_ALERT_WINDOW}, 4);
 
         addSlide(AppIntro2Fragment.newInstance("One Left",
                 "TimeOut needs access to the do not disturb permission. " +
@@ -56,7 +56,7 @@ public class IntroActivity extends AppIntro2 {
                 getResources().getColor(R.color.slide5Color)));
 
 
-        //askForPermissions(new String[]{Manifest.permission.MODIFY_AUDIO_SETTINGS}, 5);
+        askForPermissions(new String[]{Manifest.permission.MODIFY_AUDIO_SETTINGS}, 5);
 
         addSlide(AppIntro2Fragment.newInstance("Start Driving",
                 "Time works silently in the background to ensure your always driving safetly. " +
