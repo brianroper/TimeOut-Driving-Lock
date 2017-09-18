@@ -662,6 +662,12 @@ public class DashboardActivity extends AppCompatActivity {
         });
     }
 
+    @OnClick(R.id.settings_button)
+    public void setSettingsButtonListener(){
+        Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(settingsIntent);
+    }
+
     /**
      * END OF VIEW LISTENERS
      */
