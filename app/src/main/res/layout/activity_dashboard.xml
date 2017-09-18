@@ -499,7 +499,7 @@
                     android:paddingEnd="16dp"
                     android:paddingStart="16dp"
                     android:paddingTop="2dp"
-                    android:text="Set a personal goal for minimum interrupted trips"
+                    android:text="Set a goal to have fewer interruptions"
                     android:textColor="@color/primaryText"/>
 
                 <android.support.v7.widget.AppCompatSeekBar
@@ -522,6 +522,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="16dp"
                     android:text="25"
+                    android:paddingStart="16dp"
                     android:id="@+id/goal_seek_bar_count"
                     android:textColor="@color/primaryText"
                     android:textSize="28sp"/>

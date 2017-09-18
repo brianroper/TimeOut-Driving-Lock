@@ -327,9 +327,11 @@ public class DashboardActivity extends AppCompatActivity {
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             startForegroundService(screenService);
+            Log.i("AndroidVersion: ", "Oreo");
         }
         else{
             startService(screenService);
+            Log.i("AndroidVersion: ", Build.VERSION.SDK_INT + "");
         }
     }
 
