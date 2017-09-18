@@ -32,7 +32,10 @@
 
     <!-- permissions denied notification -->
     <string name="notification_permission_denied_title">You denied the required permissions</string>
-    <string name="notification_permission_denied_content">TimeOut requires permissions that you denied in order to function properly. Please allow these permissions so you can use our awesome app.</string>
+    <string name="notification_permission_denied_content">TimeOut requires permissions that you
+        denied in order to function properly. Please allow these permissions so you can use our
+        awesome app.
+    </string>
     <string name="notification_permission_denied_button">Review permissions</string>
 
     <!-- sms auto reply -->
