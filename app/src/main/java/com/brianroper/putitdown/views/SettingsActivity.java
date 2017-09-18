@@ -1,17 +1,26 @@
 package com.brianroper.putitdown.views;
 
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.brianroper.putitdown.R;
+import com.brianroper.putitdown.model.events.PreferenceMessage;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -31,6 +40,11 @@ public class SettingsActivity extends AppCompatActivity {
     @BindView(R.id.surface_switch)
     CardView mSurfacePassenger;
 
+    @BindView(R.id.passenger_switch)
+    SwitchCompat mPassengerSwitch;
+
+    private SharedPreferences mSharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,8 +52,26 @@ public class SettingsActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        returnDefaultSharedPreferences();
         handleUIUtilities();
     }
+
+    /**
+     * LIFE CYCLE METHODS
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    /**
+     * END OF LIFE CYCLE METHODS
+     */
 
     /**
      * UI UTILITIES
@@ -52,6 +84,7 @@ public class SettingsActivity extends AppCompatActivity {
         handleToolbarBehavior(mSettingsToolbar);
         handleStatusBarColor();
         handleCardViewBackgroundColors();
+        setPassengerSwitchDefaultPosition();
     }
 
     /**
@@ -87,4 +120,106 @@ public class SettingsActivity extends AppCompatActivity {
         mSurfacePlayStore.setCardBackgroundColor(getResources().getColor(R.color.white));
         mSurfaceTutorial.setCardBackgroundColor(getResources().getColor(R.color.white));
     }
+
+    /**
+     * sets the default position of the passenger switch
+     */
+    public void setPassengerSwitchDefaultPosition(){
+        boolean passengerMode = mSharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false);
+
+        if(passengerMode){
+            mPassengerSwitch.setChecked(true);
+        }
+        else if(!passengerMode){
+            mPassengerSwitch.setChecked(false);
+        }
+    }
+
+    /**
+     * END OF UI UTILITIES
+     */
+
+    /**
+     * UI LISTENERS
+     */
+
+    @OnClick(R.id.surface_tutorial)
+    public void setSurfaceTutorialListener(){
+        //TODO: create intent for tutorial activity
+    }
+
+    @OnClick(R.id.surface_drive_mode)
+    public void setSurfaceDriveModeListener(){
+        //TODO: create message box to adjust drive mode
+    }
+
+    @OnClick(R.id.surface_unlock_mode)
+    public void setSurfaceLockModeListener(){
+        //TODO: create message box to adjust unlock timer
+    }
+
+    @OnClick(R.id.surface_feedback)
+    public void setSurfaceFeedbackListner(){
+        //TODO: create intent to open email to team@timeoutinitiative.com
+    }
+
+    @OnClick(R.id.surface_play_store)
+    public void setSurfacePlayStoreListner(){
+        //TODO: create intent to open app in play store for rating
+    }
+
+    /**
+     * check changed listener for the passenger mode switch
+     */
+    @OnCheckedChanged(R.id.passenger_switch)
+    public void setSurfacePassengerSwitchListener(){
+        if(mPassengerSwitch.isChecked()){
+            enablePassengerMode();
+        }
+        else if(!mPassengerSwitch.isChecked()){
+            disablePassengerMode();
+        }
+    }
+
+    /**
+     * END OF UI LISTENERS
+     */
+
+    public void returnDefaultSharedPreferences(){
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    }
+
+    /**
+     * PREFERENCES
+     */
+
+    /**
+     * updates passenger shared preferences value
+     */
+    private void enablePassengerMode(){
+        mSharedPreferences
+                .edit()
+                .putBoolean(getString(R.string.passenger_mode_key), true)
+                .apply();
+
+        EventBus.getDefault().postSticky(new PreferenceMessage("true"));
+        Toast.makeText(getApplicationContext(), "Passenger mode enabled", Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * updates passenger shared preferences value
+     */
+    private void disablePassengerMode(){
+        mSharedPreferences
+                .edit()
+                .putBoolean(getString(R.string.passenger_mode_key), false)
+                .apply();
+
+        EventBus.getDefault().postSticky(new PreferenceMessage("false"));
+        Toast.makeText(getApplicationContext(), "Passenger mode disabled", Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * END OF PREFERENCES
+     */
 }

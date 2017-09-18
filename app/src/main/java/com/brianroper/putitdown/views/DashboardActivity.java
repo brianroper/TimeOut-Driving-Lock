@@ -463,6 +463,19 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
+     * listens for permission denied/retry message
+     */
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onPreferenceMessageEvent(PreferenceMessage preferenceMessage){
+        if(preferenceMessage.message.equals("true")) {
+            mPassengerSwitch.setChecked(true);
+        }
+        else if(preferenceMessage.message.equals("false")){
+            mPassengerSwitch.setChecked(false);
+        }
+    }
+
+    /**
      * END OF EVENT BUS SUBSCRIPTIONS
      */
 
