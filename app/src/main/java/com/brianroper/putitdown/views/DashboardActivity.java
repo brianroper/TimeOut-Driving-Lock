@@ -146,7 +146,7 @@ public class DashboardActivity extends AppCompatActivity {
         //onPermissionRetryIntent();
         populateAllViews();
 
-        initializeExternalActivityComponents();
+        //initializeExternalActivityComponents();
     }
 
     /**

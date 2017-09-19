@@ -202,6 +202,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .putBoolean(getString(R.string.passenger_mode_key), true)
                 .apply();
 
+        //notifies dashboard of ui change since it is still alive in background 
         EventBus.getDefault().postSticky(new PreferenceMessage("true"));
         Toast.makeText(getApplicationContext(), "Passenger mode enabled", Toast.LENGTH_LONG).show();
     }
@@ -215,6 +216,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .putBoolean(getString(R.string.passenger_mode_key), false)
                 .apply();
 
+        //notifies dashboard of ui change since it is still alive in background
         EventBus.getDefault().postSticky(new PreferenceMessage("false"));
         Toast.makeText(getApplicationContext(), "Passenger mode disabled", Toast.LENGTH_LONG).show();
     }

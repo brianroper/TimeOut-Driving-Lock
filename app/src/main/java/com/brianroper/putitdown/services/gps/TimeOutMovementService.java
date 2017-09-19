@@ -294,6 +294,9 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         SharedPreferences sharedPreferences
                 = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mIsPassengerMode = sharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false);
+        //TODO: get user preferences here and put into variables use values at top as default values if the user
+        //TODO: has not yet altered their preferences
+        //TODO: handle lock out speed and time before lockout restarts after unlock here
     }
 
     /**
