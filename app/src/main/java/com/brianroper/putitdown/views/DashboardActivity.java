@@ -601,7 +601,7 @@ public class DashboardActivity extends AppCompatActivity {
                 }
                 else{
                     //location permission was denied and we need to notify the user that the app
-                    //will no function properly without it
+                    //will not function properly without it
                     mEventBus.postSticky(new PermissionsMessage("denied"));
                 }
             }

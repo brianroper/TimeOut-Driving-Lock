@@ -26,14 +26,16 @@ public class DrivingLogActivity extends AppCompatActivity {
     final int THIS_WEEK_FRAGMENT = 001;
     final int THIS_MONTH_FRAGMENT = 002;
     final int ALL_TIME_FRAGMENT = 003;
+    final int TODAY_FRAGMENT = 004;
 
     private DrivingLogFragment[] mDrivingLogFragments = {
+            DrivingLogFragment.newInstance(TODAY_FRAGMENT),
             DrivingLogFragment.newInstance(THIS_WEEK_FRAGMENT),
             DrivingLogFragment.newInstance(THIS_MONTH_FRAGMENT),
-            DrivingLogFragment.newInstance(ALL_TIME_FRAGMENT),
+            DrivingLogFragment.newInstance(ALL_TIME_FRAGMENT)
     };
 
-    private String[] mFragmentNames = {"This Week", "This Month", "All Time"};
+    private String[] mFragmentNames = { "Today", "This Week", "This Month", "All Time" };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +123,7 @@ public class DrivingLogActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override

@@ -156,4 +156,23 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
         mResults = results;
         return results;
     }
+    /**
+     * returns today's driving logs
+     */
+    public ArrayList<DrivingEventLog> returnTodayDrivingEventLogs(){
+        ArrayList<DrivingEventLog> results = new ArrayList<>();
+        Date today = Utils.returnDateAsDate();
+
+        for (int i = 0; i < mRealmResults.size(); i++) {
+
+            Date currentDate = mRealmResults.get(i).getDate();
+
+            if (currentDate.getYear() == today.getYear()
+                    && currentDate.getMonth() == today.getMonth()
+                    && currentDate.getDay() == today.getDay())
+                results.add(mRealmResults.get(i));
+        }
+        mResults = results;
+        return results;
+    }
 }

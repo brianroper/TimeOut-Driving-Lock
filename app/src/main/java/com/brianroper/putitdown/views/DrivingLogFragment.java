@@ -54,6 +54,7 @@ public class DrivingLogFragment extends Fragment {
     final int THIS_WEEK_FRAGMENT = 001;
     final int THIS_MONTH_FRAGMENT = 002;
     final int ALL_TIME_FRAGMENT = 003;
+    final int TODAY_FRAGMENT = 004;
 
     @Nullable
     @Override
@@ -128,6 +129,9 @@ public class DrivingLogFragment extends Fragment {
             else if(currentFragment == ALL_TIME_FRAGMENT){
                 mLogEmptyViewTextView.setText("You currently have no trip data");
             }
+            else if(currentFragment == TODAY_FRAGMENT){
+                mLogEmptyViewTextView.setText("You currently have no trip data");
+            }
         }
     }
 
@@ -168,6 +172,11 @@ public class DrivingLogFragment extends Fragment {
         else if(mCurrentFragment == ALL_TIME_FRAGMENT){
             mRealmResults = mDLogAdapter.getDrivingEventLogFromRealm();
             mResults = mDLogAdapter.returnAllTimeDrivingEventLogs();
+            mDLogAdapter.notifyDataSetChanged();
+        }
+        else if(mCurrentFragment == TODAY_FRAGMENT){
+            mRealmResults = mDLogAdapter.getDrivingEventLogFromRealm();
+            mResults = mDLogAdapter.returnTodayDrivingEventLogs();
             mDLogAdapter.notifyDataSetChanged();
         }
     }
