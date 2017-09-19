@@ -1,15 +1,19 @@
 package com.brianroper.putitdown.views;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DialogTitle;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -18,6 +22,8 @@ import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.model.events.PreferenceMessage;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -153,16 +159,52 @@ public class SettingsActivity extends AppCompatActivity {
     @OnClick(R.id.surface_drive_mode)
     public void setSurfaceDriveModeListener(){
         //TODO: create message box to adjust drive mode
+        final String[] driveModes = {"Strict", "Normal", "Lenient"};
+        new AlertDialog.Builder(this)
+                .setTitle("Adjust Driving Mode")
+                .setSingleChoiceItems(driveModes, 0, null)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int button) {
+                        dialog.cancel();
+                    }
+                })
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int button) {
+                        dialog.dismiss();
+                        int selectedOption = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+
+                        Log.i("Drive Mode:", "selectedOption:" + driveModes[selectedOption]);
+                    }
+                })
+                .show();
     }
 
     @OnClick(R.id.surface_unlock_mode)
     public void setSurfaceLockModeListener(){
         //TODO: create message box to adjust unlock timer
+        final String[] times = {"15s", "30s", "45s"};
+        new AlertDialog.Builder(this)
+                .setTitle("Adjust Unlock Timer")
+                .setSingleChoiceItems(times, 1, null)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int button) {
+                        dialog.cancel();
+                    }
+                })
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int button) {
+                        dialog.dismiss();
+                        int selectedOption = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+
+                        Log.i("Drive Mode:", "selectedOption:" + times[selectedOption]);
+                    }
+                })
+                .show();
     }
 
     @OnClick(R.id.surface_feedback)
     public void setSurfaceFeedbackListner(){
-        
+
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
         emailIntent.setData(Uri.parse("mailto: team@timeoutinitiative.com"));
         startActivity(Intent.createChooser(emailIntent, "Give Feedback"));
