@@ -282,7 +282,7 @@ public class DashboardActivity extends AppCompatActivity {
      * sets the stored value for the goal amount
      */
     public void setGoalCountTextView(){
-        int goal = mSharedPreferences.getInt("goal", 25);
+        int goal = mSharedPreferences.getInt("goal", 10);
         boolean isGoalSet = mSharedPreferences.getBoolean("goalSet", false);
         int goalWeek = mSharedPreferences.getInt("goalWeek", 0);
         mGoalCount.setText(goal + "");
