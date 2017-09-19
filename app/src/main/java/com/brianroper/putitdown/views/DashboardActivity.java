@@ -95,6 +95,8 @@ public class DashboardActivity extends AppCompatActivity {
     AppCompatSeekBar mGoalSeekbar;
     @BindView(R.id.goal_seek_bar_count)
     TextView mGoalCount;
+    @BindView(R.id.goal_content)
+    TextView mGoalContent;
     @BindView(R.id.dashboard_swipe_refresh_layout)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -143,6 +145,8 @@ public class DashboardActivity extends AppCompatActivity {
 
         //onPermissionRetryIntent();
         populateAllViews();
+
+        initializeExternalActivityComponents();
     }
 
     /**
@@ -279,8 +283,39 @@ public class DashboardActivity extends AppCompatActivity {
      */
     public void setGoalCountTextView(){
         int goal = mSharedPreferences.getInt("goal", 25);
+        boolean isGoalSet = mSharedPreferences.getBoolean("goalSet", false);
+        int goalWeek = mSharedPreferences.getInt("goalWeek", 0);
         mGoalCount.setText(goal + "");
         mGoalSeekbar.setProgress(goal);
+        setGoalSeekBarVisibility(isGoalSet);
+        getGoalDate(goalWeek);
+    }
+
+    /**
+     * sets the visibility of the seek bar depending on if a current goal is set
+     */
+    public void setGoalSeekBarVisibility(boolean isGoalSet){
+        if(isGoalSet){
+            mGoalSeekbar.setVisibility(View.GONE);
+            mGoalContent.setText("You have set a goal for this week!");
+        }
+        else if(!isGoalSet){
+            mGoalSeekbar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * compares the goal date to the current date and returns true if they match
+     */
+    public void getGoalDate(int goalDate){
+        Calendar calendar = Calendar.getInstance();
+        int currentDate = calendar.get(Calendar.WEEK_OF_YEAR);
+        if (currentDate == goalDate){
+            mGoalSeekbar.setVisibility(View.GONE);
+        }
+        else{
+            mGoalSeekbar.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -343,9 +378,11 @@ public class DashboardActivity extends AppCompatActivity {
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             startForegroundService(locationIntent);
+            Log.i("AndroidVersion: ", "Oreo");
         }
         else{
             startService(locationIntent);
+            Log.i("AndroidVersion: ", Build.VERSION.SDK_INT + "");
         }
     }
 
@@ -409,6 +446,9 @@ public class DashboardActivity extends AppCompatActivity {
      */
     public void storeGoal(int progress){
         mSharedPreferences.edit().putInt("goal", progress).apply();
+        mSharedPreferences.edit().putBoolean("goalSet", true).apply();
+        Calendar calender = Calendar.getInstance();
+        mSharedPreferences.edit().putInt("goalWeek", calender.get(Calendar.WEEK_OF_YEAR)).apply();
     }
 
     /**
@@ -747,6 +787,7 @@ public class DashboardActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 storeGoal(seekBar.getProgress());
+                                setGoalCountTextView();
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
