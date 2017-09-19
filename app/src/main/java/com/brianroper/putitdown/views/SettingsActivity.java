@@ -1,6 +1,8 @@
 package com.brianroper.putitdown.views;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -160,7 +162,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     @OnClick(R.id.surface_feedback)
     public void setSurfaceFeedbackListner(){
-        //TODO: create intent to open email to team@timeoutinitiative.com
+        
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+        emailIntent.setData(Uri.parse("mailto: team@timeoutinitiative.com"));
+        startActivity(Intent.createChooser(emailIntent, "Give Feedback"));
     }
 
     @OnClick(R.id.surface_play_store)
