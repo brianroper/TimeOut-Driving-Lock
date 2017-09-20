@@ -145,7 +145,8 @@ public class DrivingLockScreen {
                 addFailedDrivingEvent();
                 Utils.enableDeviceRinger(mContext);
                 stopDriving();
-                postDrivingEventStatus("false");
+                Constants constants = new Constants();
+                postDrivingEventStatus(constants.UNLOCK_STATUS_TRUE);
             }
         });
 

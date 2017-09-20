@@ -51,7 +51,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
     final int TARGET_STOPPED_SPEED = 0;
 
     private Intent mDrivingService;
-    private boolean mIsUnlocked = true;
+    private boolean mIsUnlocked = false;
     private boolean mIsDriving = false;
 
     private boolean mIsPassengerMode = false;
@@ -171,22 +171,11 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
                     }
                 }
             }
-            else if(mIsUnlocked){
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mIsUnlocked = false;
-                        Constants constants = new Constants();
-                        EventBus.getDefault().postSticky(new DrivingMessage(constants.DRIVING_LOG_EVENT_FAILED));
-                    }
-                }, DRIVING_LOCKOUT_RETRY_TIME);
-            }
         }
     }
 
     /**
-     * checks to see if the user has actually stopped driving 
+     * checks to see if the user has actually stopped driving
      */
     public void handleStoppedDriving(){
         if (mCurrentSpeed == TARGET_STOPPED_SPEED){
@@ -196,6 +185,19 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
             Constants constants = new Constants();
             EventBus.getDefault().postSticky(new DrivingMessage(constants.DRIVING_LOG_EVENT_SUCCESS));
         }
+    }
+
+    public void handleRestartSession(){
+        mIsUnlocked = true;
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mIsUnlocked = false;
+                Constants constants = new Constants();
+                EventBus.getDefault().postSticky(new DrivingMessage(constants.DRIVING_LOG_EVENT_FAILED));
+            }
+        }, DRIVING_LOCKOUT_RETRY_TIME);
     }
 
     /**
@@ -231,11 +233,11 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onDrivingMessageEvent(DrivingMessage drivingMessage){
         Constants constants = new Constants();
-        if(drivingMessage.message == constants.DRIVING_STATUS_FALSE) {
-            mIsUnlocked = true;
+        if(drivingMessage.message == constants.UNLOCK_STATUS_FALSE) {
+
         }
-        if (drivingMessage.message == constants.DRIVING_STATUS_TRUE){
-            mIsUnlocked = false;
+        if (drivingMessage.message == constants.UNLOCK_STATUS_TRUE){
+            handleRestartSession();
         }
     }
 

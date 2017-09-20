@@ -132,8 +132,6 @@ public class DashboardActivity extends AppCompatActivity {
 
         handleAppInto();
 
-        checkPermissions();
-
         getSharedPreferences();
         setPassengerSwitchPosition();
 
@@ -143,10 +141,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         handleUIUtilities();
 
-        //onPermissionRetryIntent();
         populateAllViews();
-
-        initializeExternalActivityComponents();
     }
 
     /**
@@ -155,9 +150,8 @@ public class DashboardActivity extends AppCompatActivity {
      * 3) USER PREFERENCES
      * 4) LIFE CYCLE METHODS
      * 5) EVENT BUS SUBSCRIPTIONS (WORMHOLES)
-     * 6) PERMISSIONS
-     * 7) VIEW LISTENERS
-     * 8) VIEW UTILITY
+     * 6) VIEW LISTENERS
+     * 7) VIEW UTILITY
      */
 
     /**
@@ -195,6 +189,7 @@ public class DashboardActivity extends AppCompatActivity {
     private void setTripTextView(){
         int successfulTrips = 0;
         int failedTrips = 0;
+        //TODO: compare to a weekly failed trip count
         Date currentDate = Utils.returnDateAsDate();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         String currentStringDate = sdf.format(currentDate);
@@ -216,49 +211,6 @@ public class DashboardActivity extends AppCompatActivity {
         mTripFailedCount.setText(failedTrips + "");
 
         compareGoalToTripCount(failedTrips);
-    }
-
-    /**
-     * compares the current unlocks to the set goal 
-     */
-    private void compareGoalToTripCount(int failedTrips){
-        int goal = mSharedPreferences.getInt("goal", 0);
-        if(goal == (failedTrips) / 2 || goal == ((failedTrips) / 2) + (failedTrips / 4)){
-            //notification will offer permissions when clicked
-            Intent permissionIntent = new Intent(getApplicationContext(), DashboardActivity.class);
-            permissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            permissionIntent.putExtra("retryPermission", "retry");
-            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, permissionIntent, 0);
-
-            NotificationCompat.Builder builder =
-                    new NotificationCompat.Builder(getApplicationContext())
-                            .setSmallIcon(R.drawable.redcar)
-                            .setContentTitle(
-                                    getApplicationContext()
-                                            .getResources()
-                                            .getString(R.string.goal_notification_title))
-                            .setContentText(
-                                    "You are coming close to exceeding your goal of " + goal + " total unlocks. ")
-                            .addAction(R.drawable.redcar,
-                                    getApplicationContext().getString(R.string.goal_notification_button),
-                                    pendingIntent);
-
-            //shows notification text on the status bar when received
-            builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-            builder.setDefaults(Notification.DEFAULT_VIBRATE);
-
-            //allows for the full content of longer facts to be displayed in the notification
-            NotificationCompat.BigTextStyle bigTextStyle =
-                    new NotificationCompat.BigTextStyle();
-            bigTextStyle.setBigContentTitle(getString(R.string.goal_notification_title));
-            bigTextStyle.bigText("You are coming close to exceeding your goal of " + goal + " total unlocks. ");
-            builder.setStyle(bigTextStyle);
-
-            //sends the notification
-            NotificationManager manager =
-                    (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-            manager.notify(004, builder.build());
-        }
     }
 
     /**
@@ -543,20 +495,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
-     * listens for permission denied/retry message
-     */
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onPermissionsMessageEvent(PermissionsMessage permissionsMessage){
-        if(permissionsMessage.message.equals("denied")) {
-            sendPermissionDeniedNotification();
-        }
-        else if(permissionsMessage.message.equals("retry")){
-            checkPermissions();
-        }
-    }
-
-    /**
-     * listens for permission denied/retry message
+     * listens for passenger preference changes outside of this activity
      */
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onPreferenceMessageEvent(PreferenceMessage preferenceMessage){
@@ -569,154 +508,17 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
+     * listens the end of the intro activity where permissions were granted 
+     */
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onPermissionMessageEvent(PermissionsMessage permissionMessage){
+        if(permissionMessage.message.equals("granted")) {
+            initializeExternalActivityComponents();
+        }
+    }
+
+    /**
      * END OF EVENT BUS SUBSCRIPTIONS
-     */
-
-    /**
-     * PERMISSIONS
-     */
-
-    /**
-     * checks all permissions required
-     */
-    public void checkPermissions(){
-        checkDrawOverlayPermission();
-        checkDoNotDisturbPermissions();
-        checkLocationPermission();
-    }
-
-    /**
-     * checks for the do not disturb permission
-     */
-    public void checkDoNotDisturbPermissions(){
-        NotificationManager notificationManager =
-                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && !notificationManager.isNotificationPolicyAccessGranted()) {
-
-            Intent intent = new Intent(
-                    android.provider.Settings
-                            .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-            startActivity(intent);
-        }
-    }
-
-    /**
-     * checks for overlay permission
-     */
-    public void checkDrawOverlayPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Settings.canDrawOverlays(this)) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + getPackageName()));
-                startActivityForResult(intent, MY_PERMISSIONS_REQUEST_OVERLAY);
-            }
-        }
-    }
-
-    /**
-     * checks for overlay permission
-     */
-    public void checkLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED){
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission. ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
-            }
-        }
-    }
-
-    /**
-     * handles the result of the permissions request
-     * if the grantResults array size is greater than zero than the permission
-     * was granted by the user and we can start the app services that depend on these
-     * permissions.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        switch (requestCode){
-            case MY_PERMISSIONS_REQUEST_LOCATION: {
-                if(grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-
-                    //location permission was granted, time to start our services
-                    initializeExternalActivityComponents();
-                    Log.i("GPS_Service: ", "initialized");
-                    populateAllViews();
-                }
-                else{
-                    //location permission was denied and we need to notify the user that the app
-                    //will not function properly without it
-                    mEventBus.postSticky(new PermissionsMessage("denied"));
-                }
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    /**
-     * send a notification to the user informing them that the app will not function properly
-     * without the permissions being granted. User will have option to gran permissions from
-     * notification
-     */
-    public void sendPermissionDeniedNotification(){
-        //notification will offer permissions when clicked
-        Intent permissionIntent = new Intent(getApplicationContext(), DashboardActivity.class);
-        permissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        permissionIntent.putExtra("retryPermission", "retry");
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, permissionIntent, 0);
-
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(getApplicationContext())
-                        .setSmallIcon(R.drawable.redcar)
-                        .setContentTitle(
-                                getApplicationContext()
-                                        .getResources()
-                                        .getString(R.string.notification_permission_denied_title))
-                        .setContentText(
-                                getApplicationContext()
-                                        .getResources()
-                                        .getString(R.string.notification_permission_denied_content))
-                        .addAction(R.drawable.redcar,
-                                getApplicationContext().getString(R.string.notification_permission_denied_button),
-                                pendingIntent);
-
-        //shows notification text on the status bar when received
-        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-        builder.setDefaults(Notification.DEFAULT_VIBRATE);
-
-        //allows for the full content of longer facts to be displayed in the notification
-        NotificationCompat.BigTextStyle bigTextStyle =
-                new NotificationCompat.BigTextStyle();
-        bigTextStyle.setBigContentTitle(getString(R.string.notification_permission_denied_title));
-        bigTextStyle.bigText(getString(R.string.notification_permission_denied_content));
-        builder.setStyle(bigTextStyle);
-
-        //sends the notification
-        NotificationManager manager =
-                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(003, builder.build());
-    }
-
-    /**
-     * watches for the incoming intent extra that indicates we want to retry the permission requests
-     */
-    public void onPermissionRetryIntent(){
-        Intent incomingIntent = getIntent();
-        boolean isRetryPermission = incomingIntent.getBooleanExtra("retryPermission", true);
-        if(isRetryPermission){
-            checkPermissions();
-        }
-    }
-
-    /**
-     * END OF PERMISSIONS
      */
 
     /**
@@ -885,30 +687,49 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
+     * compares the current unlocks to the set goal
+     */
+    private void compareGoalToTripCount(int failedTrips){
+        int goal = mSharedPreferences.getInt("goal", 0);
+        if(goal == (failedTrips) / 2 || goal == ((failedTrips) / 2) + (failedTrips / 4)){
+            //notification will offer permissions when clicked
+            Intent permissionIntent = new Intent(getApplicationContext(), DashboardActivity.class);
+            permissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            permissionIntent.putExtra("retryPermission", "retry");
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, permissionIntent, 0);
+
+            NotificationCompat.Builder builder =
+                    new NotificationCompat.Builder(getApplicationContext())
+                            .setSmallIcon(R.drawable.redcar)
+                            .setContentTitle(
+                                    getApplicationContext()
+                                            .getResources()
+                                            .getString(R.string.goal_notification_title))
+                            .setContentText(
+                                    "You are coming close to exceeding your goal of " + goal + " total unlocks. ")
+                            .addAction(R.drawable.redcar,
+                                    getApplicationContext().getString(R.string.goal_notification_button),
+                                    pendingIntent);
+
+            //shows notification text on the status bar when received
+            builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+            builder.setDefaults(Notification.DEFAULT_VIBRATE);
+
+            //allows for the full content of longer facts to be displayed in the notification
+            NotificationCompat.BigTextStyle bigTextStyle =
+                    new NotificationCompat.BigTextStyle();
+            bigTextStyle.setBigContentTitle(getString(R.string.goal_notification_title));
+            bigTextStyle.bigText("You are coming close to exceeding your goal of " + goal + " total unlocks. ");
+            builder.setStyle(bigTextStyle);
+
+            //sends the notification
+            NotificationManager manager =
+                    (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.notify(004, builder.build());
+        }
+    }
+
+    /**
      * END OF VIEW UTILITY
      */
-
-    @OnClick(R.id.test_button)
-    public void setTestListener(){
-
-        final boolean isSuccessful = true;
-        final Calendar calendar = Calendar.getInstance();
-        Realm realm;
-        Realm.init(getApplicationContext());
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        realm = Realm.getInstance(realmConfiguration);
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, Utils.returnDateAsDate().getTime() + "");
-                drivingEventLog.setTime(Utils.returnTime(calendar));
-                drivingEventLog.setDate(Utils.returnDateAsDate());
-                drivingEventLog.setSuccessful(isSuccessful);
-                realm.copyToRealmOrUpdate(drivingEventLog);
-            }
-        });
-        realm.close();
-    }
 }
