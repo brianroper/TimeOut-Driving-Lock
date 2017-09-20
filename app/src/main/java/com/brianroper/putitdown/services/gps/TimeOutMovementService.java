@@ -56,6 +56,8 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
 
     private boolean mIsPassengerMode = false;
 
+    private float mCurrentSpeed = 0;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -139,39 +141,31 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
      * speed activity until it is disabled
      */
     private void updateSpeed(TimeOutLocation location){
-        float currentSpeed = 0;
+        mCurrentSpeed = 0;
 
         if(location != null){
             location.setUseMetricUnits(this.useMetricUnits());
-            currentSpeed = location.getSpeed();
+            mCurrentSpeed = location.getSpeed();
         }
 
         if(!mIsPassengerMode){
             if(!mIsUnlocked){
-                if(currentSpeed > TARGET_LOCKOUT_SPEED){
+                if(mCurrentSpeed > TARGET_LOCKOUT_SPEED){
                     //if current speed is greater than 5 mph do something
                     startService(mDrivingService);
                     mIsDriving = true;
                 }
-                else if(currentSpeed < TARGET_LOCKOUT_SPEED){
+                else if(mCurrentSpeed < TARGET_LOCKOUT_SPEED){
                     stopService(mDrivingService);
                 }
-                else if(currentSpeed == TARGET_STOPPED_SPEED){
-                    final   float stoppedSpeed = currentSpeed;
-
+                else if(mCurrentSpeed == TARGET_STOPPED_SPEED){
                     if(mIsDriving){
                         //check after set seconds if speed is still 0. If so we log a successful driving session
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if (stoppedSpeed == TARGET_STOPPED_SPEED){
-                                    addSuccessfulDrivingEvent(true);
-                                    sendSuccessNotification();
-                                    mIsDriving = false;
-                                    Constants constants = new Constants();
-                                    EventBus.getDefault().postSticky(new DrivingMessage(constants.DRIVING_LOG_EVENT_SUCCESS));
-                                }
+                                handleStoppedDriving();
                             }
                         }, DRIVING_STOPPED_DOUBLE_CHECK_TIME);
                     }
@@ -188,6 +182,19 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
                     }
                 }, DRIVING_LOCKOUT_RETRY_TIME);
             }
+        }
+    }
+
+    /**
+     * checks to see if the user has actually stopped driving 
+     */
+    public void handleStoppedDriving(){
+        if (mCurrentSpeed == TARGET_STOPPED_SPEED){
+            addSuccessfulDrivingEvent(true);
+            sendSuccessNotification();
+            mIsDriving = false;
+            Constants constants = new Constants();
+            EventBus.getDefault().postSticky(new DrivingMessage(constants.DRIVING_LOG_EVENT_SUCCESS));
         }
     }
 
