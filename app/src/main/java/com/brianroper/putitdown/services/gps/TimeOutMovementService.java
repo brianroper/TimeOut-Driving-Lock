@@ -157,7 +157,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
                     stopService(mDrivingService);
                 }
                 else if(currentSpeed == TARGET_STOPPED_SPEED){
-                    final float stoppedSpeed = currentSpeed;
+                    final   float stoppedSpeed = currentSpeed;
 
                     if(mIsDriving){
                         //check after set seconds if speed is still 0. If so we log a successful driving session
@@ -169,6 +169,8 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
                                     addSuccessfulDrivingEvent(true);
                                     sendSuccessNotification();
                                     mIsDriving = false;
+                                    Constants constants = new Constants();
+                                    EventBus.getDefault().postSticky(new DrivingMessage(constants.DRIVING_LOG_EVENT_SUCCESS));
                                 }
                             }
                         }, DRIVING_STOPPED_DOUBLE_CHECK_TIME);
@@ -181,6 +183,8 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
                     @Override
                     public void run() {
                         mIsUnlocked = false;
+                        Constants constants = new Constants();
+                        EventBus.getDefault().postSticky(new DrivingMessage(constants.DRIVING_LOG_EVENT_FAILED));
                     }
                 }, DRIVING_LOCKOUT_RETRY_TIME);
             }

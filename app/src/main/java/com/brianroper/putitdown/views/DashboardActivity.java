@@ -146,7 +146,7 @@ public class DashboardActivity extends AppCompatActivity {
         //onPermissionRetryIntent();
         populateAllViews();
 
-        //initializeExternalActivityComponents();
+        initializeExternalActivityComponents();
     }
 
     /**
@@ -486,8 +486,14 @@ public class DashboardActivity extends AppCompatActivity {
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onDrivingMessageEvent(DrivingMessage drivingMessage){
         Constants constants = new Constants();
-        if(drivingMessage.message == constants.DRIVING_EVENT_FINISHED) {
+        if(drivingMessage.message.equals(constants.DRIVING_EVENT_FINISHED)) {
             handleAdapterDataSet();
+        }
+        if(drivingMessage.message.equals(constants.DRIVING_LOG_EVENT_SUCCESS)){
+            Toast.makeText(getApplicationContext(), "Driving Log Attempted", Toast.LENGTH_SHORT).show();
+        }
+        if(drivingMessage.message.equals(constants.DRIVING_LOG_EVENT_FAILED)){
+            Toast.makeText(getApplicationContext(), "Driving Log not attempted", Toast.LENGTH_LONG).show();
         }
     }
 

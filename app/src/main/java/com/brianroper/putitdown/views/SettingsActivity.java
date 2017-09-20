@@ -158,7 +158,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     @OnClick(R.id.surface_drive_mode)
     public void setSurfaceDriveModeListener(){
-        //TODO: create message box to adjust drive mode
         final String[] driveModes = {"Strict", "Normal", "Lenient"};
         new AlertDialog.Builder(this)
                 .setTitle("Adjust Driving Mode")
@@ -181,7 +180,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     @OnClick(R.id.surface_unlock_mode)
     public void setSurfaceLockModeListener(){
-        //TODO: create message box to adjust unlock timer
         final String[] times = {"15s", "30s", "45s"};
         new AlertDialog.Builder(this)
                 .setTitle("Adjust Unlock Timer")
@@ -203,8 +201,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.surface_feedback)
-    public void setSurfaceFeedbackListner(){
-
+    public void setSurfaceFeedbackListener(){
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
         emailIntent.setData(Uri.parse("mailto: team@timeoutinitiative.com"));
         startActivity(Intent.createChooser(emailIntent, "Give Feedback"));
@@ -249,7 +246,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .putBoolean(getString(R.string.passenger_mode_key), true)
                 .apply();
 
-        //notifies dashboard of ui change since it is still alive in background 
+        //notifies dashboard of ui change since it is still alive in background
         EventBus.getDefault().postSticky(new PreferenceMessage("true"));
         Toast.makeText(getApplicationContext(), "Passenger mode enabled", Toast.LENGTH_LONG).show();
     }
