@@ -97,7 +97,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         if(location != null){
             TimeOutLocation currentLocation = new TimeOutLocation(location, this.useMetricUnits());
             this.updateSpeed(currentLocation);
-            Log.i("CurrentSpeed: ", currentLocation + "");
+            //Log.i("CurrentSpeed: ", currentLocation + "");
         }
     }
 
@@ -154,13 +154,17 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
                     //if current speed is greater than 5 mph do something
                     startService(mDrivingService);
                     mIsDriving = true;
+                    Log.i("Driving: ", "User has started driving above 5mph");
                 }
-                else if(mCurrentSpeed < TARGET_LOCKOUT_SPEED){
+                if(mCurrentSpeed < TARGET_LOCKOUT_SPEED && mCurrentSpeed != TARGET_STOPPED_SPEED){
                     stopService(mDrivingService);
+                    Log.i("Driving: ", "User has started driving below 5mph");
                 }
-                else if(mCurrentSpeed == TARGET_STOPPED_SPEED){
+                if(mCurrentSpeed == TARGET_STOPPED_SPEED){
+                    Log.i("Driving: ", "User has stopped driving");
                     if(mIsDriving){
                         //check after set seconds if speed is still 0. If so we log a successful driving session
+                        mIsDriving = false;
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
@@ -181,9 +185,11 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         if (mCurrentSpeed == TARGET_STOPPED_SPEED){
             addSuccessfulDrivingEvent(true);
             sendSuccessNotification();
-            mIsDriving = false;
             Constants constants = new Constants();
             EventBus.getDefault().postSticky(new DrivingMessage(constants.DRIVING_LOG_EVENT_SUCCESS));
+        }
+        else{
+            mIsDriving = true;
         }
     }
 
