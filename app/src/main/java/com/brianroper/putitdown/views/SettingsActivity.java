@@ -16,12 +16,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.model.events.PreferenceMessage;
 
 import org.greenrobot.eventbus.EventBus;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -51,7 +53,15 @@ public class SettingsActivity extends AppCompatActivity {
     @BindView(R.id.passenger_switch)
     SwitchCompat mPassengerSwitch;
 
+    @BindView(R.id.unlock_time_textView)
+    TextView mLockOutTimeTextView;
+    @BindView(R.id.drive_option_textView)
+    TextView mDriveModeTextView;
+
     private SharedPreferences mSharedPreferences;
+    private final String[] mDriveModes = {"Strict", "Normal", "Lenient"};
+    private final String[] mTimes = {"15s", "30s", "45s"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +103,8 @@ public class SettingsActivity extends AppCompatActivity {
         handleStatusBarColor();
         handleCardViewBackgroundColors();
         setPassengerSwitchDefaultPosition();
+        setLockOutTimeOption();
+        setDrivingModeOption();
     }
 
     /**
@@ -144,6 +156,37 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     /**
+     * sets the default value for the driving option
+     */
+    public void setDrivingModeOption(){
+        int option = mSharedPreferences.getInt("driveModeOption", 1);
+
+        if (option == 0) {
+            mDriveModeTextView.setText(mDriveModes[0]);
+        } else if (option == 1) {
+            mDriveModeTextView.setText(mDriveModes[1]);
+        } else if (option == 2) {
+            mDriveModeTextView.setText(mDriveModes[2]);
+        }
+    }
+
+    /**
+     * sets the default time for locking out of device
+     */
+    public void setLockOutTimeOption(){
+        int option = mSharedPreferences.getInt("lockOutTime", 1);
+
+        if (option == 0) {
+            mLockOutTimeTextView.setText(mTimes[0]);
+        } else if (option == 1) {
+            mLockOutTimeTextView.setText(mTimes[1]);
+        } else if (option == 2) {
+            mLockOutTimeTextView.setText(mTimes[2]);
+        }
+    }
+
+
+    /**
      * END OF UI UTILITIES
      */
 
@@ -158,10 +201,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     @OnClick(R.id.surface_drive_mode)
     public void setSurfaceDriveModeListener(){
-        final String[] driveModes = {"Strict", "Normal", "Lenient"};
         new AlertDialog.Builder(this)
                 .setTitle("Adjust Driving Mode")
-                .setSingleChoiceItems(driveModes, 0, null)
+                .setSingleChoiceItems(mDriveModes, mSharedPreferences.getInt("driveModeOption", 0), null)
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int button) {
                         dialog.cancel();
@@ -172,7 +214,12 @@ public class SettingsActivity extends AppCompatActivity {
                         dialog.dismiss();
                         int selectedOption = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
 
-                        Log.i("Drive Mode:", "selectedOption:" + driveModes[selectedOption]);
+                        mSharedPreferences
+                                .edit()
+                                .putInt("driveModeOption", selectedOption)
+                                .apply();
+
+                        mDriveModeTextView.setText(mDriveModes[selectedOption]);
                     }
                 })
                 .show();
@@ -180,10 +227,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     @OnClick(R.id.surface_unlock_mode)
     public void setSurfaceLockModeListener(){
-        final String[] times = {"15s", "30s", "45s"};
         new AlertDialog.Builder(this)
                 .setTitle("Adjust Unlock Timer")
-                .setSingleChoiceItems(times, 1, null)
+                .setSingleChoiceItems(mTimes, mSharedPreferences.getInt("lockOutTime", 0), null)
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int button) {
                         dialog.cancel();
@@ -194,7 +240,12 @@ public class SettingsActivity extends AppCompatActivity {
                         dialog.dismiss();
                         int selectedOption = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
 
-                        Log.i("Drive Mode:", "selectedOption:" + times[selectedOption]);
+                        mSharedPreferences
+                                .edit()
+                                .putInt("lockOutTime", selectedOption)
+                                .apply();
+
+                        mLockOutTimeTextView.setText(mTimes[selectedOption]);
                     }
                 })
                 .show();
@@ -240,6 +291,7 @@ public class SettingsActivity extends AppCompatActivity {
     /**
      * updates passenger shared preferences value
      */
+
     private void enablePassengerMode(){
         mSharedPreferences
                 .edit()
