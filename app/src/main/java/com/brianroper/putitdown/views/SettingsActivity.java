@@ -1,8 +1,11 @@
 package com.brianroper.putitdown.views;
 
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -26,6 +29,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -262,6 +266,14 @@ public class SettingsActivity extends AppCompatActivity {
 
     @OnClick(R.id.surface_play_store)
     public void setSurfacePlayStoreListner(){
+
+        final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
+
         //TODO: create intent to open app in play store for rating
     }
 
