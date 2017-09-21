@@ -145,12 +145,12 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
      * speed activity until it is disabled
      */
     private void updateSpeed(TimeOutLocation location){
-        mCurrentSpeed = 100;
+        mCurrentSpeed = 0;
 
-//        if(location != null){
-//            location.setUseMetricUnits(this.useMetricUnits());
-//            mCurrentSpeed = location.getSpeed();
-//        }
+        if(location != null){
+            location.setUseMetricUnits(this.useMetricUnits());
+            mCurrentSpeed = location.getSpeed();
+        }
 
         if(!mIsPassengerMode){
             if(!mIsUnlocked){
