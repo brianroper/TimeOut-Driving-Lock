@@ -281,6 +281,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
                 drivingEventLog.setDate(Utils.returnDateAsDate());
                 drivingEventLog.setSuccessful(isSuccessful);
                 realm.copyToRealmOrUpdate(drivingEventLog);
+                EventBus.getDefault().postSticky(new DrivingMessage("newLog"));
             }
         });
         realm.close();

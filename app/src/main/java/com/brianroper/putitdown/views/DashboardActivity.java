@@ -492,6 +492,10 @@ public class DashboardActivity extends AppCompatActivity {
         if(drivingMessage.message.equals(constants.DRIVING_LOG_EVENT_FAILED)){
             //Toast.makeText(getApplicationContext(), "Driving Log not attempted", Toast.LENGTH_LONG).show();
         }
+        if(drivingMessage.message.equals("newLog")){
+            populateAllViews();
+            handleAdapterDataSet();
+        }
     }
 
     /**

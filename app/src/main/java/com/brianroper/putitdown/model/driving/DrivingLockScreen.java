@@ -286,6 +286,7 @@ public class DrivingLockScreen {
                     drivingEventLog.setDate(Utils.returnDateAsDate());
                     drivingEventLog.setSuccessful(false);
                     realm.copyToRealmOrUpdate(drivingEventLog);
+                    EventBus.getDefault().postSticky(new DrivingMessage("newLog"));
                 }
             });
             realm.close();
