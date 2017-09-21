@@ -220,6 +220,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 .apply();
 
                         mDriveModeTextView.setText(mDriveModes[selectedOption]);
+                        EventBus.getDefault().postSticky(new PreferenceMessage("Changed"));
                     }
                 })
                 .show();
@@ -246,6 +247,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 .apply();
 
                         mLockOutTimeTextView.setText(mTimes[selectedOption]);
+                        EventBus.getDefault().postSticky(new PreferenceMessage("Changed"));
                     }
                 })
                 .show();
