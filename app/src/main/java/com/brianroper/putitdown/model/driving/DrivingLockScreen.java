@@ -1,6 +1,7 @@
 package com.brianroper.putitdown.model.driving;
 
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -240,6 +241,7 @@ public class DrivingLockScreen {
      */
     public void showOverflow(){
         mOverflowUnlockLayout.setVisibility(View.VISIBLE);
+        animateOverflowTextViews();
         mOverflowPassengerLayout.setVisibility(View.VISIBLE);
     }
 
@@ -335,5 +337,37 @@ public class DrivingLockScreen {
      */
     public void postDrivingEventStatus(final String isDriving){
         EventBus.getDefault().postSticky(new DrivingMessage(isDriving));
+    }
+
+    public void animateOverflowTextViews(){
+        ValueAnimator unlockAnimator = ValueAnimator.ofFloat(500f, 0f);
+        unlockAnimator.setDuration(200);
+        unlockAnimator.start();
+
+        unlockAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator updatedAnimation) {
+                // You can use the animated value in a property that uses the
+                // same type as the animation. In this case, you can use the
+                // float value in the translationX property.
+                float animatedValue = (float)updatedAnimation.getAnimatedValue();
+                mOverflowUnlockLayout.setTranslationX(animatedValue);
+            }
+        });
+
+        ValueAnimator passengerAnimator = ValueAnimator.ofFloat(500f, 0f);
+        passengerAnimator.setDuration(250);
+        passengerAnimator.start();
+
+        passengerAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator updatedAnimation) {
+                // You can use the animated value in a property that uses the
+                // same type as the animation. In this case, you can use the
+                // float value in the translationX property.
+                float animatedValue = (float)updatedAnimation.getAnimatedValue();
+                mOverflowPassengerLayout.setTranslationX(animatedValue);
+            }
+        });
     }
 }
