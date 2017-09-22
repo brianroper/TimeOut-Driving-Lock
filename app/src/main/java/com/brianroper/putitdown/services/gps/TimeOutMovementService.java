@@ -1,5 +1,6 @@
 package com.brianroper.putitdown.services.gps;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -68,7 +70,6 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
 
         returnSharedPreferences();
         initializeDrivingService();
-
 
         LocationManager locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -156,12 +157,22 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
             if(!mIsUnlocked){
                 if(mCurrentSpeed >= TARGET_LOCKOUT_SPEED){
                     //if current speed is greater than 5 mph do something
-                    startService(mDrivingService);
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                        handleAndroidOService(mDrivingService, true);
+                    }
+                    else{
+                        startService(mDrivingService);
+                    }
                     mIsDriving = true;
                     Log.i("Driving: ", "User has started driving above 5mph");
                 }
                 if(mCurrentSpeed <= TARGET_LOCKOUT_SPEED && mCurrentSpeed != TARGET_STOPPED_SPEED){
-                    stopService(mDrivingService);
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                        handleAndroidOService(mDrivingService, false);
+                    }
+                    else{
+                        stopService(mDrivingService);
+                    }
                     Log.i("Driving: ", "User has started driving below 5mph");
                 }
                 if(mCurrentSpeed == TARGET_STOPPED_SPEED){
@@ -228,6 +239,9 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
     public void onCreate() {
         super.onCreate();
         EventBus.getDefault().register(this);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            handleForegroundService();
+        }
     }
 
     @Override
@@ -350,4 +364,54 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
             mIsPassengerMode = false;
         }
     }
+
+    /**
+     * ANDROID O
+     */
+
+    /**
+     * handles persistent notification for Android O requirements,
+     * having a "persistent" notification that is always visible to the user
+     * allows the service to run since the app qualifies as in the foreground, since
+     * a component of the app is visible.
+     */
+    public Notification handlePersistentServiceNotification(){
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(getApplicationContext())
+                        .setSmallIcon(R.drawable.redcar)
+                        .setContentTitle("TimeOut")
+                        .setContentText(
+                                "TimeOut is monitoring your driving patterns");
+
+        //shows notification text on the status bar when received
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+
+        NotificationManager manager;
+
+        return builder.build();
+    }
+
+    @TargetApi(26)
+    public void handleForegroundService(){
+        startForeground(101, handlePersistentServiceNotification() );
+    }
+
+    /**
+     * handles the new service system for android O
+     * specifies that this code is targeted for API 26
+     */
+    @TargetApi(26)
+    public void handleAndroidOService(Intent service, boolean action){
+        if(action){
+            getApplicationContext().startForegroundService(service);
+        }
+        else if(!action){
+            stopForeground(true);
+        }
+        Log.i("AndroidVersion: ", "Oreo");
+    }
+
+    /**
+     * END OF ANDROID O
+     */
 }

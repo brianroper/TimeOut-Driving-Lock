@@ -1,6 +1,7 @@
 package com.brianroper.putitdown.views;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -358,13 +359,22 @@ public class DashboardActivity extends AppCompatActivity {
         Intent screenService = new Intent(getApplicationContext(), ScreenService.class);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            startForegroundService(screenService);
-            Log.i("AndroidVersion: ", "Oreo");
+            handleAndroidOService(screenService);
         }
         else{
             startService(screenService);
             Log.i("AndroidVersion: ", Build.VERSION.SDK_INT + "");
         }
+    }
+
+    /**
+     * handles the new service system for android O
+     * specifies that this code is targeted for API 26
+     */
+    @TargetApi(26)
+    public void handleAndroidOService(Intent service){
+        getApplicationContext().startForegroundService(service);
+        Log.i("AndroidVersion: ", "Oreo");
     }
 
     /**
@@ -374,8 +384,7 @@ public class DashboardActivity extends AppCompatActivity {
         Intent locationIntent = new Intent(getApplicationContext(), TimeOutMovementService.class);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            startForegroundService(locationIntent);
-            Log.i("AndroidVersion: ", "Oreo");
+            handleAndroidOService(locationIntent);
         }
         else{
             startService(locationIntent);
