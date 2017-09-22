@@ -1,2 +1,2 @@
-json_key_file "Users/brianroper/Documents/TimeOutResources” # Path to the json secret file - Follow https://github.com/fastlane/supply#setup to get one
+json_key_file “/Users/brianroper/Documents/PutItDown/fastlane/timeoutfree.json” # Path to the json secret file - Follow https://github.com/fastlane/supply#setup to get one
 package_name "com.brianroper.putitdown" # e.g. com.krausefx.app

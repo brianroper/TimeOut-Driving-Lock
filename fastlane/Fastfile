@@ -40,6 +40,15 @@ platform :android do
     supply
   end
 
+  lane :playstore do
+  gradle(
+    task: 'assemble',
+    build_type: 'Release'
+  )
+  supply # Uploads the APK built in the gradle step above
+  end
+
+
   # You can define as many lanes as you want
 
   after_all do |lane|
