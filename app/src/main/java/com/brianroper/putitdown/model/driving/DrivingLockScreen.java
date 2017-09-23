@@ -2,6 +2,7 @@ package com.brianroper.putitdown.model.driving;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -26,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.utils.Constants;
@@ -63,7 +65,7 @@ public class DrivingLockScreen {
     private TextView mPassengerDialogConfirmButton;
     private TextView mPassengerDialogCancelButton;
     private FrameLayout mInvisibleClickView;
-    private TextView mPassengerDialogHint;
+    private RelativeLayout mPassengerDialogHint;
 
     private SharedPreferences mSharedPreferences;
 
@@ -156,7 +158,7 @@ public class DrivingLockScreen {
         mPassengerDialogConfirmButton = (TextView) root.findViewById(R.id.passenger_dialog_confirm);
         mPassengerDialogInfoButton = (ImageView) root.findViewById(R.id.passenger_dialog_info);
         mInvisibleClickView = (FrameLayout) root.findViewById(R.id.invisible_click_view);
-        mPassengerDialogHint = (TextView) root.findViewById(R.id.passenger_dialog_hint);
+        mPassengerDialogHint = (RelativeLayout) root.findViewById(R.id.passenger_dialog_hint);
 
         mOverflowButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -214,7 +216,7 @@ public class DrivingLockScreen {
                 if(mPassengerDialogHint.getVisibility() == View.GONE){
                     mPassengerDialogHint.setVisibility(View.VISIBLE);
                 }
-                if(mPassengerDialogHint.getVisibility() == View.VISIBLE){
+                else if(mPassengerDialogHint.getVisibility() == View.VISIBLE){
                     mPassengerDialogHint.setVisibility(View.GONE);
                 }
             }
