@@ -190,7 +190,13 @@ public class DashboardActivity extends AppCompatActivity {
     private void setTripTextView(){
         int successfulTrips = 0;
         int failedTrips = 0;
-        //TODO: compare to a weekly failed trip count
+        int weeklyFailedTrips = 0;
+        int currentWeek;
+        int storedWeek;
+
+        Calendar thisWeekCalendar = Calendar.getInstance();
+        currentWeek = thisWeekCalendar.get(Calendar.WEEK_OF_YEAR);
+
         Date currentDate = Utils.returnDateAsDate();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         String currentStringDate = sdf.format(currentDate);
@@ -198,6 +204,18 @@ public class DashboardActivity extends AppCompatActivity {
         for (int i = 0; i < mRealmResults.size(); i++) {
 
             String logDateString = sdf.format(mRealmResults.get(i).getDate());
+
+            Calendar calender = Calendar.getInstance();
+            calender.setTime(mRealmResults.get(i).getDate());
+            storedWeek = calender.get(Calendar.WEEK_OF_YEAR);
+
+            //checks to see if today's week number matches the stored week number
+            //if so we check to see if that trip was successful or not
+            if(currentWeek == storedWeek){
+                if(mRealmResults.get(i).isSuccessful() == false){
+                    weeklyFailedTrips++;
+                }
+            }
 
             if(logDateString.equals(currentStringDate)){
                 if(mRealmResults.get(i).isSuccessful() == true){
@@ -211,7 +229,7 @@ public class DashboardActivity extends AppCompatActivity {
         mTripSuccessCount.setText(successfulTrips + "");
         mTripFailedCount.setText(failedTrips + "");
 
-        compareGoalToTripCount(failedTrips);
+        compareGoalToTripCount(weeklyFailedTrips);
     }
 
     /**
@@ -718,12 +736,15 @@ public class DashboardActivity extends AppCompatActivity {
             }
             else if(goal >= failedTrips){
                 sendGoalNotification(goal,
-                        "You exceeded your goal!", 
+                        "You exceeded your goal!",
                         "Better luck next week, you exceeded your goal of " + goal);
             }
         }
     }
 
+    /**
+     * sends a notification depending on current goal vs interrupted trips
+     */
     public void sendGoalNotification(int goal, String title, String content){
         //notification will offer permissions when clicked
         Intent permissionIntent = new Intent(getApplicationContext(), DashboardActivity.class);
