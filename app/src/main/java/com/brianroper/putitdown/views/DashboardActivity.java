@@ -712,42 +712,49 @@ public class DashboardActivity extends AppCompatActivity {
 
         if(goal != 0){
             if(goal == (failedTrips) / 2 || goal == ((failedTrips) / 2) + (failedTrips / 4)){
-                //notification will offer permissions when clicked
-                Intent permissionIntent = new Intent(getApplicationContext(), DashboardActivity.class);
-                permissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                permissionIntent.putExtra("retryPermission", "retry");
-                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, permissionIntent, 0);
-
-                NotificationCompat.Builder builder =
-                        new NotificationCompat.Builder(getApplicationContext())
-                                .setSmallIcon(R.drawable.redcar)
-                                .setContentTitle(
-                                        getApplicationContext()
-                                                .getResources()
-                                                .getString(R.string.goal_notification_title))
-                                .setContentText(
-                                        "You are coming close to exceeding your goal of " + goal + " total unlocks. ")
-                                .addAction(R.drawable.redcar,
-                                        getApplicationContext().getString(R.string.goal_notification_button),
-                                        pendingIntent);
-
-                //shows notification text on the status bar when received
-                builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-                builder.setDefaults(Notification.DEFAULT_VIBRATE);
-
-                //allows for the full content of longer facts to be displayed in the notification
-                NotificationCompat.BigTextStyle bigTextStyle =
-                        new NotificationCompat.BigTextStyle();
-                bigTextStyle.setBigContentTitle(getString(R.string.goal_notification_title));
-                bigTextStyle.bigText("You are coming close to exceeding your goal of " + goal + " total unlocks. ");
-                builder.setStyle(bigTextStyle);
-
-                //sends the notification
-                NotificationManager manager =
-                        (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                manager.notify(004, builder.build());
+                sendGoalNotification(goal,
+                        getString(R.string.goal_notification_title),
+                        "You are coming close to exceeding your goal of " + goal + " total unlocks. ");
+            }
+            else if(goal >= failedTrips){
+                sendGoalNotification(goal,
+                        "You exceeded your goal!", 
+                        "Better luck next week, you exceeded your goal of " + goal);
             }
         }
+    }
+
+    public void sendGoalNotification(int goal, String title, String content){
+        //notification will offer permissions when clicked
+        Intent permissionIntent = new Intent(getApplicationContext(), DashboardActivity.class);
+        permissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        permissionIntent.putExtra("retryPermission", "retry");
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, permissionIntent, 0);
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(getApplicationContext())
+                        .setSmallIcon(R.drawable.redcar)
+                        .setContentTitle(title)
+                        .setContentText(content)
+                        .addAction(R.drawable.redcar,
+                                getApplicationContext().getString(R.string.goal_notification_button),
+                                pendingIntent);
+
+        //shows notification text on the status bar when received
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setDefaults(Notification.DEFAULT_VIBRATE);
+
+        //allows for the full content of longer facts to be displayed in the notification
+        NotificationCompat.BigTextStyle bigTextStyle =
+                new NotificationCompat.BigTextStyle();
+        bigTextStyle.setBigContentTitle(getString(R.string.goal_notification_title));
+        bigTextStyle.bigText(content);
+        builder.setStyle(bigTextStyle);
+
+        //sends the notification
+        NotificationManager manager =
+                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(004, builder.build());
     }
 
     /**
