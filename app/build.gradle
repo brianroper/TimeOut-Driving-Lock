@@ -6,7 +6,7 @@ android {
     buildToolsVersion "26.0.1"
     defaultConfig {
         applicationId "com.brianroper.putitdown"
-        minSdkVersion 19
+        minSdkVersion 20
         targetSdkVersion 26
         versionCode 3
         versionName "1.2"
