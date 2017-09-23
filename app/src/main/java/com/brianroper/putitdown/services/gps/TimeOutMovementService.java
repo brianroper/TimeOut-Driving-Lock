@@ -167,12 +167,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
                     Log.i("Driving: ", "User has started driving above 5mph");
                 }
                 if(mCurrentSpeed <= TARGET_LOCKOUT_SPEED && mCurrentSpeed != TARGET_STOPPED_SPEED){
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                        handleAndroidOService(mDrivingService, false);
-                    }
-                    else{
-                        stopService(mDrivingService);
-                    }
+                    stopService(mDrivingService);
                     Log.i("Driving: ", "User has started driving below 5mph");
                 }
                 if(mCurrentSpeed == TARGET_STOPPED_SPEED){
@@ -240,7 +235,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         super.onCreate();
         EventBus.getDefault().register(this);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            handleForegroundService();
+            handleForegroundServiceStart();
         }
     }
 
@@ -392,7 +387,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
     }
 
     @TargetApi(26)
-    public void handleForegroundService(){
+    public void handleForegroundServiceStart(){
         startForeground(101, handlePersistentServiceNotification() );
     }
 
