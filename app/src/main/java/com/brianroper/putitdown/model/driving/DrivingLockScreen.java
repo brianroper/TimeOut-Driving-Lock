@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brianroper.putitdown.R;
+import com.brianroper.putitdown.model.events.PreferenceMessage;
 import com.brianroper.putitdown.utils.Constants;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.model.events.DrivingMessage;
@@ -196,7 +197,8 @@ public class DrivingLockScreen {
                 Constants constants = new Constants();
                 postDrivingEventStatus(constants.UNLOCK_STATUS_FALSE);
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-                sharedPreferences.edit().putBoolean(mContext.getString(R.string.passenger_mode_key), true);
+                sharedPreferences.edit().putBoolean(mContext.getString(R.string.passenger_mode_key), true).apply();
+                EventBus.getDefault().postSticky(new PreferenceMessage("true"));
                 mPassengerDialogLayout.setVisibility(View.GONE);
                 mInvisibleClickView.setVisibility(View.GONE);
             }
