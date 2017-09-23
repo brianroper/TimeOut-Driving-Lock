@@ -1,6 +1,7 @@
 package com.brianroper.putitdown.views;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -36,6 +37,7 @@ import android.widget.Toast;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.adapters.DrivingLogEventAdapter;
+import com.brianroper.putitdown.model.events.PermissionsMessage;
 import com.brianroper.putitdown.model.events.PreferenceMessage;
 import com.brianroper.putitdown.utils.Constants;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
@@ -49,18 +51,21 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    public final static int REQUEST_CODE = 5463;
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 5499;
+    public final static int MY_PERMISSIONS_REQUEST_OVERLAY = 5463;
 
     private EventBus mEventBus = EventBus.getDefault();
 
@@ -91,6 +96,8 @@ public class DashboardActivity extends AppCompatActivity {
     AppCompatSeekBar mGoalSeekbar;
     @BindView(R.id.goal_seek_bar_count)
     TextView mGoalCount;
+    @BindView(R.id.goal_content)
+    TextView mGoalContent;
     @BindView(R.id.dashboard_swipe_refresh_layout)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -109,6 +116,8 @@ public class DashboardActivity extends AppCompatActivity {
     TextView mTripBottomEventTime;
     @BindView(R.id.bottom_event_name)
     TextView mTripBottomEventName;
+    @BindView(R.id.dashboard_log_bottom)
+    RelativeLayout mTripLogBottomLayout;
 
     private DrivingLogEventAdapter mDrivingLogEventAdapter;
     private LinearLayoutManager mLinearLayoutManager;
@@ -122,7 +131,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        checkPermissions();
+        handleAppInto();
 
         getSharedPreferences();
         setPassengerSwitchPosition();
@@ -133,7 +142,6 @@ public class DashboardActivity extends AppCompatActivity {
 
         handleUIUtilities();
 
-        onPermissionRetryIntent();
         populateAllViews();
     }
 
@@ -143,9 +151,8 @@ public class DashboardActivity extends AppCompatActivity {
      * 3) USER PREFERENCES
      * 4) LIFE CYCLE METHODS
      * 5) EVENT BUS SUBSCRIPTIONS (WORMHOLES)
-     * 6) PERMISSIONS
-     * 7) VIEW LISTENERS
-     * 8) VIEW UTILITY
+     * 6) VIEW LISTENERS
+     * 7) VIEW UTILITY
      */
 
     /**
@@ -183,6 +190,7 @@ public class DashboardActivity extends AppCompatActivity {
     private void setTripTextView(){
         int successfulTrips = 0;
         int failedTrips = 0;
+        //TODO: compare to a weekly failed trip count
         Date currentDate = Utils.returnDateAsDate();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         String currentStringDate = sdf.format(currentDate);
@@ -202,6 +210,8 @@ public class DashboardActivity extends AppCompatActivity {
         }
         mTripSuccessCount.setText(successfulTrips + "");
         mTripFailedCount.setText(failedTrips + "");
+
+        compareGoalToTripCount(failedTrips);
     }
 
     /**
@@ -210,7 +220,7 @@ public class DashboardActivity extends AppCompatActivity {
     private void setTripLogViews(RealmResults<DrivingEventLog> results){
 
         try{
-            if(mRealmResults.size() != 0){
+            if(mRealmResults.size() != 0 && mRealmResults.size() != 1){
                 int topLog = results.size() - 1;
                 int bottomLog = results.size() - 2;
 
@@ -234,6 +244,20 @@ public class DashboardActivity extends AppCompatActivity {
                     mTripBottomEventName.setText("you used your device while driving");
                 }
             }
+            else if(mRealmResults.size() == 1){
+                int topLog = results.size() - 1;
+
+                mTripLogTopEventDate.setText(Utils.returnDateStringFromDate(results.get(topLog).getDate()));
+                mTripLogTopEventTime.setText(results.get(topLog).getTime());
+
+                if(results.get(topLog).isSuccessful()){
+                    mTripLogTopEventName.setText("you had a safe trip");
+                }
+                else{
+                    mTripLogTopEventName.setText("you used your device while driving");
+                }
+                mTripLogBottomLayout.setVisibility(View.GONE);
+            }
         }
         catch (Exception e){e.printStackTrace();}
     }
@@ -256,9 +280,40 @@ public class DashboardActivity extends AppCompatActivity {
      * sets the stored value for the goal amount
      */
     public void setGoalCountTextView(){
-        int goal = mSharedPreferences.getInt("goal", 25);
+        int goal = mSharedPreferences.getInt("goal", 10);
+        boolean isGoalSet = mSharedPreferences.getBoolean("goalSet", false);
+        int goalWeek = mSharedPreferences.getInt("goalWeek", 0);
         mGoalCount.setText(goal + "");
         mGoalSeekbar.setProgress(goal);
+        setGoalSeekBarVisibility(isGoalSet);
+        getGoalDate(goalWeek);
+    }
+
+    /**
+     * sets the visibility of the seek bar depending on if a current goal is set
+     */
+    public void setGoalSeekBarVisibility(boolean isGoalSet){
+        if(isGoalSet){
+            mGoalSeekbar.setVisibility(View.GONE);
+            mGoalContent.setText("You have set a goal for this week!");
+        }
+        else if(!isGoalSet){
+            mGoalSeekbar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * compares the goal date to the current date and returns true if they match
+     */
+    public void getGoalDate(int goalDate){
+        Calendar calendar = Calendar.getInstance();
+        int currentDate = calendar.get(Calendar.WEEK_OF_YEAR);
+        if (currentDate == goalDate){
+            mGoalSeekbar.setVisibility(View.GONE);
+        }
+        else{
+            mGoalSeekbar.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -302,7 +357,24 @@ public class DashboardActivity extends AppCompatActivity {
      */
     public void initializeScreenService(){
         Intent screenService = new Intent(getApplicationContext(), ScreenService.class);
-        startService(screenService);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            handleAndroidOService(screenService);
+        }
+        else{
+            startService(screenService);
+            Log.i("AndroidVersion: ", Build.VERSION.SDK_INT + "");
+        }
+    }
+
+    /**
+     * handles the new service system for android O
+     * specifies that this code is targeted for API 26
+     */
+    @TargetApi(26)
+    public void handleAndroidOService(Intent service){
+        getApplicationContext().startForegroundService(service);
+        Log.i("AndroidVersion: ", "Oreo");
     }
 
     /**
@@ -310,7 +382,14 @@ public class DashboardActivity extends AppCompatActivity {
      */
     public void initializeMovementService(){
         Intent locationIntent = new Intent(getApplicationContext(), TimeOutMovementService.class);
-        startService(locationIntent);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            handleAndroidOService(locationIntent);
+        }
+        else{
+            startService(locationIntent);
+            Log.i("AndroidVersion: ", Build.VERSION.SDK_INT + "");
+        }
     }
 
     /**
@@ -373,6 +452,9 @@ public class DashboardActivity extends AppCompatActivity {
      */
     public void storeGoal(int progress){
         mSharedPreferences.edit().putInt("goal", progress).apply();
+        mSharedPreferences.edit().putBoolean("goalSet", true).apply();
+        Calendar calender = Calendar.getInstance();
+        mSharedPreferences.edit().putInt("goalWeek", calender.get(Calendar.WEEK_OF_YEAR)).apply();
     }
 
     /**
@@ -410,160 +492,46 @@ public class DashboardActivity extends AppCompatActivity {
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onDrivingMessageEvent(DrivingMessage drivingMessage){
         Constants constants = new Constants();
-        if(drivingMessage.message == constants.DRIVING_EVENT_FINISHED) {
+        if(drivingMessage.message.equals(constants.DRIVING_EVENT_FINISHED)) {
+            handleAdapterDataSet();
+        }
+        if(drivingMessage.message.equals(constants.DRIVING_LOG_EVENT_SUCCESS)){
+            //Toast.makeText(getApplicationContext(), "Driving Log Attempted", Toast.LENGTH_SHORT).show();
+        }
+        if(drivingMessage.message.equals(constants.DRIVING_LOG_EVENT_FAILED)){
+            //Toast.makeText(getApplicationContext(), "Driving Log not attempted", Toast.LENGTH_LONG).show();
+        }
+        if(drivingMessage.message.equals("newLog")){
+            populateAllViews();
             handleAdapterDataSet();
         }
     }
 
     /**
+     * listens for passenger preference changes outside of this activity
+     */
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onPreferenceMessageEvent(PreferenceMessage preferenceMessage){
+        if(preferenceMessage.message.equals("true")) {
+            mPassengerSwitch.setChecked(true);
+        }
+        else if(preferenceMessage.message.equals("false")){
+            mPassengerSwitch.setChecked(false);
+        }
+    }
+
+    /**
+     * listens the end of the intro activity where permissions were granted
+     */
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onPermissionMessageEvent(PermissionsMessage permissionMessage){
+        if(permissionMessage.message.equals("granted")) {
+            initializeExternalActivityComponents();
+        }
+    }
+
+    /**
      * END OF EVENT BUS SUBSCRIPTIONS
-     */
-
-    /**
-     * PERMISSIONS
-     */
-
-    /**
-     * checks all permissions required
-     */
-    public void checkPermissions(){
-        checkDrawOverlayPermission();
-        checkDoNotDisturbPermissions();
-        checkLocationPermission();
-    }
-
-    /**
-     * checks for the do not disturb permission
-     */
-    public void checkDoNotDisturbPermissions(){
-        NotificationManager notificationManager =
-                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && !notificationManager.isNotificationPolicyAccessGranted()) {
-
-            Intent intent = new Intent(
-                    android.provider.Settings
-                            .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-            startActivity(intent);
-        }
-    }
-
-    /**
-     * checks for overlay permission
-     */
-    public void checkDrawOverlayPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Settings.canDrawOverlays(this)) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + getPackageName()));
-                startActivityForResult(intent, REQUEST_CODE);
-            }
-        }
-    }
-
-    /**
-     * checks for overlay permission
-     */
-    public void checkLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED){
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission. ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
-            }
-        }
-    }
-
-    /**
-     * handles the result of the permissions request
-     * if the grantResults array size is greater than zero than the permission
-     * was granted by the user and we can start the app services that depend on these
-     * permissions.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        switch (requestCode){
-            case 99: {
-                if(grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-
-                    //location permission was granted, time to start our services
-                    initializeExternalActivityComponents();
-                    populateAllViews();
-                    Log.i("Permissions: ", "Granted");
-                }
-                else{
-                    //location permission was denied and we need to notify the user that the app
-                    //will no function properly without it
-                    sendPermissionDeniedNotification();
-                }
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    /**
-     * send a notification to the user informing them that the app will not function properly
-     * without the permissions being granted. User will have option to gran permissions from
-     * notification
-     */
-    public void sendPermissionDeniedNotification(){
-        //notification will offer permissions when clicked
-        Intent permissionIntent = new Intent(getApplicationContext(), DashboardActivity.class);
-        permissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        permissionIntent.putExtra("retryPermission", true);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, permissionIntent, 0);
-
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(getApplicationContext())
-                        .setSmallIcon(R.drawable.redcar)
-                        .setContentTitle(
-                                getApplicationContext()
-                                        .getResources()
-                                        .getString(R.string.notification_permission_denied_title))
-                        .setContentText(
-                                getApplicationContext()
-                                        .getResources()
-                                        .getString(R.string.notification_permission_denied_content))
-                        .addAction(R.drawable.redcar,
-                                getApplicationContext().getString(R.string.notification_permission_denied_button),
-                                pendingIntent);
-
-        //shows notification text on the status bar when received
-        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-        builder.setDefaults(Notification.DEFAULT_VIBRATE);
-
-        //allows for the full content of longer facts to be displayed in the notification
-        NotificationCompat.BigTextStyle bigTextStyle =
-                new NotificationCompat.BigTextStyle();
-        bigTextStyle.setBigContentTitle(getString(R.string.notification_permission_denied_title));
-        bigTextStyle.bigText(getString(R.string.notification_permission_denied_content));
-        builder.setStyle(bigTextStyle);
-
-        //sends the notification
-        NotificationManager manager =
-                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(003, builder.build());
-    }
-
-    /**
-     * watches for the incoming intent extra that indicates we want to retry the permission requests
-     */
-    public void onPermissionRetryIntent(){
-        Intent incomingIntent = getIntent();
-        boolean isRetryPermission = incomingIntent.getBooleanExtra("retryPermission", true);
-        if(isRetryPermission){
-            checkPermissions();
-        }
-    }
-
-    /**
-     * END OF PERMISSIONS
      */
 
     /**
@@ -613,6 +581,12 @@ public class DashboardActivity extends AppCompatActivity {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    @OnClick(R.id.settings_button)
+    public void setSettingsButtonListener(){
+        Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(settingsIntent);
     }
 
     /**
@@ -679,6 +653,7 @@ public class DashboardActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 storeGoal(seekBar.getProgress());
+                                setGoalCountTextView();
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -690,6 +665,96 @@ public class DashboardActivity extends AppCompatActivity {
                         .show();
             }
         });
+    }
+
+    /**
+     * decides if the app is running for the first time or not
+     */
+    public void handleAppInto(){
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferences getPrefs = PreferenceManager
+                        .getDefaultSharedPreferences(getBaseContext());
+
+                boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
+
+                if(isFirstStart){
+                    final Intent introIntent = new Intent(DashboardActivity.this, IntroActivity.class);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            startActivity(introIntent);
+                        }
+                    });
+
+                    SharedPreferences.Editor editor = getPrefs.edit();
+                    editor.putBoolean("firstStart", false);
+                    editor.apply();
+                }
+                else{
+                    //since this shows it is not the first start we know it is safe to start
+                    //our services that require certain permissions
+                    initializeExternalActivityComponents();
+                }
+            }
+        });
+        thread.start();
+    }
+
+    /**
+     * compares the current unlocks to the set goal
+     */
+    private void compareGoalToTripCount(int failedTrips){
+        int goal = mSharedPreferences.getInt("goal", 0);
+
+        if(goal != 0){
+            if(goal == (failedTrips) / 2 || goal == ((failedTrips) / 2) + (failedTrips / 4)){
+                sendGoalNotification(goal,
+                        getString(R.string.goal_notification_title),
+                        "You are coming close to exceeding your goal of " + goal + " total unlocks. ");
+            }
+            else if(goal >= failedTrips){
+                sendGoalNotification(goal,
+                        "You exceeded your goal!", 
+                        "Better luck next week, you exceeded your goal of " + goal);
+            }
+        }
+    }
+
+    public void sendGoalNotification(int goal, String title, String content){
+        //notification will offer permissions when clicked
+        Intent permissionIntent = new Intent(getApplicationContext(), DashboardActivity.class);
+        permissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        permissionIntent.putExtra("retryPermission", "retry");
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, permissionIntent, 0);
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(getApplicationContext())
+                        .setSmallIcon(R.drawable.redcar)
+                        .setContentTitle(title)
+                        .setContentText(content)
+                        .addAction(R.drawable.redcar,
+                                getApplicationContext().getString(R.string.goal_notification_button),
+                                pendingIntent);
+
+        //shows notification text on the status bar when received
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setDefaults(Notification.DEFAULT_VIBRATE);
+
+        //allows for the full content of longer facts to be displayed in the notification
+        NotificationCompat.BigTextStyle bigTextStyle =
+                new NotificationCompat.BigTextStyle();
+        bigTextStyle.setBigContentTitle(getString(R.string.goal_notification_title));
+        bigTextStyle.bigText(content);
+        builder.setStyle(bigTextStyle);
+
+        //sends the notification
+        NotificationManager manager =
+                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(004, builder.build());
     }
 
     /**

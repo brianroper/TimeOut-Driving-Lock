@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimary">
 
     <ImageButton
@@ -15,21 +15,73 @@
         android:background="@color/colorPrimary"
         android:padding="16dp"/>
 
-    <TextView
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/overflow_textview"
-        android:text="Unlock"
-        android:background="@color/background"
-        android:textSize="22sp"
-        android:textColor="@color/primaryText"
-        android:padding="8dp"
-        android:gravity="center"
+    <RelativeLayout
+        android:layout_width="190dp"
+        android:layout_height="38dp"
+        android:background="@drawable/rounded_textview"
+        android:id="@+id/overflow_layout_unlock"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_lock_open"
+            android:layout_marginStart="8dp"
+            android:id="@+id/unlock_icon"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="unlock"
+            android:textSize="22sp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:textColor="@color/primaryText"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="190dp"
+        android:layout_height="38dp"
+        android:background="@drawable/rounded_textview"
+        android:id="@+id/overflow_layout_passenger"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:visibility="gone"
-        android:layout_marginTop="16dp"/>
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/overflow_layout_unlock"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_action_people_outline"
+            android:layout_marginStart="8dp"
+            android:id="@+id/passenger_icon"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="passenger"
+            android:textSize="22sp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:textColor="@color/primaryText"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
+
+    </RelativeLayout>
 
     <ImageView
         android:layout_width="280dp"
@@ -58,5 +110,97 @@
         android:fontFamily="sans-serif-medium"
         android:textColor="#ffff"
         android:textSize="28sp"/>
+
+    <RelativeLayout
+        android:layout_width="280dp"
+        android:layout_height="180dp"
+        android:background="@color/dark_grey"
+        android:layout_centerInParent="true"
+        android:elevation="6dp"
+        android:visibility="gone"
+        android:id="@+id/passenger_dialog">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Enable"
+            android:id="@+id/passenger_dialog_title"
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enabling passenger mode while driving will result in logging an interrupted trip. Are you sure you want to enable?"
+            android:layout_marginStart="16dp"
+            android:layout_below="@+id/passenger_dialog_title"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/white"
+            android:layout_marginTop="16dp"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirm"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            android:id="@+id/passenger_dialog_confirm"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_alignParentBottom="true"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            android:layout_toLeftOf="@+id/passenger_dialog_confirm"
+            android:id="@+id/passenger_dialog_cancel"/>
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@mipmap/ic_action_info"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:id="@+id/passenger_dialog_info"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:id="@+id/passenger_dialog_hint"
+            android:layout_centerInParent="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enable passenger mode before you begin traveling to avoid this."
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:textSize="14sp"
+                android:layout_centerInParent="true"
+                android:background="@color/background"
+                android:padding="18dp"
+                android:textColor="@color/primaryText"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/invisible_click_view">
+    </FrameLayout>
 
 </RelativeLayout>

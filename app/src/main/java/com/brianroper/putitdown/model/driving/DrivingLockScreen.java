@@ -1,27 +1,36 @@
 package com.brianroper.putitdown.model.driving;
 
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.BounceInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.brianroper.putitdown.R;
+import com.brianroper.putitdown.model.events.PreferenceMessage;
 import com.brianroper.putitdown.utils.Constants;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.model.events.DrivingMessage;
@@ -35,6 +44,7 @@ import java.util.Random;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.internal.Util;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static android.content.Context.WINDOW_SERVICE;
@@ -48,8 +58,15 @@ public class DrivingLockScreen {
     private Context mContext;
     private RelativeLayout mRelativeLayout;
     private ImageButton mOverflowButton;
-    private TextView mOverflowTextView;
+    private RelativeLayout mOverflowUnlockLayout;
+    private RelativeLayout mOverflowPassengerLayout;
     private ImageView mCarImageView;
+    private RelativeLayout mPassengerDialogLayout;
+    private ImageView mPassengerDialogInfoButton;
+    private TextView mPassengerDialogConfirmButton;
+    private TextView mPassengerDialogCancelButton;
+    private FrameLayout mInvisibleClickView;
+    private RelativeLayout mPassengerDialogHint;
 
     private SharedPreferences mSharedPreferences;
 
@@ -81,6 +98,16 @@ public class DrivingLockScreen {
             layoutParams.flags = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
         } else{
             layoutParams.flags = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            layoutParams.flags = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+            layoutParams = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                    PixelFormat.TRANSLUCENT);
         }
 
         int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -124,8 +151,15 @@ public class DrivingLockScreen {
      */
     public void initializeViews(RelativeLayout root){
         mOverflowButton = (ImageButton) root.findViewById(R.id.overflow_button);
-        mOverflowTextView = (TextView) root.findViewById(R.id.overflow_textview);
+        mOverflowUnlockLayout = (RelativeLayout) root.findViewById(R.id.overflow_layout_unlock);
+        mOverflowPassengerLayout = (RelativeLayout) root.findViewById(R.id.overflow_layout_passenger);
         mCarImageView = (ImageView) root.findViewById(R.id.car_image);
+        mPassengerDialogLayout = (RelativeLayout) root.findViewById(R.id.passenger_dialog);
+        mPassengerDialogCancelButton = (TextView) root.findViewById(R.id.passenger_dialog_cancel);
+        mPassengerDialogConfirmButton = (TextView) root.findViewById(R.id.passenger_dialog_confirm);
+        mPassengerDialogInfoButton = (ImageView) root.findViewById(R.id.passenger_dialog_info);
+        mInvisibleClickView = (FrameLayout) root.findViewById(R.id.invisible_click_view);
+        mPassengerDialogHint = (RelativeLayout) root.findViewById(R.id.passenger_dialog_hint);
 
         mOverflowButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,24 +168,79 @@ public class DrivingLockScreen {
             }
         });
 
-        mOverflowTextView.setOnClickListener(new View.OnClickListener() {
+        mOverflowUnlockLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendFactNotification();
                 addFailedDrivingEvent();
                 Utils.enableDeviceRinger(mContext);
                 stopDriving();
-                postDrivingEventStatus("false");
+                Constants constants = new Constants();
+                postDrivingEventStatus(constants.UNLOCK_STATUS_TRUE);
+            }
+        });
+
+        mOverflowPassengerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPassengerDialogLayout.setVisibility(View.VISIBLE);
+                mInvisibleClickView.setVisibility(View.VISIBLE);
+            }
+        });
+
+        mPassengerDialogConfirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addFailedDrivingEvent();
+                Utils.enableDeviceRinger(mContext);
+                stopDriving();
+                Constants constants = new Constants();
+                postDrivingEventStatus(constants.UNLOCK_STATUS_FALSE);
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+                sharedPreferences.edit().putBoolean(mContext.getString(R.string.passenger_mode_key), true).apply();
+                EventBus.getDefault().postSticky(new PreferenceMessage("true"));
+                mPassengerDialogLayout.setVisibility(View.GONE);
+                mInvisibleClickView.setVisibility(View.GONE);
+            }
+        });
+
+        mPassengerDialogCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPassengerDialogLayout.setVisibility(View.GONE);
+                mInvisibleClickView.setVisibility(View.GONE);
+            }
+        });
+
+        mPassengerDialogInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mPassengerDialogHint.getVisibility() == View.GONE){
+                    mPassengerDialogHint.setVisibility(View.VISIBLE);
+                }
+                else if(mPassengerDialogHint.getVisibility() == View.VISIBLE){
+                    mPassengerDialogHint.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        mInvisibleClickView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mInvisibleClickView.getVisibility() == View.VISIBLE){
+                    mInvisibleClickView.setVisibility(View.GONE);
+                    mPassengerDialogLayout.setVisibility(View.GONE);
+                }
             }
         });
 
         root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mOverflowTextView.getVisibility() == View.GONE){
+                if(mOverflowUnlockLayout.getVisibility() == View.GONE){
                     return;
                 }
-                if(mOverflowTextView.getVisibility() == View.VISIBLE){
+                if(mOverflowUnlockLayout.getVisibility() == View.VISIBLE){
                     hideOverflow();
                 }
             }
@@ -162,14 +251,17 @@ public class DrivingLockScreen {
      * sets the overflow menu text view to visible
      */
     public void showOverflow(){
-        mOverflowTextView.setVisibility(View.VISIBLE);
+        mOverflowUnlockLayout.setVisibility(View.VISIBLE);
+        animateOverflowTextViews();
+        mOverflowPassengerLayout.setVisibility(View.VISIBLE);
     }
 
     /**
      * sets the overflow menu text view to gone
      */
     public void hideOverflow(){
-        mOverflowTextView.setVisibility(View.GONE);
+        mOverflowUnlockLayout.setVisibility(View.GONE);
+        mOverflowPassengerLayout.setVisibility(View.GONE);
     }
 
     /**
@@ -205,6 +297,7 @@ public class DrivingLockScreen {
                     drivingEventLog.setDate(Utils.returnDateAsDate());
                     drivingEventLog.setSuccessful(false);
                     realm.copyToRealmOrUpdate(drivingEventLog);
+                    EventBus.getDefault().postSticky(new DrivingMessage("newLog"));
                 }
             });
             realm.close();
@@ -256,5 +349,37 @@ public class DrivingLockScreen {
      */
     public void postDrivingEventStatus(final String isDriving){
         EventBus.getDefault().postSticky(new DrivingMessage(isDriving));
+    }
+
+    public void animateOverflowTextViews(){
+        ValueAnimator unlockAnimator = ValueAnimator.ofFloat(500f, 0f);
+        unlockAnimator.setDuration(200);
+        unlockAnimator.start();
+
+        unlockAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator updatedAnimation) {
+                // You can use the animated value in a property that uses the
+                // same type as the animation. In this case, you can use the
+                // float value in the translationX property.
+                float animatedValue = (float)updatedAnimation.getAnimatedValue();
+                mOverflowUnlockLayout.setTranslationX(animatedValue);
+            }
+        });
+
+        ValueAnimator passengerAnimator = ValueAnimator.ofFloat(500f, 0f);
+        passengerAnimator.setDuration(250);
+        passengerAnimator.start();
+
+        passengerAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator updatedAnimation) {
+                // You can use the animated value in a property that uses the
+                // same type as the animation. In this case, you can use the
+                // float value in the translationX property.
+                float animatedValue = (float)updatedAnimation.getAnimatedValue();
+                mOverflowPassengerLayout.setTranslationX(animatedValue);
+            }
+        });
     }
 }

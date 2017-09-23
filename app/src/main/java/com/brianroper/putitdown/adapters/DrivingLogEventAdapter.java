@@ -1,6 +1,9 @@
 package com.brianroper.putitdown.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +14,11 @@ import android.widget.TextView;
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.utils.Utils;
+import com.brianroper.putitdown.views.DashboardActivity;
+import com.brianroper.putitdown.views.IntroActivity;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,6 +34,7 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
 
     private Context mContext;
     private RealmResults<DrivingEventLog> mRealmResults;
+    private ArrayList<DrivingEventLog> mResults = new ArrayList<>();
 
     public DrivingLogEventAdapter(Context context) {
         mContext = context;
@@ -46,19 +55,19 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
             holder.mDivider.setVisibility(View.GONE);
         }
 
-        if(mRealmResults.get(position).isSuccessful() == true){
+        if(mResults.get(position).isSuccessful() == true){
             holder.mEventNameTextView.setText("you had a safe trip");
         }
-        else if(mRealmResults.get(position).isSuccessful() == false){
+        else if(mResults.get(position).isSuccessful() == false){
             holder.mEventNameTextView.setText("you used your device while driving");
         }
-        holder.mEventDateTextView.setText(Utils.returnDateStringFromDate(mRealmResults.get(position).getDate()));
-        holder.mEventTimeTextView.setText(mRealmResults.get(position).getTime());
+        holder.mEventDateTextView.setText(Utils.returnDateStringFromDate(mResults.get(position).getDate()));
+        holder.mEventTimeTextView.setText(mResults.get(position).getTime());
     }
 
     @Override
     public int getItemCount() {
-        return mRealmResults.size();
+        return mResults.size();
     }
 
     public class DrivingLogEventViewHolder extends RecyclerView.ViewHolder{
@@ -94,22 +103,76 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
     /**
      * returns all time driving logs
      */
-    public void returnAllTimeDrivingEventLogs(){
-        //TODO: sort all time logs
-        //TODO: exlude this week and this month
+    public ArrayList<DrivingEventLog> returnAllTimeDrivingEventLogs(){
+        ArrayList<DrivingEventLog> results = new ArrayList<>();
+
+        for (int i = 0; i < mRealmResults.size(); i++) {
+
+            results.add(mRealmResults.get(i));
+
+        }
+        mResults = results;
+        return results;
     }
 
     /**
      * returns this week driving logs
      */
-    public void returnThisWeekDrivingEventLogs(){
-        //TODO: sort this week logs
+    public ArrayList<DrivingEventLog> returnThisWeekDrivingEventLogs(){
+        ArrayList<DrivingEventLog> results = new ArrayList<>();
+        Date today = Utils.returnDateAsDate();
+
+        for (int i = 0; i < mRealmResults.size(); i++) {
+
+            Date currentDate = mRealmResults.get(i).getDate();
+
+            if(currentDate.getYear() == today.getYear()
+                    && currentDate.getMonth() == today.getMonth()
+                    && today.getDate() - currentDate.getDate() < 6
+                    && today.getDay() - currentDate.getDay() >=0)
+
+                results.add(mRealmResults.get(i));
+        }
+        mResults = results;
+        return results;
     }
 
     /**
      * returns this month driving logs
      */
-    public void returnThisMonthDrivingEventLogs(){
-        //TODO: sort this month logs
+    public ArrayList<DrivingEventLog> returnThisMonthDrivingEventLogs(){
+        ArrayList<DrivingEventLog> results = new ArrayList<>();
+        Date today = Utils.returnDateAsDate();
+
+        for (int i = 0; i < mRealmResults.size() ; i++) {
+
+            Date currentDate = mRealmResults.get(i).getDate();
+
+            if (currentDate.getYear() == today.getYear()
+                    && currentDate.getMonth() == today.getMonth())
+
+                results.add(mRealmResults.get(i));
+        }
+        mResults = results;
+        return results;
+    }
+    /**
+     * returns today's driving logs
+     */
+    public ArrayList<DrivingEventLog> returnTodayDrivingEventLogs(){
+        ArrayList<DrivingEventLog> results = new ArrayList<>();
+        Date today = Utils.returnDateAsDate();
+
+        for (int i = 0; i < mRealmResults.size(); i++) {
+
+            Date currentDate = mRealmResults.get(i).getDate();
+
+            if (currentDate.getYear() == today.getYear()
+                    && currentDate.getMonth() == today.getMonth()
+                    && currentDate.getDay() == today.getDay())
+                results.add(mRealmResults.get(i));
+        }
+        mResults = results;
+        return results;
     }
 }

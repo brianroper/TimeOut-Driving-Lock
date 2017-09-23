@@ -5,513 +5,530 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dashboard_swipe_refresh_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/background"
     tools:context="com.brianroper.putitdown.views.DashboardActivity">
 
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/background">
+        android:layout_height="match_parent">
 
         <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="112dp"
-            android:id="@+id/dashboard_toolbar"
-            android:background="@color/colorPrimary">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TimeOut"
-                android:textColor="@color/white"
-                android:textSize="20dp"
-                android:layout_marginStart="16dp"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="16dp"/>
-
-            <!-- put settings button here -->
-
-        </RelativeLayout>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="56dp"
-            android:elevation="2dp"
-            android:id="@+id/surface_trips"
-            android:focusableInTouchMode="true">
+            android:layout_height="match_parent"
+            android:background="@color/background">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="55dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:layout_marginEnd="4dp"
-                        android:padding="8dp">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0"
-                                android:textSize="55sp"
-                                android:textColor="@color/primaryText"
-                                android:id="@+id/trip_success_count"/>
-
-                            <ImageView
-                                android:id="@+id/trip_succes_icon"
-                                android:layout_width="38dp"
-                                android:layout_height="38dp"
-                                android:src="@drawable/ic_trip_success"
-                                android:layout_gravity="bottom"
-                                android:layout_marginBottom="8dp"/>
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Completed safe trips"
-                            android:textSize="14dp"
-                            android:textColor="@color/primaryText"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:layout_marginStart="4dp"
-                        android:padding="8dp">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0"
-                                android:textSize="55sp"
-                                android:id="@+id/trip_failed_count"
-                                android:textColor="@color/primaryText"/>
-
-                            <ImageView
-                                android:id="@+id/trip_failed_icon"
-                                android:layout_width="38dp"
-                                android:layout_height="38dp"
-                                android:src="@drawable/ic_trip_failed"
-                                android:layout_gravity="bottom"
-                                android:layout_marginBottom="8dp"/>
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Interrupted trips"
-                            android:textSize="14dp"
-                            android:textColor="@color/primaryText"/>
-
-                    </LinearLayout>
-                </LinearLayout>
+                android:layout_height="112dp"
+                android:id="@+id/dashboard_toolbar"
+                android:background="@color/colorPrimary">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Monday"
-                    android:id="@+id/trip_day_of_week"
+                    android:text="TimeOut"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
                     android:layout_marginStart="16dp"
-                    android:paddingBottom="16dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentStart="true"
-                    android:textColor="@color/primaryText"/>
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="16dp"/>
 
-                <TextView
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="7 August 2017"
-                    android:id="@+id/trip_date"
-                    android:layout_marginEnd="14dp"
-                    android:paddingBottom="16dp"
-                    android:paddingTop="16dp"
-                    android:layout_alignParentBottom="true"
-                    android:textColor="@color/primaryText"
-                    android:layout_alignParentEnd="true"/>
+                    android:id="@+id/settings_button"
+                    android:src="@mipmap/ic_action_settings"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"/>
 
             </RelativeLayout>
 
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/surface_switch"
-            android:id="@+id/surface_log"
-            android:layout_marginBottom="4dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:elevation="2dp">
-
-            <!-- empty view -->
-            <RelativeLayout
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/empty_view"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/empty_title"
-                    android:text="Trip Log"
-                    android:textColor="@color/colorAccent"
-                    android:fontFamily="sans-serif-medium"
-                    android:paddingBottom="4dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingTop="16dp"
-                    android:textSize="16sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/primaryText"
-                    android:text="You currently have no saved trip data. Start driving to change that!"
-                    android:layout_below="@+id/empty_title"
-                    android:layout_centerHorizontal="true"
-                    android:paddingTop="4dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingBottom="16dp"/>
-
-            </RelativeLayout>
-
-            <!-- date visible view  -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                android:id="@+id/log_view">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/log_title"
-                    android:text="Recent Trips"
-                    android:textColor="@color/colorAccent"
-                    android:fontFamily="sans-serif-medium"
-                    android:paddingBottom="4dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingTop="16dp"
-                    android:textSize="16sp"/>
+                android:layout_height="180dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="56dp"
+                android:elevation="2dp"
+                android:id="@+id/surface_trips"
+                android:focusableInTouchMode="true">
 
                 <RelativeLayout
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:orientation="vertical"
-                    android:id="@+id/dashboard_log_top"
-                    android:layout_below="@+id/log_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="55dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_marginEnd="4dp"
+                            android:padding="8dp">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textSize="55sp"
+                                    android:textColor="@color/primaryText"
+                                    android:id="@+id/trip_success_count"/>
+
+                                <ImageView
+                                    android:id="@+id/trip_succes_icon"
+                                    android:layout_width="38dp"
+                                    android:layout_height="38dp"
+                                    android:src="@drawable/ic_trip_success"
+                                    android:layout_gravity="bottom"
+                                    android:layout_marginBottom="8dp"/>
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Completed safe trips"
+                                android:textSize="14dp"
+                                android:textColor="@color/primaryText"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_marginStart="4dp"
+                            android:padding="8dp">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textSize="55sp"
+                                    android:id="@+id/trip_failed_count"
+                                    android:textColor="@color/primaryText"/>
+
+                                <ImageView
+                                    android:id="@+id/trip_failed_icon"
+                                    android:layout_width="38dp"
+                                    android:layout_height="38dp"
+                                    android:src="@drawable/ic_trip_failed"
+                                    android:layout_gravity="bottom"
+                                    android:layout_marginBottom="8dp"/>
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Interrupted trips"
+                                android:textSize="14dp"
+                                android:textColor="@color/primaryText"/>
+
+                        </LinearLayout>
+                    </LinearLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="you had a safe trip"
-                        android:paddingEnd="16dp"
-                        android:paddingStart="16dp"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="8dp"
-                        android:id="@+id/top_event_name"
+                        android:text="Monday"
+                        android:id="@+id/trip_day_of_week"
+                        android:layout_marginStart="16dp"
+                        android:paddingBottom="16dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentStart="true"
+                        android:textColor="@color/primaryText"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="7 August 2017"
+                        android:id="@+id/trip_date"
+                        android:layout_marginEnd="14dp"
+                        android:paddingBottom="16dp"
+                        android:paddingTop="16dp"
+                        android:layout_alignParentBottom="true"
                         android:textColor="@color/primaryText"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentStart="true"/>
+                        android:layout_alignParentEnd="true"/>
 
-                    <LinearLayout
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/surface_switch"
+                android:id="@+id/surface_log"
+                android:layout_marginBottom="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:elevation="2dp">
+
+                <!-- empty view -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/empty_view"
+                    android:visibility="gone">
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:id="@+id/top_date_layout"
-                        android:layout_alignParentEnd="true"
+                        android:id="@+id/empty_title"
+                        android:text="Trip Log"
+                        android:textColor="@color/colorAccent"
+                        android:fontFamily="sans-serif-medium"
+                        android:paddingBottom="4dp"
                         android:paddingStart="16dp"
-                        android:paddingEnd="16dp">
+                        android:paddingEnd="16dp"
+                        android:paddingTop="16dp"
+                        android:textSize="16sp"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/top_event_date"
-                            android:layout_gravity="center"
-                            android:text="5/15"
-                            android:textColor="@color/primaryText"/>
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@mipmap/ic_date"
-                            android:layout_gravity="center"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:id="@+id/top_time_layout"
-                        android:layout_alignParentEnd="true"
-                        android:layout_below="@+id/top_date_layout"
+                        android:textColor="@color/primaryText"
+                        android:text="You currently have no saved trip data. Start driving to change that!"
+                        android:layout_below="@+id/empty_title"
+                        android:layout_centerHorizontal="true"
+                        android:paddingTop="4dp"
                         android:paddingStart="16dp"
-                        android:paddingEnd="16dp">
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="16dp"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/top_event_time"
-                            android:text="10:58 AM"
-                            android:layout_gravity="center"
-                            android:textColor="@color/primaryText"/>
+                </RelativeLayout>
 
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@mipmap/ic_time"
-                            android:layout_gravity="center"/>
+                <!-- date visible view  -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:id="@+id/log_view">
 
-                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/log_title"
+                        android:text="Recent Trips"
+                        android:textColor="@color/colorAccent"
+                        android:fontFamily="sans-serif-medium"
+                        android:paddingBottom="4dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="16dp"
+                        android:textSize="16sp"/>
 
                     <RelativeLayout
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:orientation="vertical"
+                        android:id="@+id/dashboard_log_top"
+                        android:layout_below="@+id/log_title"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_below="@+id/top_time_layout"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="@color/grey"
-                        android:id="@+id/divider">
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="you had a safe trip"
+                            android:paddingEnd="16dp"
+                            android:paddingStart="16dp"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="8dp"
+                            android:id="@+id/top_event_name"
+                            android:textColor="@color/primaryText"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:id="@+id/top_date_layout"
+                            android:layout_alignParentEnd="true"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/top_event_date"
+                                android:layout_gravity="center"
+                                android:text="5/15"
+                                android:textColor="@color/primaryText"/>
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@mipmap/ic_date"
+                                android:layout_gravity="center"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:id="@+id/top_time_layout"
+                            android:layout_alignParentEnd="true"
+                            android:layout_below="@+id/top_date_layout"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/top_event_time"
+                                android:text="10:58 AM"
+                                android:layout_gravity="center"
+                                android:textColor="@color/primaryText"/>
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@mipmap/ic_time"
+                                android:layout_gravity="center"/>
+
+                        </LinearLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_below="@+id/top_time_layout"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:background="@color/grey"
+                            android:id="@+id/divider">
+
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:orientation="vertical"
+                        android:layout_below="@+id/dashboard_log_top"
+                        android:id="@+id/dashboard_log_bottom"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="you had a safe trip"
+                            android:paddingEnd="16dp"
+                            android:paddingStart="16dp"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="8dp"
+                            android:id="@+id/bottom_event_name"
+                            android:textColor="@color/primaryText"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:id="@+id/bottom_date_layout"
+                            android:layout_alignParentEnd="true"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/bottom_event_date"
+                                android:layout_gravity="center"
+                                android:text="5/15"
+                                android:textColor="@color/primaryText"/>
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@mipmap/ic_date"
+                                android:layout_gravity="center"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:id="@+id/bottom_time_layout"
+                            android:layout_alignParentEnd="true"
+                            android:layout_below="@+id/bottom_date_layout"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/bottom_event_time"
+                                android:text="10:58 AM"
+                                android:layout_gravity="center"
+                                android:textColor="@color/primaryText"/>
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@mipmap/ic_time"
+                                android:layout_gravity="center"/>
+
+                        </LinearLayout>
 
                     </RelativeLayout>
 
                 </RelativeLayout>
 
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/surface_trips"
+                android:layout_marginBottom="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:elevation="2dp"
+                android:id="@+id/surface_switch">
+
                 <RelativeLayout
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:orientation="vertical"
-                    android:layout_below="@+id/dashboard_log_top"
-                    android:id="@+id/dashboard_log_bottom"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="you had a safe trip"
+                        android:text="Passenger Mode"
+                        android:id="@+id/passenger_title"
+                        android:textColor="@color/colorAccent"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:paddingTop="16dp"
+                        android:paddingStart="16dp"
                         android:paddingEnd="16dp"
-                        android:paddingStart="16dp"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="8dp"
-                        android:id="@+id/bottom_event_name"
-                        android:textColor="@color/primaryText"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"/>
+                        android:paddingBottom="4dp"
+                        android:layout_alignParentStart="true"/>
 
-                    <LinearLayout
+                    <TextView
+                        android:layout_width="280dp"
+                        android:layout_height="wrap_content"
+                        android:text="Enable passenger mode when your aren't behind the wheel"
+                        android:layout_below="@+id/passenger_title"
+                        android:paddingTop="2dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="16dp"
+                        android:id="@+id/passenger_detail"
+                        android:textColor="@color/primaryText"/>
+
+                    <android.support.v7.widget.SwitchCompat
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:id="@+id/bottom_date_layout"
                         android:layout_alignParentEnd="true"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/bottom_event_date"
-                            android:layout_gravity="center"
-                            android:text="5/15"
-                            android:textColor="@color/primaryText"/>
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@mipmap/ic_date"
-                            android:layout_gravity="center"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:id="@+id/bottom_time_layout"
-                        android:layout_alignParentEnd="true"
-                        android:layout_below="@+id/bottom_date_layout"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/bottom_event_time"
-                            android:text="10:58 AM"
-                            android:layout_gravity="center"
-                            android:textColor="@color/primaryText"/>
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@mipmap/ic_time"
-                            android:layout_gravity="center"/>
-
-                    </LinearLayout>
+                        android:layout_centerVertical="true"
+                        android:padding="16dp"
+                        android:id="@+id/passenger_switch"
+                        android:theme="@style/AccessoryTheme"/>
 
                 </RelativeLayout>
+            </android.support.v7.widget.CardView>
 
-            </RelativeLayout>
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/surface_log"
+                android:layout_marginBottom="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:elevation="2dp"
+                android:id="@+id/surface_goal">
 
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/surface_trips"
-            android:layout_marginBottom="4dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:elevation="2dp"
-            android:id="@+id/surface_switch">
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
+                <RelativeLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Passenger Mode"
-                    android:id="@+id/passenger_title"
-                    android:textColor="@color/colorAccent"
-                    android:fontFamily="sans-serif-medium"
-                    android:textSize="16sp"
-                    android:paddingTop="16dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingBottom="4dp"
-                    android:layout_alignParentStart="true"/>
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="280dp"
-                    android:layout_height="wrap_content"
-                    android:text="Enable passenger mode when your aren't behind the wheel"
-                    android:layout_below="@+id/passenger_title"
-                    android:paddingTop="2dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingBottom="16dp"
-                    android:id="@+id/passenger_detail"
-                    android:textColor="@color/primaryText"/>
+                    <TextView
+                        android:id="@+id/goal_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:fontFamily="sans-serif-medium"
+                        android:paddingBottom="4dp"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="16dp"
+                        android:text="Personal Goal"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="16sp"/>
 
-                <android.support.v7.widget.SwitchCompat
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:padding="16dp"
-                    android:id="@+id/passenger_switch"
-                    android:theme="@style/AccessoryTheme"/>
+                    <TextView
+                        android:id="@+id/goal_content"
+                        android:layout_width="340dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/goal_title"
+                        android:paddingBottom="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="2dp"
+                        android:text="Set a goal to have fewer interruptions"
+                        android:textColor="@color/primaryText"/>
 
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
+                    <android.support.v7.widget.AppCompatSeekBar
+                        android:layout_width="315dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/goal_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="16dp"
+                        android:id="@+id/goal_seek_bar"
+                        android:progress="10"
+                        android:max="20"
+                        android:theme="@style/AccessoryTheme"
+                        android:secondaryProgressTint="@color/grey"/>
 
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/surface_log"
-            android:layout_marginBottom="4dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:elevation="2dp"
-            android:id="@+id/surface_goal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="16dp"
+                        android:text="10"
+                        android:paddingStart="16dp"
+                        android:id="@+id/goal_seek_bar_count"
+                        android:textColor="@color/primaryText"
+                        android:textSize="28sp"/>
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
 
-                <TextView
-                    android:id="@+id/goal_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:fontFamily="sans-serif-medium"
-                    android:paddingBottom="4dp"
-                    android:paddingEnd="16dp"
-                    android:paddingStart="16dp"
-                    android:paddingTop="16dp"
-                    android:text="Personal Goal"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="16sp"/>
+        </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/goal_content"
-                    android:layout_width="340dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/goal_title"
-                    android:paddingBottom="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingStart="16dp"
-                    android:paddingTop="2dp"
-                    android:text="Set a personal goal for minimum interrupted trips"
-                    android:textColor="@color/primaryText"/>
-
-                <android.support.v7.widget.AppCompatSeekBar
-                    android:layout_width="315dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/goal_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginStart="16dp"
-                    android:id="@+id/goal_seek_bar"
-                    android:progress="25"
-                    android:max="50"
-                    android:theme="@style/AccessoryTheme"
-                    android:secondaryProgressTint="@color/grey"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="16dp"
-                    android:text="25"
-                    android:id="@+id/goal_seek_bar_count"
-                    android:textColor="@color/primaryText"
-                    android:textSize="28sp"/>
-
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
-
-    </RelativeLayout>
+    </android.support.v4.widget.NestedScrollView>
 </android.support.v4.widget.SwipeRefreshLayout>

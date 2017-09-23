@@ -94,7 +94,7 @@ public class Utils {
     }
 
     /**
-     * convert the NeuraEventData timestamp into a date object
+     * convert the timestamp into a date object
      */
     static public Date convertTimeStampToDate(long timestamp){
         Calendar calendar = Calendar.getInstance();

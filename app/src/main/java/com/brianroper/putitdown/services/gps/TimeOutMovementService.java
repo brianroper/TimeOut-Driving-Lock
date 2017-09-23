@@ -1,5 +1,6 @@
 package com.brianroper.putitdown.services.gps;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -45,22 +47,29 @@ import io.realm.RealmConfiguration;
 
 public class TimeOutMovementService extends Service implements TimeOutGpsListener {
 
-    final int DRIVING_LOCKOUT_RETRY_TIME = 5000;
-    final int DRIVING_STOPPED_DOUBLE_CHECK_TIME = 30000;
-    final int TARGET_LOCKOUT_SPEED = 5;
-    final int TARGET_STOPPED_SPEED = 0;
+    private int DRIVING_LOCKOUT_RETRY_TIME = 5000;
+    private int DRIVING_STOPPED_DOUBLE_CHECK_TIME = 30000;
+    private int TARGET_LOCKOUT_SPEED = 5;
+    private int TARGET_STOPPED_SPEED = 0;
 
     private Intent mDrivingService;
-    private boolean mIsUnlocked = true;
+    private boolean mIsUnlocked = false;
     private boolean mIsDriving = false;
 
     private boolean mIsPassengerMode = false;
 
+    private float mCurrentSpeed = 0;
+
+    private int[] mDrivingModeSpeeds = {2, 4, 6};
+    private int[] mLockOutTimes = {15000, 30000, 45000};
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        initializeDrivingService();
+        Log.i("GPS_Service: ", "Started");
+
         returnSharedPreferences();
+        initializeDrivingService();
 
         LocationManager locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -93,6 +102,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         if(location != null){
             TimeOutLocation currentLocation = new TimeOutLocation(location, this.useMetricUnits());
             this.updateSpeed(currentLocation);
+            //Log.i("CurrentSpeed: ", currentLocation + "");
         }
     }
 
@@ -136,52 +146,74 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
      * speed activity until it is disabled
      */
     private void updateSpeed(TimeOutLocation location){
-        float currentSpeed = 0;
+        mCurrentSpeed = 10;
 
-        if(location != null){
-            location.setUseMetricUnits(this.useMetricUnits());
-            currentSpeed = location.getSpeed();
-        }
+//        if(location != null){
+//            location.setUseMetricUnits(this.useMetricUnits());
+//            mCurrentSpeed = location.getSpeed();
+//        }
 
         if(!mIsPassengerMode){
             if(!mIsUnlocked){
-                if(currentSpeed > TARGET_LOCKOUT_SPEED){
+                if(mCurrentSpeed >= TARGET_LOCKOUT_SPEED){
                     //if current speed is greater than 5 mph do something
-                    startService(mDrivingService);
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                        handleAndroidOService(mDrivingService, true);
+                    }
+                    else{
+                        startService(mDrivingService);
+                    }
                     mIsDriving = true;
+                    Log.i("Driving: ", "User has started driving above 5mph");
                 }
-                else if(currentSpeed < TARGET_LOCKOUT_SPEED){
+                if(mCurrentSpeed <= TARGET_LOCKOUT_SPEED && mCurrentSpeed != TARGET_STOPPED_SPEED){
                     stopService(mDrivingService);
+                    Log.i("Driving: ", "User has started driving below 5mph");
                 }
-                else if(currentSpeed == TARGET_STOPPED_SPEED){
-                    final float stoppedSpeed = currentSpeed;
-
+                if(mCurrentSpeed == TARGET_STOPPED_SPEED){
+                    Log.i("Driving: ", "User has stopped driving");
                     if(mIsDriving){
                         //check after set seconds if speed is still 0. If so we log a successful driving session
+                        mIsDriving = false;
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if (stoppedSpeed == TARGET_STOPPED_SPEED){
-                                    addSuccessfulDrivingEvent(true);
-                                    sendSuccessNotification();
-                                    mIsDriving = false;
-                                }
+                                handleStoppedDriving();
                             }
                         }, DRIVING_STOPPED_DOUBLE_CHECK_TIME);
                     }
                 }
             }
-            else if(mIsUnlocked){
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mIsUnlocked = false;
-                    }
-                }, DRIVING_LOCKOUT_RETRY_TIME);
-            }
         }
+    }
+
+    /**
+     * checks to see if the user has actually stopped driving
+     */
+    public void handleStoppedDriving(){
+        if (mCurrentSpeed == TARGET_STOPPED_SPEED){
+            addSuccessfulDrivingEvent(true);
+            sendSuccessNotification();
+            Constants constants = new Constants();
+            EventBus.getDefault().postSticky(new DrivingMessage(constants.DRIVING_LOG_EVENT_SUCCESS));
+        }
+        else{
+            mIsDriving = true;
+        }
+    }
+
+    public void handleRestartSession(){
+        mIsUnlocked = true;
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mIsUnlocked = false;
+                Constants constants = new Constants();
+                EventBus.getDefault().postSticky(new DrivingMessage(constants.DRIVING_LOG_EVENT_FAILED));
+            }
+        }, DRIVING_LOCKOUT_RETRY_TIME);
     }
 
     /**
@@ -202,12 +234,16 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
     public void onCreate() {
         super.onCreate();
         EventBus.getDefault().register(this);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            handleForegroundServiceStart();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        Log.i("GPS_Service: ", "Destroyed");
     }
 
     /**
@@ -216,12 +252,23 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onDrivingMessageEvent(DrivingMessage drivingMessage){
         Constants constants = new Constants();
-        if(drivingMessage.message == constants.DRIVING_STATUS_FALSE) {
-            mIsUnlocked = true;
+        if(drivingMessage.message == constants.UNLOCK_STATUS_FALSE) {
+
         }
-        if (drivingMessage.message == constants.DRIVING_STATUS_TRUE){
-            mIsUnlocked = false;
+        if (drivingMessage.message == constants.UNLOCK_STATUS_TRUE){
+            handleRestartSession();
         }
+    }
+
+    /**
+     *
+     * listens for a change to sharedPreferences
+     */
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onDrivingMessageEvent(PreferenceMessage preferenceMessage){
+        Constants constants = new Constants();
+        if (preferenceMessage.equals("Changed"))
+            returnSharedPreferences();
     }
 
     /**
@@ -238,11 +285,12 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, Utils.returnDateAsDate().getTime() + Utils.returnDateAsDate().getTime() + "");
+                DrivingEventLog drivingEventLog = realm.createObject(DrivingEventLog.class, Utils.returnDateAsDate().getTime() + "");
                 drivingEventLog.setTime(Utils.returnTime(calendar));
-                drivingEventLog.setDate(Utils.convertTimeStampToDate(Utils.returnDateAsDate().getTime()));
+                drivingEventLog.setDate(Utils.returnDateAsDate());
                 drivingEventLog.setSuccessful(isSuccessful);
                 realm.copyToRealmOrUpdate(drivingEventLog);
+                EventBus.getDefault().postSticky(new DrivingMessage("newLog"));
             }
         });
         realm.close();
@@ -290,6 +338,12 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         SharedPreferences sharedPreferences
                 = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mIsPassengerMode = sharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false);
+
+        int drivingMode = sharedPreferences.getInt("driveModeOption", 0);
+        TARGET_LOCKOUT_SPEED = mDrivingModeSpeeds[drivingMode];
+
+        int lockOutTime = sharedPreferences.getInt("lockOutTime", 0);
+        DRIVING_STOPPED_DOUBLE_CHECK_TIME = mLockOutTimes[lockOutTime];
     }
 
     /**
@@ -305,4 +359,54 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
             mIsPassengerMode = false;
         }
     }
+
+    /**
+     * ANDROID O
+     */
+
+    /**
+     * handles persistent notification for Android O requirements,
+     * having a "persistent" notification that is always visible to the user
+     * allows the service to run since the app qualifies as in the foreground, since
+     * a component of the app is visible.
+     */
+    public Notification handlePersistentServiceNotification(){
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(getApplicationContext())
+                        .setSmallIcon(R.drawable.redcar)
+                        .setContentTitle("TimeOut")
+                        .setContentText(
+                                "TimeOut is monitoring your driving patterns");
+
+        //shows notification text on the status bar when received
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+
+        NotificationManager manager;
+
+        return builder.build();
+    }
+
+    @TargetApi(26)
+    public void handleForegroundServiceStart(){
+        startForeground(101, handlePersistentServiceNotification() );
+    }
+
+    /**
+     * handles the new service system for android O
+     * specifies that this code is targeted for API 26
+     */
+    @TargetApi(26)
+    public void handleAndroidOService(Intent service, boolean action){
+        if(action){
+            getApplicationContext().startForegroundService(service);
+        }
+        else if(!action){
+            stopForeground(true);
+        }
+        Log.i("AndroidVersion: ", "Oreo");
+    }
+
+    /**
+     * END OF ANDROID O
+     */
 }

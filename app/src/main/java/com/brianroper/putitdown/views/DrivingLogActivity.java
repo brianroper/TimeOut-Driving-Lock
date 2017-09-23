@@ -2,28 +2,19 @@ package com.brianroper.putitdown.views;
 
 import android.os.Build;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.RelativeLayout;
 
 import com.brianroper.putitdown.R;
-import com.brianroper.putitdown.adapters.DrivingLogEventAdapter;
-import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.RealmResults;
 
 public class DrivingLogActivity extends AppCompatActivity {
 
@@ -35,14 +26,16 @@ public class DrivingLogActivity extends AppCompatActivity {
     final int THIS_WEEK_FRAGMENT = 001;
     final int THIS_MONTH_FRAGMENT = 002;
     final int ALL_TIME_FRAGMENT = 003;
+    final int TODAY_FRAGMENT = 004;
 
     private DrivingLogFragment[] mDrivingLogFragments = {
+            DrivingLogFragment.newInstance(TODAY_FRAGMENT),
             DrivingLogFragment.newInstance(THIS_WEEK_FRAGMENT),
             DrivingLogFragment.newInstance(THIS_MONTH_FRAGMENT),
-            DrivingLogFragment.newInstance(ALL_TIME_FRAGMENT),
+            DrivingLogFragment.newInstance(ALL_TIME_FRAGMENT)
     };
 
-    private String[] mFragmentNames = {"This Week", "This Month", "All Time"};
+    private String[] mFragmentNames = { "Today", "This Week", "This Month", "All Time" };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +123,7 @@ public class DrivingLogActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override

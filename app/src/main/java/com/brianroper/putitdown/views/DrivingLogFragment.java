@@ -16,6 +16,8 @@ import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.adapters.DrivingLogEventAdapter;
 import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.RealmResults;
@@ -47,10 +49,12 @@ public class DrivingLogFragment extends Fragment {
     private DrivingLogEventAdapter mDLogAdapter;
     private RealmResults<DrivingEventLog> mRealmResults;
     public int mCurrentFragment;
+    private ArrayList<DrivingEventLog> mResults;
 
     final int THIS_WEEK_FRAGMENT = 001;
     final int THIS_MONTH_FRAGMENT = 002;
     final int ALL_TIME_FRAGMENT = 003;
+    final int TODAY_FRAGMENT = 004;
 
     @Nullable
     @Override
@@ -66,7 +70,7 @@ public class DrivingLogFragment extends Fragment {
 
         initializeAdapter();
 
-        handleEmptyViews(mRealmResults, mCurrentFragment);
+        handleEmptyViews(mResults, mCurrentFragment);
         populateAllViews();
 
         return root;
@@ -108,7 +112,7 @@ public class DrivingLogFragment extends Fragment {
      * note: currently mRealmResults serves as a place holder until TJ finished the logic algorithms
      * different lists of results will be passed in with the appropriate data
      */
-    public void handleEmptyViews(RealmResults<DrivingEventLog> results, int currentFragment){
+    public void handleEmptyViews(ArrayList<DrivingEventLog> results, int currentFragment){
         if(results.size() != 0){
             mLogRecycler.setVisibility(View.VISIBLE);
             mLogEmptyView.setVisibility(View.GONE);
@@ -123,6 +127,9 @@ public class DrivingLogFragment extends Fragment {
                 mLogEmptyViewTextView.setText("You have no trip data for this month");
             }
             else if(currentFragment == ALL_TIME_FRAGMENT){
+                mLogEmptyViewTextView.setText("You currently have no trip data");
+            }
+            else if(currentFragment == TODAY_FRAGMENT){
                 mLogEmptyViewTextView.setText("You currently have no trip data");
             }
         }
@@ -153,16 +160,24 @@ public class DrivingLogFragment extends Fragment {
     public void initializeAdapter(){
         mDLogAdapter = new DrivingLogEventAdapter(getActivity());
         if(mCurrentFragment == THIS_WEEK_FRAGMENT){
-            //mRealmResults= mDLogAdapter.returnThisWeekDrivingEventLogs();
             mRealmResults = mDLogAdapter.getDrivingEventLogFromRealm();
+            mResults= mDLogAdapter.returnThisWeekDrivingEventLogs();
+            mDLogAdapter.notifyDataSetChanged();
         }
         else if(mCurrentFragment == THIS_MONTH_FRAGMENT){
-            //mRealmResults = mDLogAdapter.returnThisMonthDrivingEventLogs();
             mRealmResults = mDLogAdapter.getDrivingEventLogFromRealm();
+            mResults = mDLogAdapter.returnThisMonthDrivingEventLogs();
+            mDLogAdapter.notifyDataSetChanged();
         }
         else if(mCurrentFragment == ALL_TIME_FRAGMENT){
-            //mRealmResults = mDLogAdapter.returnAllTimeDrivingEventLogs();
             mRealmResults = mDLogAdapter.getDrivingEventLogFromRealm();
+            mResults = mDLogAdapter.returnAllTimeDrivingEventLogs();
+            mDLogAdapter.notifyDataSetChanged();
+        }
+        else if(mCurrentFragment == TODAY_FRAGMENT){
+            mRealmResults = mDLogAdapter.getDrivingEventLogFromRealm();
+            mResults = mDLogAdapter.returnTodayDrivingEventLogs();
+            mDLogAdapter.notifyDataSetChanged();
         }
     }
 
@@ -191,8 +206,6 @@ public class DrivingLogFragment extends Fragment {
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
         mLogRecycler.setLayoutManager(layoutManager);
-        mDLogAdapter.returnThisWeekDrivingEventLogs();
-        mDLogAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -202,9 +215,9 @@ public class DrivingLogFragment extends Fragment {
     public void populateTripViews(){
         int failedCount = 0;
         int successCount = 0;
-        if(mRealmResults.size() != 0){
-            for (int i = 0; i < mRealmResults.size(); i++) {
-                if(mRealmResults.get(i).isSuccessful()){
+        if(mResults.size() != 0){
+            for (int i = 0; i < mResults.size(); i++) {
+                if(mResults.get(i).isSuccessful()){
                     successCount++;
                 }
                 else{

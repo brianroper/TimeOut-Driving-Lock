@@ -1,10 +1,15 @@
 package com.brianroper.putitdown.services.driving;
 
+import android.annotation.TargetApi;
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 
+import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.utils.Utils;
 import com.brianroper.putitdown.model.driving.DrivingLockScreen;
 
@@ -20,6 +25,10 @@ public class DrivingLockService extends Service {
     public void onCreate() {
         super.onCreate();
         mDrivingLockScreen = new DrivingLockScreen(this);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            handleForegroundService();
+        }
     }
 
     /**
@@ -51,5 +60,29 @@ public class DrivingLockService extends Service {
         Utils.enableDeviceRinger(getApplicationContext());
         mDrivingLockScreen.stopDriving();
         super.onDestroy();
+    }
+
+    /**
+     * handles persistent notification for Android O requirements,
+     * having a "persistent" notification that is always visible to the user
+     * allows the service to run since the app qualifies as in the foreground, since
+     * a component of the app is visible.
+     */
+    public Notification handlePersistentServiceNotification(){
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(getApplicationContext())
+                        .setSmallIcon(R.drawable.redcar)
+                        .setContentTitle("TimeOut")
+                        .setContentText(
+                                "TimeOut is monitoring your driving patterns");
+
+        //shows notification text on the status bar when received
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        return builder.build();
+    }
+
+    @TargetApi(26)
+    public void handleForegroundService(){
+        startForeground(101, handlePersistentServiceNotification() );
     }
 }
