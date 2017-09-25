@@ -327,5 +327,17 @@
                     android:textColor="@color/primaryText"/>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TimeOut"
+            android:layout_below="@id/surface_play_store"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/primaryText"
+            android:textSize="14sp"
+            android:id="@+id/settings_version_code"/>
     </RelativeLayout>
 </ScrollView>

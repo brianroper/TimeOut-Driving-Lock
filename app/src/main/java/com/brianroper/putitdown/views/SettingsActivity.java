@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
@@ -61,6 +63,8 @@ public class SettingsActivity extends AppCompatActivity {
     TextView mLockOutTimeTextView;
     @BindView(R.id.drive_option_textView)
     TextView mDriveModeTextView;
+    @BindView(R.id.settings_version_code)
+    TextView mVersionCode;
 
     private SharedPreferences mSharedPreferences;
     private final String[] mDriveModes = {"Strict", "Normal", "Lenient"};
@@ -109,6 +113,7 @@ public class SettingsActivity extends AppCompatActivity {
         setPassengerSwitchDefaultPosition();
         setLockOutTimeOption();
         setDrivingModeOption();
+        setVersionCode();
     }
 
     /**
@@ -189,6 +194,18 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * gets the version name from the gradle
+     */
+    public void setVersionCode(){
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version = pInfo.versionName;
+            mVersionCode.setText("v" + version);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * END OF UI UTILITIES

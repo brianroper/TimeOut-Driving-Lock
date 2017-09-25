@@ -24,7 +24,10 @@ public class CounterWidgetProvider extends AppWidgetProvider{
 
     private RemoteViews mRemoteViews;
     private Context mContext;
-    public static final String ACTION_TEXT_CHANGED = "com.brianroper.putitdown.CounterWidgetProvider.TEXT_CHANGED";
+    public static final String ACTION_TEXT_CHANGED = "com.brianroper.putitdown.TEXT_CHANGED";
+
+    private String mExtra = "0";
+    private AppWidgetManager mAppWidgetManager;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -37,9 +40,11 @@ public class CounterWidgetProvider extends AppWidgetProvider{
         mRemoteViews.setTextViewText(R.id.widget_dayofweek, Utils.returnDayOfWeek());
         mRemoteViews.setTextViewText(R.id.widget_date, Utils.returnFullDate());
 
+        mRemoteViews.setTextViewText(R.id.widget_todays_check_count, mExtra);
+
         ComponentName counterWidget = new ComponentName(context, CounterWidgetProvider.class);
-        AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        manager.updateAppWidget(counterWidget, mRemoteViews);
+        mAppWidgetManager = AppWidgetManager.getInstance(context);
+        mAppWidgetManager.updateAppWidget(counterWidget, mRemoteViews);
     }
 
     @Override
@@ -48,8 +53,7 @@ public class CounterWidgetProvider extends AppWidgetProvider{
         if (intent.getAction().equals(ACTION_TEXT_CHANGED)) {
             Log.i("WidgetIntent: ", "Received");
 
-            String extra = intent.getStringExtra("today");
-            mRemoteViews.setTextViewText(R.id.widget_todays_check_count, extra);
+            mExtra = intent.getStringExtra("today");
         }
     }
 }
