@@ -54,6 +54,52 @@ public class CounterWidgetProvider extends AppWidgetProvider{
             Log.i("WidgetIntent: ", "Received");
 
             mExtra = intent.getStringExtra("today");
+
+            RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.widget_counter);
+            view.setTextViewText(R.id.widget_todays_check_count, mExtra);
+            view.setImageViewResource(R.id.widget_todays_check_status_icon, calculateUnlockSeverity(mExtra));
+            AppWidgetManager
+                    .getInstance(context)
+                    .updateAppWidget(new ComponentName(context, CounterWidgetProvider.class), view);
+        }
+    }
+
+    /**
+     * calculates and returns the id for the correct icon that relates to the current unlock number
+     */
+    public int calculateUnlockSeverity(String extra){
+
+        int unlocks = Integer.parseInt(extra);
+
+        if(unlocks < 30){
+            return R.mipmap.ic_device_lock_g_stage_1;
+        }
+        else if(unlocks >= 30 && unlocks < 60){
+            return R.mipmap.ic_device_lock_g_stage_2;
+        }
+        else if(unlocks >= 60 && unlocks < 90){
+            return R.mipmap.ic_device_lock_g_stage_3;
+        }
+        else if(unlocks >= 90 && unlocks < 120){
+            return R.mipmap.ic_device_lock_o_stage_1;
+        }
+        else if(unlocks >= 120 && unlocks < 150){
+            return R.mipmap.ic_device_lock_o_stage_2;
+        }
+        else if(unlocks >= 150 && unlocks < 180){
+            return R.mipmap.ic_device_lock_o_stage_3;
+        }
+        else if(unlocks >= 180 && unlocks < 200){
+            return R.mipmap.ic_device_lock_r_stage_1;
+        }
+        else if(unlocks >= 200 && unlocks < 225){
+            return R.mipmap.ic_device_lock_r_stage_2;
+        }
+        else if(unlocks >= 225){
+            return R.mipmap.ic_device_lock_r_stage_3;
+        }
+        else{
+            return R.drawable.ic_device_lock;
         }
     }
 }
