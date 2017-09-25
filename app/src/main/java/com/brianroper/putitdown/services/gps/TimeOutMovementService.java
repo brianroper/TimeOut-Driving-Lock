@@ -166,9 +166,11 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
                     mIsDriving = true;
                     Log.i("Driving: ", "User has started driving above 5mph");
                 }
-                if(mCurrentSpeed <= TARGET_LOCKOUT_SPEED && mCurrentSpeed != TARGET_STOPPED_SPEED){
-                    stopService(mDrivingService);
-                    Log.i("Driving: ", "User has started driving below 5mph");
+                if(mCurrentSpeed < TARGET_LOCKOUT_SPEED && mCurrentSpeed != TARGET_STOPPED_SPEED){
+                    if(mIsDriving){
+                        stopService(mDrivingService);
+                        Log.i("Driving: ", "User has started driving below 5mph");
+                    }
                 }
                 if(mCurrentSpeed == TARGET_STOPPED_SPEED){
                     Log.i("Driving: ", "User has stopped driving");
