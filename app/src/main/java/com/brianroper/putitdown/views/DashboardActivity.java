@@ -204,7 +204,6 @@ public class DashboardActivity extends AppCompatActivity {
         for (int i = 0; i < mRealmResults.size(); i++) {
 
             String logDateString = sdf.format(mRealmResults.get(i).getDate());
-
             Calendar calender = Calendar.getInstance();
             calender.setTime(mRealmResults.get(i).getDate());
             storedWeek = calender.get(Calendar.WEEK_OF_YEAR);

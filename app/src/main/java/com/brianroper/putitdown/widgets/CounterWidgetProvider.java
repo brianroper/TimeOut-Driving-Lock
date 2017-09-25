@@ -24,8 +24,7 @@ public class CounterWidgetProvider extends AppWidgetProvider{
 
     private RemoteViews mRemoteViews;
     private Context mContext;
-
-    public static final String ACTION_TEXT_CHANGED = "com.brianroper.putitdown.TEXT_CHANGED";
+    public static final String ACTION_TEXT_CHANGED = "com.brianroper.putitdown.CounterWidgetProvider.TEXT_CHANGED";
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -48,12 +47,9 @@ public class CounterWidgetProvider extends AppWidgetProvider{
         super.onReceive(context, intent);
         if (intent.getAction().equals(ACTION_TEXT_CHANGED)) {
             Log.i("WidgetIntent: ", "Received");
-            String counterToday = intent.getStringExtra("CounterToday");
-            mRemoteViews.setTextViewText(R.id.widget_todays_check_count, counterToday);
-        }
-    }
 
-    public void populateAllViews(RemoteViews remoteViews){
-       // remoteViews.setTextViewText(R.id.widget_todays_check_count, mScreenCounter.getCounter() + "");
+            String extra = intent.getStringExtra("today");
+            mRemoteViews.setTextViewText(R.id.widget_todays_check_count, extra);
+        }
     }
 }
