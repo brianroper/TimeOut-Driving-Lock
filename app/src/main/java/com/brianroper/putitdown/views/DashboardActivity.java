@@ -728,12 +728,12 @@ public class DashboardActivity extends AppCompatActivity {
         int goal = mSharedPreferences.getInt("goal", 0);
 
         if(goal != 0){
-            if(goal == (failedTrips) / 2 || goal == ((failedTrips) / 2) + (failedTrips / 4)){
+            if(goal == (failedTrips) / 2 || goal == ((failedTrips) / 2) + (failedTrips / 4) && failedTrips != 0){
                 sendGoalNotification(goal,
                         getString(R.string.goal_notification_title),
                         "You are coming close to exceeding your goal of " + goal + " total unlocks. ");
             }
-            else if(goal >= failedTrips){
+            else if(failedTrips >= goal){
                 sendGoalNotification(goal,
                         "You exceeded your goal!",
                         "Better luck next week, you exceeded your goal of " + goal);
