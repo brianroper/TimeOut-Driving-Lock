@@ -46,6 +46,10 @@
             </meta-data>
         </receiver>
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="b79fc7fa8117b77d0fbd3661f479f369a7398b9b"/>
+
         <service android:name=".services.screen.ScreenService"/>
         <service android:name=".services.gps.TimeOutMovementService"/>
 

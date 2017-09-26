@@ -45,6 +45,7 @@ import com.brianroper.putitdown.model.events.DrivingMessage;
 import com.brianroper.putitdown.services.gps.TimeOutMovementService;
 import com.brianroper.putitdown.services.screen.ScreenService;
 import com.brianroper.putitdown.utils.Utils;
+import com.crashlytics.android.Crashlytics;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -58,6 +59,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
@@ -127,6 +129,7 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_dashboard);
 
         ButterKnife.bind(this);
