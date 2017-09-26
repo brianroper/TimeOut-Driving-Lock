@@ -125,7 +125,7 @@ public class ScreenReceiver extends BroadcastReceiver {
 
             if(todayStringDate.equals(storedDate)){
                 Log.i("TodaysCount: ", mRealmResults.get(i).getCounter() + "");
-                sendDataChangedBroadcast("today", mRealmResults.get(i).getCounter() + "");
+                sendDataChangedBroadcast("today", mRealmResults.get(i).getCounter());
             }
         }
     }
@@ -140,29 +140,24 @@ public class ScreenReceiver extends BroadcastReceiver {
             int previousDayOfYear = Utils.returnDayOfYearFromDate(mRealmResults.get(i).getDate());
 
             if(previousDayOfYear == todayDayOfYear - 1){
-                sendDataChangedBroadcast("PrevDay1Count", mRealmResults.get(i).getCounter() + "");
-                sendDataChangedBroadcast("PrevDay1Day", Utils.returnDayStringFromDayOfYear(previousDayOfYear));
+                sendDataChangedBroadcast("PrevDay1Count", mRealmResults.get(i).getCounter());
             }
             else if(previousDayOfYear == todayDayOfYear - 2){
-                sendDataChangedBroadcast("PrevDay2Count", mRealmResults.get(i).getCounter() + "");
-                sendDataChangedBroadcast("PrevDay2Day", Utils.returnDayStringFromDayOfYear(previousDayOfYear));
+                sendDataChangedBroadcast("PrevDay2Count", mRealmResults.get(i).getCounter());
             }
             else if(previousDayOfYear == todayDayOfYear - 3){
-                sendDataChangedBroadcast("PrevDay3Count", mRealmResults.get(i).getCounter() + "");
-                sendDataChangedBroadcast("PrevDay3Day", Utils.returnDayStringFromDayOfYear(previousDayOfYear));
+                sendDataChangedBroadcast("PrevDay3Count", mRealmResults.get(i).getCounter());
             }
             else if(previousDayOfYear == todayDayOfYear - 4){
-                sendDataChangedBroadcast("PrevDay4Count", mRealmResults.get(i).getCounter() + "");
-                sendDataChangedBroadcast("PrevDay4Day", Utils.returnDayStringFromDayOfYear(previousDayOfYear));
+                sendDataChangedBroadcast("PrevDay4Count", mRealmResults.get(i).getCounter());
             }
             else if(previousDayOfYear == todayDayOfYear - 5){
-                sendDataChangedBroadcast("PrevDay5Count", mRealmResults.get(i).getCounter() + "");
-                sendDataChangedBroadcast("PrevDay5Day", Utils.returnDayStringFromDayOfYear(previousDayOfYear));
+                sendDataChangedBroadcast("PrevDay5Count", mRealmResults.get(i).getCounter());
             }
         }
     }
 
-    public void sendDataChangedBroadcast(String key, String extra){
+    public void sendDataChangedBroadcast(String key, int extra){
         Intent intent = new Intent(CounterWidgetProvider.ACTION_TEXT_CHANGED);
         intent.putExtra(key, extra);
         mContext.sendBroadcast(intent);
