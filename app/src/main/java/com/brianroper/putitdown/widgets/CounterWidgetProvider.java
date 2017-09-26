@@ -23,7 +23,6 @@ import io.realm.RealmResults;
 public class CounterWidgetProvider extends AppWidgetProvider{
 
     private RemoteViews mRemoteViews;
-    private Context mContext;
     public static final String ACTION_TEXT_CHANGED = "com.brianroper.putitdown.TEXT_CHANGED";
 
     private int mExtra = 0;
@@ -32,8 +31,6 @@ public class CounterWidgetProvider extends AppWidgetProvider{
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-
-        mContext = context;
 
         mRemoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_counter);
 
