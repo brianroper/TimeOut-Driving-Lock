@@ -168,7 +168,7 @@ public class SettingsActivity extends AppCompatActivity {
      * sets the default value for the driving option
      */
     public void setDrivingModeOption(){
-        int option = mSharedPreferences.getInt("driveModeOption", 1);
+        int option = mSharedPreferences.getInt("driveModeOption", 1); // default option is normal
 
         if (option == 0) {
             mDriveModeTextView.setText(mDriveModes[0]);
@@ -183,7 +183,7 @@ public class SettingsActivity extends AppCompatActivity {
      * sets the default time for locking out of device
      */
     public void setLockOutTimeOption(){
-        int option = mSharedPreferences.getInt("lockOutTime", 1);
+        int option = mSharedPreferences.getInt("lockOutTime", 1); // default option is 30,000ms
 
         if (option == 0) {
             mLockOutTimeTextView.setText(mTimes[0]);
@@ -224,7 +224,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void setSurfaceDriveModeListener(){
         new AlertDialog.Builder(this)
                 .setTitle("Adjust Driving Mode")
-                .setSingleChoiceItems(mDriveModes, mSharedPreferences.getInt("driveModeOption", 0), null)
+                .setSingleChoiceItems(mDriveModes, mSharedPreferences.getInt("driveModeOption", 1), null) //default value set to 4mph = normal driving mode
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int button) {
                         dialog.cancel();
@@ -251,7 +251,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void setSurfaceLockModeListener(){
         new AlertDialog.Builder(this)
                 .setTitle("Adjust Unlock Timer")
-                .setSingleChoiceItems(mTimes, mSharedPreferences.getInt("lockOutTime", 0), null)
+                .setSingleChoiceItems(mTimes, mSharedPreferences.getInt("lockOutTime", 1), null) //default value set to 30000ms = 30s
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int button) {
                         dialog.cancel();

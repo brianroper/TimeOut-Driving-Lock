@@ -341,10 +341,10 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
                 = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mIsPassengerMode = sharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false);
 
-        int drivingMode = sharedPreferences.getInt("driveModeOption", 0);
+        int drivingMode = sharedPreferences.getInt("driveModeOption", 1); // default is normal driving mode = 4mph
         TARGET_LOCKOUT_SPEED = mDrivingModeSpeeds[drivingMode];
 
-        int lockOutTime = sharedPreferences.getInt("lockOutTime", 0);
+        int lockOutTime = sharedPreferences.getInt("lockOutTime", 1); // default is 30,000ms = 30s
         DRIVING_STOPPED_DOUBLE_CHECK_TIME = mLockOutTimes[lockOutTime];
     }
 
