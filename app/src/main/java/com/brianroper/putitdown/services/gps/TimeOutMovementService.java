@@ -46,6 +46,12 @@ import io.realm.RealmConfiguration;
  */
 
 public class TimeOutMovementService extends Service implements TimeOutGpsListener {
+    /**
+     * For testing purposes:
+     * change the value to change current speed to start or stop the driving service
+     */
+    private int CURRENT_SPEED = 0;
+
 
     private int DRIVING_LOCKOUT_RETRY_TIME = 5000;
     private int DRIVING_STOPPED_DOUBLE_CHECK_TIME = 30000;
@@ -146,7 +152,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
      * speed activity until it is disabled
      */
     private void updateSpeed(TimeOutLocation location){
-        mCurrentSpeed = 0;
+        mCurrentSpeed = CURRENT_SPEED;
 
         if(location != null){
             location.setUseMetricUnits(this.useMetricUnits());

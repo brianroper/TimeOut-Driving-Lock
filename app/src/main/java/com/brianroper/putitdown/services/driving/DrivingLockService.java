@@ -8,10 +8,13 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.utils.Utils;
 import com.brianroper.putitdown.model.driving.DrivingLockScreen;
+
+import java.util.Date;
 
 /**
  * Created by brianroper on 5/2/17.
@@ -20,6 +23,8 @@ import com.brianroper.putitdown.model.driving.DrivingLockScreen;
 public class DrivingLockService extends Service {
 
     private DrivingLockScreen mDrivingLockScreen;
+    private boolean mIsNight = false;
+    private int mNightTime = 19; // If it is past 7:00PM then we say it is night
 
     @Override
     public void onCreate() {
@@ -37,10 +42,17 @@ public class DrivingLockService extends Service {
      *
      * note: START_STICKY allows for the service to be restarted when the Android OS destroys it
      * in order to conserve memory. This ensures the service will always be active to monitor driving
+     *
+     * We get today's date when the user starts driving, if the hours is greater than or equal to
+     * mNightTime then we set mIsNight to true. We then pass mIsNight into the startDriving method.
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mDrivingLockScreen.startDriving();
+        Date today = Utils.returnDateAsDate(); // Get today's date
+        if (today.getHours() >= mNightTime)
+            mIsNight = true;
+
+        mDrivingLockScreen.startDriving(mIsNight);
         Utils.silenceDevice(getApplicationContext());
         return START_STICKY;
     }
