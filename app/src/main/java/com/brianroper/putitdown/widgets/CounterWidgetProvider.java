@@ -137,37 +137,37 @@ public class CounterWidgetProvider extends AppWidgetProvider{
     public int calculateUnlockSeverity(int extra){
 
         if(extra < 30){
-            return R.mipmap.ic_device_lock_g_stage_1;
+            return R.mipmap.ic_device_lock_g1;
         }
         else if(extra >= 30 && extra < 60){
-            return R.mipmap.ic_device_lock_g_stage_2;
+            return R.mipmap.ic_device_lock_g2;
         }
         else if(extra >= 60 && extra < 90){
-            return R.mipmap.ic_device_lock_g_stage_3;
+            return R.mipmap.ic_device_lock_g3;
         }
         else if(extra >= 90 && extra < 120){
-            return R.mipmap.ic_device_lock_o_stage_1;
+            return R.mipmap.ic_device_lock_o1;
         }
         else if(extra >= 120 && extra < 150){
-            return R.mipmap.ic_device_lock_o_stage_2;
+            return R.mipmap.ic_device_lock_o2;
         }
         else if(extra >= 150 && extra < 180){
-            return R.mipmap.ic_device_lock_o_stage_3;
+            return R.mipmap.ic_device_lock_o3;
         }
         else if(extra >= 180 && extra < 200){
-            return R.mipmap.ic_device_lock_r_stage_1;
+            return R.mipmap.ic_device_lock_r1;
         }
         else if(extra >= 200 && extra < 225){
-            return R.mipmap.ic_device_lock_r_stage_2;
+            return R.mipmap.ic_device_lock_r2;
         }
         else if(extra >= 225){
-            return R.mipmap.ic_device_lock_r_stage_3;
+            return R.mipmap.ic_device_lock_r3;
         }
         else if(extra == 0){
-            return R.drawable.ic_device_lock;
+            return R.mipmap.ic_device_lock;
         }
         else{
-            return R.drawable.ic_device_lock;
+            return R.mipmap.ic_device_lock;
         }
     }
 

@@ -50,9 +50,9 @@
         android:background="@color/white">
 
         <ImageView
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:src="@drawable/ic_device_lock"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@mipmap/ic_device_lock"
             android:layout_centerHorizontal="true"
             android:id="@+id/widget_todays_check_status_icon"
             android:layout_marginTop="16dp"/>
@@ -63,7 +63,6 @@
             android:text="0"
             android:textSize="40sp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:textColor="@android:color/black"
             android:fontFamily="sans-serif-light"
@@ -125,7 +124,7 @@
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:src="@drawable/ic_device_lock"
+                    android:src="@mipmap/ic_device_lock"
                     android:id="@+id/slot_1_status_icon"
                     android:layout_marginBottom="4dp"
                     android:layout_gravity="center"/>
@@ -160,7 +159,7 @@
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:src="@drawable/ic_device_lock"
+                    android:src="@mipmap/ic_device_lock"
                     android:id="@+id/slot_2_status_icon"
                     android:layout_marginBottom="4dp"
                     android:layout_gravity="center"/>
@@ -195,7 +194,7 @@
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:src="@drawable/ic_device_lock"
+                    android:src="@mipmap/ic_device_lock"
                     android:id="@+id/slot_3_status_icon"
                     android:layout_marginBottom="4dp"
                     android:layout_gravity="center"/>
@@ -230,7 +229,7 @@
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:src="@drawable/ic_device_lock"
+                    android:src="@mipmap/ic_device_lock"
                     android:id="@+id/slot_4_status_icon"
                     android:layout_marginBottom="4dp"
                     android:layout_gravity="center"/>
@@ -265,7 +264,7 @@
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:src="@drawable/ic_device_lock"
+                    android:src="@mipmap/ic_device_lock"
                     android:id="@+id/slot_5_status_icon"
                     android:layout_marginBottom="4dp"
                     android:layout_gravity="center"/>
