@@ -20,7 +20,7 @@
         android:layout_height="38dp"
         android:background="@drawable/rounded_textview"
         android:id="@+id/overflow_layout_unlock"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="28dp"
         android:layout_marginEnd="16dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
