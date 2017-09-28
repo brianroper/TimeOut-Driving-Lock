@@ -24,6 +24,7 @@ public class CounterWidgetProvider extends AppWidgetProvider{
 
     private RemoteViews mRemoteViews;
     public static final String ACTION_TEXT_CHANGED = "com.brianroper.putitdown.TEXT_CHANGED";
+    public static final String ACTION_PREVIOUS_CHANGED = "com.brianroper.putitdown.TEXT_PREVIOUS_CHANGED";
 
     private int mExtra = 0;
     private AppWidgetManager mAppWidgetManager;
@@ -51,20 +52,33 @@ public class CounterWidgetProvider extends AppWidgetProvider{
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
+
         if (intent.getAction().equals(ACTION_TEXT_CHANGED)) {
 
+            Log.i("OnReceive: ", "Today");
+
             mExtra = intent.getIntExtra("today", 0);
+
+            RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.widget_counter);
+
+            //sets data for today in textviews
+            view.setTextViewText(R.id.widget_todays_check_count, mExtra + "");
+            view.setImageViewResource(R.id.widget_todays_check_status_icon, calculateUnlockSeverity(mExtra));
+
+            AppWidgetManager
+                    .getInstance(context)
+                    .updateAppWidget(new ComponentName(context, CounterWidgetProvider.class), view);
+        }
+
+        if(intent.getAction().equals(ACTION_PREVIOUS_CHANGED)){
+
+            RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.widget_counter);
 
             int prev1Count = intent.getIntExtra("PrevDay1Count", 0);
             int prev2Count = intent.getIntExtra("PrevDay2Count", 0);
             int prev3Count = intent.getIntExtra("PrevDay3Count", 0);
             int prev4Count = intent.getIntExtra("PrevDay4Count", 0);
             int prev5Count = intent.getIntExtra("PrevDay5Count", 0);
-
-            RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.widget_counter);
-
-            view.setTextViewText(R.id.widget_todays_check_count, mExtra + "");
-            view.setImageViewResource(R.id.widget_todays_check_status_icon, calculateUnlockSeverity(mExtra));
 
             if(prev1Count != 0){
                 view.setTextViewText(R.id.slot_5_check_count, prev1Count + "");

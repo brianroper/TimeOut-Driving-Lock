@@ -140,25 +140,32 @@ public class ScreenReceiver extends BroadcastReceiver {
             int previousDayOfYear = Utils.returnDayOfYearFromDate(mRealmResults.get(i).getDate());
 
             if(previousDayOfYear == todayDayOfYear - 1){
-                sendDataChangedBroadcast("PrevDay1Count", mRealmResults.get(i).getCounter());
+                sendPrevDataChangedBroadcast("PrevDay1Count", mRealmResults.get(i).getCounter());
             }
             else if(previousDayOfYear == todayDayOfYear - 2){
-                sendDataChangedBroadcast("PrevDay2Count", mRealmResults.get(i).getCounter());
+                sendPrevDataChangedBroadcast("PrevDay2Count", mRealmResults.get(i).getCounter());
             }
             else if(previousDayOfYear == todayDayOfYear - 3){
-                sendDataChangedBroadcast("PrevDay3Count", mRealmResults.get(i).getCounter());
+                sendPrevDataChangedBroadcast("PrevDay3Count", mRealmResults.get(i).getCounter());
             }
             else if(previousDayOfYear == todayDayOfYear - 4){
-                sendDataChangedBroadcast("PrevDay4Count", mRealmResults.get(i).getCounter());
+                sendPrevDataChangedBroadcast("PrevDay4Count", mRealmResults.get(i).getCounter());
             }
             else if(previousDayOfYear == todayDayOfYear - 5){
-                sendDataChangedBroadcast("PrevDay5Count", mRealmResults.get(i).getCounter());
+                sendPrevDataChangedBroadcast("PrevDay5Count", mRealmResults.get(i).getCounter());
             }
         }
     }
 
     public void sendDataChangedBroadcast(String key, int extra){
         Intent intent = new Intent(CounterWidgetProvider.ACTION_TEXT_CHANGED);
+        intent.putExtra(key, extra);
+        mContext.sendBroadcast(intent);
+        Log.i("WidgetIntent: ", "Sent");
+    }
+
+    public void sendPrevDataChangedBroadcast(String key, int extra){
+        Intent intent = new Intent(CounterWidgetProvider.ACTION_PREVIOUS_CHANGED);
         intent.putExtra(key, extra);
         mContext.sendBroadcast(intent);
         Log.i("WidgetIntent: ", "Sent");
