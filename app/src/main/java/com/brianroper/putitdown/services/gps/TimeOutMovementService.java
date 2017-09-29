@@ -50,9 +50,8 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
      * For testing purposes:
      * change the value to change current speed to start or stop the driving service
      */
-    private int CURRENT_SPEED = 0;
-
-
+    private float mCurrentSpeed = 0;
+    
     private int DRIVING_LOCKOUT_RETRY_TIME = 5000;
     private int DRIVING_STOPPED_DOUBLE_CHECK_TIME = 30000;
     private int TARGET_LOCKOUT_SPEED = 5;
@@ -63,8 +62,6 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
     private boolean mIsDriving = false;
 
     private boolean mIsPassengerMode = false;
-
-    private float mCurrentSpeed = 0;
 
     private int[] mDrivingModeSpeeds = {2, 4, 6};
     private int[] mLockOutTimes = {15000, 30000, 45000};
@@ -152,7 +149,6 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
      * speed activity until it is disabled
      */
     private void updateSpeed(TimeOutLocation location){
-        mCurrentSpeed = CURRENT_SPEED;
 
         if(location != null){
             location.setUseMetricUnits(this.useMetricUnits());
