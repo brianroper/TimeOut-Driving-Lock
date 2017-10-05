@@ -20,10 +20,11 @@ public class ContinueDriveActivity extends AppCompatActivity {
 
     /**
      * continues the driving event
+     * passes a boolean to startDriving to see if is night time
      */
     public void continueDrivingSession(){
         DrivingLockScreen drivingLockScreen = new DrivingLockScreen(getApplicationContext());
-        drivingLockScreen.startDriving();
+        drivingLockScreen.startDriving(drivingLockScreen.getIsNight());
         finish();
     }
 }

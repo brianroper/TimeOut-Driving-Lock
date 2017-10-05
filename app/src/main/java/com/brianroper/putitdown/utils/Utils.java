@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.brianroper.putitdown.R;
@@ -14,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import static android.content.Context.AUDIO_SERVICE;
@@ -91,6 +93,23 @@ public class Utils {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd");
         String formattedDate = simpleDateFormat.format(date);
         return formattedDate;
+    }
+
+    /**
+     * returns the day of the year from a passed in date object
+     */
+    static public int returnDayOfYearFromDate(Date date){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.DAY_OF_YEAR);
+    }
+
+    static public String returnDayStringFromDayOfYear(int dayOfYear){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_YEAR, dayOfYear);
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        Log.i("DayOfWeek: ", dayOfWeek + "");
+        return dayOfWeek + "";
     }
 
     /**

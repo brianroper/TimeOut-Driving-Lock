@@ -45,6 +45,7 @@ import com.brianroper.putitdown.model.events.DrivingMessage;
 import com.brianroper.putitdown.services.gps.TimeOutMovementService;
 import com.brianroper.putitdown.services.screen.ScreenService;
 import com.brianroper.putitdown.utils.Utils;
+import com.crashlytics.android.Crashlytics;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -58,6 +59,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
@@ -127,6 +129,7 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_dashboard);
 
         ButterKnife.bind(this);
@@ -190,7 +193,13 @@ public class DashboardActivity extends AppCompatActivity {
     private void setTripTextView(){
         int successfulTrips = 0;
         int failedTrips = 0;
-        //TODO: compare to a weekly failed trip count
+        int weeklyFailedTrips = 0;
+        int currentWeek;
+        int storedWeek;
+
+        Calendar thisWeekCalendar = Calendar.getInstance();
+        currentWeek = thisWeekCalendar.get(Calendar.WEEK_OF_YEAR);
+
         Date currentDate = Utils.returnDateAsDate();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         String currentStringDate = sdf.format(currentDate);
@@ -198,6 +207,17 @@ public class DashboardActivity extends AppCompatActivity {
         for (int i = 0; i < mRealmResults.size(); i++) {
 
             String logDateString = sdf.format(mRealmResults.get(i).getDate());
+            Calendar calender = Calendar.getInstance();
+            calender.setTime(mRealmResults.get(i).getDate());
+            storedWeek = calender.get(Calendar.WEEK_OF_YEAR);
+
+            //checks to see if today's week number matches the stored week number
+            //if so we check to see if that trip was successful or not
+            if(currentWeek == storedWeek){
+                if(mRealmResults.get(i).isSuccessful() == false){
+                    weeklyFailedTrips++;
+                }
+            }
 
             if(logDateString.equals(currentStringDate)){
                 if(mRealmResults.get(i).isSuccessful() == true){
@@ -211,7 +231,7 @@ public class DashboardActivity extends AppCompatActivity {
         mTripSuccessCount.setText(successfulTrips + "");
         mTripFailedCount.setText(failedTrips + "");
 
-        compareGoalToTripCount(failedTrips);
+        compareGoalToTripCount(weeklyFailedTrips);
     }
 
     /**
@@ -711,19 +731,22 @@ public class DashboardActivity extends AppCompatActivity {
         int goal = mSharedPreferences.getInt("goal", 0);
 
         if(goal != 0){
-            if(goal == (failedTrips) / 2 || goal == ((failedTrips) / 2) + (failedTrips / 4)){
+            if(goal == (failedTrips) / 2 || goal == ((failedTrips) / 2) + (failedTrips / 4) && failedTrips != 0){
                 sendGoalNotification(goal,
                         getString(R.string.goal_notification_title),
                         "You are coming close to exceeding your goal of " + goal + " total unlocks. ");
             }
-            else if(goal >= failedTrips){
+            else if(failedTrips >= goal){
                 sendGoalNotification(goal,
-                        "You exceeded your goal!", 
+                        "You exceeded your goal!",
                         "Better luck next week, you exceeded your goal of " + goal);
             }
         }
     }
 
+    /**
+     * sends a notification depending on current goal vs interrupted trips
+     */
     public void sendGoalNotification(int goal, String title, String content){
         //notification will offer permissions when clicked
         Intent permissionIntent = new Intent(getApplicationContext(), DashboardActivity.class);

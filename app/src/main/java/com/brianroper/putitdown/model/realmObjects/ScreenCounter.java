@@ -1,5 +1,7 @@
 package com.brianroper.putitdown.model.realmObjects;
 
+import java.util.Date;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -11,6 +13,7 @@ public class ScreenCounter extends RealmObject{
     @PrimaryKey
     private String id;
     private int counter;
+    private Date date;
 
     public int getCounter() {
         return counter;
@@ -22,5 +25,13 @@ public class ScreenCounter extends RealmObject{
 
     public String getId() {
         return id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

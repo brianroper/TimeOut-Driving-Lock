@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
@@ -61,6 +63,8 @@ public class SettingsActivity extends AppCompatActivity {
     TextView mLockOutTimeTextView;
     @BindView(R.id.drive_option_textView)
     TextView mDriveModeTextView;
+    @BindView(R.id.settings_version_code)
+    TextView mVersionCode;
 
     private SharedPreferences mSharedPreferences;
     private final String[] mDriveModes = {"Strict", "Normal", "Lenient"};
@@ -109,6 +113,7 @@ public class SettingsActivity extends AppCompatActivity {
         setPassengerSwitchDefaultPosition();
         setLockOutTimeOption();
         setDrivingModeOption();
+        setVersionCode();
     }
 
     /**
@@ -163,7 +168,7 @@ public class SettingsActivity extends AppCompatActivity {
      * sets the default value for the driving option
      */
     public void setDrivingModeOption(){
-        int option = mSharedPreferences.getInt("driveModeOption", 1);
+        int option = mSharedPreferences.getInt("driveModeOption", 1); // default option is normal
 
         if (option == 0) {
             mDriveModeTextView.setText(mDriveModes[0]);
@@ -178,7 +183,7 @@ public class SettingsActivity extends AppCompatActivity {
      * sets the default time for locking out of device
      */
     public void setLockOutTimeOption(){
-        int option = mSharedPreferences.getInt("lockOutTime", 1);
+        int option = mSharedPreferences.getInt("lockOutTime", 1); // default option is 30,000ms
 
         if (option == 0) {
             mLockOutTimeTextView.setText(mTimes[0]);
@@ -189,6 +194,18 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * gets the version name from the gradle
+     */
+    public void setVersionCode(){
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version = pInfo.versionName;
+            mVersionCode.setText("v" + version);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * END OF UI UTILITIES
@@ -207,7 +224,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void setSurfaceDriveModeListener(){
         new AlertDialog.Builder(this)
                 .setTitle("Adjust Driving Mode")
-                .setSingleChoiceItems(mDriveModes, mSharedPreferences.getInt("driveModeOption", 0), null)
+                .setSingleChoiceItems(mDriveModes, mSharedPreferences.getInt("driveModeOption", 1), null) //default value set to 4mph = normal driving mode
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int button) {
                         dialog.cancel();
@@ -234,7 +251,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void setSurfaceLockModeListener(){
         new AlertDialog.Builder(this)
                 .setTitle("Adjust Unlock Timer")
-                .setSingleChoiceItems(mTimes, mSharedPreferences.getInt("lockOutTime", 0), null)
+                .setSingleChoiceItems(mTimes, mSharedPreferences.getInt("lockOutTime", 1), null) //default value set to 30000ms = 30s
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int button) {
                         dialog.cancel();

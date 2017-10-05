@@ -46,7 +46,12 @@ import io.realm.RealmConfiguration;
  */
 
 public class TimeOutMovementService extends Service implements TimeOutGpsListener {
-
+    /**
+     * For testing purposes:
+     * change the value to change current speed to start or stop the driving service
+     */
+    private float mCurrentSpeed = 0;
+    
     private int DRIVING_LOCKOUT_RETRY_TIME = 5000;
     private int DRIVING_STOPPED_DOUBLE_CHECK_TIME = 30000;
     private int TARGET_LOCKOUT_SPEED = 5;
@@ -57,8 +62,6 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
     private boolean mIsDriving = false;
 
     private boolean mIsPassengerMode = false;
-
-    private float mCurrentSpeed = 0;
 
     private int[] mDrivingModeSpeeds = {2, 4, 6};
     private int[] mLockOutTimes = {15000, 30000, 45000};
@@ -146,12 +149,11 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
      * speed activity until it is disabled
      */
     private void updateSpeed(TimeOutLocation location){
-        mCurrentSpeed = 10;
 
-//        if(location != null){
-//            location.setUseMetricUnits(this.useMetricUnits());
-//            mCurrentSpeed = location.getSpeed();
-//        }
+        if(location != null){
+            location.setUseMetricUnits(this.useMetricUnits());
+            mCurrentSpeed = location.getSpeed();
+        }
 
         if(!mIsPassengerMode){
             if(!mIsUnlocked){
@@ -166,9 +168,11 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
                     mIsDriving = true;
                     Log.i("Driving: ", "User has started driving above 5mph");
                 }
-                if(mCurrentSpeed <= TARGET_LOCKOUT_SPEED && mCurrentSpeed != TARGET_STOPPED_SPEED){
-                    stopService(mDrivingService);
-                    Log.i("Driving: ", "User has started driving below 5mph");
+                if(mCurrentSpeed < TARGET_LOCKOUT_SPEED && mCurrentSpeed != TARGET_STOPPED_SPEED){
+                    if(mIsDriving){
+                        stopService(mDrivingService);
+                        Log.i("Driving: ", "User has started driving below 5mph");
+                    }
                 }
                 if(mCurrentSpeed == TARGET_STOPPED_SPEED){
                     Log.i("Driving: ", "User has stopped driving");
@@ -339,10 +343,10 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
                 = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mIsPassengerMode = sharedPreferences.getBoolean(getString(R.string.passenger_mode_key), false);
 
-        int drivingMode = sharedPreferences.getInt("driveModeOption", 0);
+        int drivingMode = sharedPreferences.getInt("driveModeOption", 1); // default is normal driving mode = 4mph
         TARGET_LOCKOUT_SPEED = mDrivingModeSpeeds[drivingMode];
 
-        int lockOutTime = sharedPreferences.getInt("lockOutTime", 0);
+        int lockOutTime = sharedPreferences.getInt("lockOutTime", 1); // default is 30,000ms = 30s
         DRIVING_STOPPED_DOUBLE_CHECK_TIME = mLockOutTimes[lockOutTime];
     }
 

@@ -38,6 +38,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
                 <action android:name="com.brianroper.putitdown.TEXT_CHANGED"/>
+                <action android:name="com.brianroper.putitdown.TEXT_PREVIOUS_CHANGED"/>
             </intent-filter>
 
             <meta-data
@@ -45,6 +46,10 @@
                 android:resource="@xml/widget_provider">
             </meta-data>
         </receiver>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="b79fc7fa8117b77d0fbd3661f479f369a7398b9b"/>
 
         <service android:name=".services.screen.ScreenService"/>
         <service android:name=".services.gps.TimeOutMovementService"/>

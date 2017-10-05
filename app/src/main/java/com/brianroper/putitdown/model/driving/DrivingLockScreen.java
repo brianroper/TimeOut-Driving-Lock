@@ -68,19 +68,37 @@ public class DrivingLockScreen {
     private FrameLayout mInvisibleClickView;
     private RelativeLayout mPassengerDialogHint;
 
+    private boolean mIsNight;
+
     private SharedPreferences mSharedPreferences;
 
     public DrivingLockScreen(Context context) {
         mContext = context;
     }
 
+    public boolean getIsNight() {
+        return mIsNight;
+    }
+
     /**
      * draws screen overlay
      */
-    public void startDriving(){
+    public void startDriving(boolean isNight){
+        mIsNight = isNight;
+
         if(mRelativeLayout != null){
             return;
         }
+
+        /**
+         * TODO: If night time change image of car to car with headlights and change to night time color scheme.
+         */
+        if (isNight) {
+            Log.i(getClass() + "", "It is night time, night time driving mode started.");
+        } else {
+            Log.i(getClass() + "", "It is day time.");
+        }
+
 
         mRelativeLayout = new RelativeLayout(mContext);
 
