@@ -9,6 +9,10 @@
     <color name="dark_grey">#6f6f6f</color>
     <color name="primaryText">#47525E</color>
 
+    <!-- night time schema colors -->
+    <color name="colorPrimaryNight">#47525E</color>
+    <color name="primaryTextNight">#FF80AB</color>
+
     <!-- slider colors -->
     <color name="slide3Color">#673ab7</color>
     <color name="slide4Color">#ffc107</color>

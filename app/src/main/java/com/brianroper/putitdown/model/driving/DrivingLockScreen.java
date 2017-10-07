@@ -2,21 +2,17 @@ package com.brianroper.putitdown.model.driving;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,13 +23,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.brianroper.putitdown.R;
-import com.brianroper.putitdown.model.events.PreferenceMessage;
-import com.brianroper.putitdown.utils.Constants;
-import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
 import com.brianroper.putitdown.model.events.DrivingMessage;
+import com.brianroper.putitdown.model.events.PreferenceMessage;
+import com.brianroper.putitdown.model.realmObjects.DrivingEventLog;
+import com.brianroper.putitdown.utils.Constants;
 import com.brianroper.putitdown.utils.Utils;
 import com.brianroper.putitdown.views.ContinueDriveActivity;
 
@@ -44,7 +39,6 @@ import java.util.Random;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.internal.Util;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static android.content.Context.WINDOW_SERVICE;
@@ -56,6 +50,7 @@ import static android.content.Context.WINDOW_SERVICE;
 public class DrivingLockScreen {
 
     private Context mContext;
+    private RelativeLayout mLockOutBackgroundLayout;
     private RelativeLayout mRelativeLayout;
     private ImageButton mOverflowButton;
     private RelativeLayout mOverflowUnlockLayout;
@@ -67,6 +62,10 @@ public class DrivingLockScreen {
     private TextView mPassengerDialogCancelButton;
     private FrameLayout mInvisibleClickView;
     private RelativeLayout mPassengerDialogHint;
+    private TextView mDrivingMessageTextView;
+    private ImageView mTimeOutLogoImageView;
+    private TextView mUnlockTextView;
+    private TextView mPassengerTextView;
 
     private boolean mIsNight;
 
@@ -89,16 +88,6 @@ public class DrivingLockScreen {
         if(mRelativeLayout != null){
             return;
         }
-
-        /**
-         * TODO: If night time change image of car to car with headlights and change to night time color scheme.
-         */
-        if (isNight) {
-            Log.i(getClass() + "", "It is night time, night time driving mode started.");
-        } else {
-            Log.i(getClass() + "", "It is day time.");
-        }
-
 
         mRelativeLayout = new RelativeLayout(mContext);
 
@@ -144,6 +133,32 @@ public class DrivingLockScreen {
 
         initializeViews(mRelativeLayout);
         setBounceInterpolator();
+
+        /**
+         * If it is currently night time, We want to change:
+         * Background color to a colorPrimaryNight
+         * Car image to a car with headlights
+         * TimeOut logo to a primaryTextNight color
+         * All Text to primaryTextNight color
+         * Background of 'hamburger icon' to colorPrimaryNight
+         */
+        if (isNight) {
+            mLockOutBackgroundLayout.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryNight));
+            mOverflowButton.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryNight));
+
+            mOverflowPassengerLayout.setBackground(mContext.getResources().getDrawable(R.drawable.rounded_textview_night));
+            mOverflowUnlockLayout.setBackgroundResource(R.drawable.rounded_textview_night);
+
+            mCarImageView.setImageResource(R.drawable.redcar_night);
+
+            mTimeOutLogoImageView.setImageResource(R.drawable.timeout_full_logo_night);
+
+            mDrivingMessageTextView.setTextColor(mContext.getResources().getColor(R.color.primaryTextNight));
+            mUnlockTextView.setTextColor(mContext.getResources().getColor(R.color.primaryTextNight));
+            mPassengerTextView.setTextColor(mContext.getResources().getColor(R.color.primaryTextNight));
+
+            Log.i(getClass() + "", "It is night time, night time driving mode started.");
+        }
     }
 
     /**
@@ -178,6 +193,11 @@ public class DrivingLockScreen {
         mPassengerDialogInfoButton = (ImageView) root.findViewById(R.id.passenger_dialog_info);
         mInvisibleClickView = (FrameLayout) root.findViewById(R.id.invisible_click_view);
         mPassengerDialogHint = (RelativeLayout) root.findViewById(R.id.passenger_dialog_hint);
+        mLockOutBackgroundLayout = (RelativeLayout) root.findViewById(R.id.lockout_screen_background);
+        mDrivingMessageTextView = (TextView) root.findViewById(R.id.you_are_driving_text_view);
+        mTimeOutLogoImageView = (ImageView) root.findViewById(R.id.title_text);
+        mUnlockTextView = (TextView) root.findViewById(R.id.unlock_text_view);
+        mPassengerTextView = (TextView) root.findViewById(R.id.passenger_text_view);
 
         mOverflowButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -341,7 +361,7 @@ public class DrivingLockScreen {
                 .setSmallIcon(R.drawable.ic_trip_failed)
                 .setContentTitle(mContext.getResources().getString(R.string.notification_failed_title))
                 .setContentText(mContext.getResources().getStringArray(R.array.timeout_facts)[randomIndex])
-                .addAction(R.drawable.redcar,
+                .addAction(R.drawable.ic_directions_car,
                         mContext.getResources().getString(R.string.notification_failed_button),
                         pendingIntent);
 

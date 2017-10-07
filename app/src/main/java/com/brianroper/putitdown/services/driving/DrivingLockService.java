@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.utils.Utils;
@@ -23,8 +24,9 @@ public class DrivingLockService extends Service {
 
     private DrivingLockScreen mDrivingLockScreen;
     private boolean mIsNight = false;
-    private int mNightTime = 19; // If it is past 7:00PM then we say it is night
-    private int mMorning = 6;
+    private int mNightTime = 18; // If it is past 6:00PM then we say it is night
+    private int mMorning = 5; // If is after 5:00AM then it is day time
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -48,8 +50,10 @@ public class DrivingLockService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Date today = Utils.returnDateAsDate(); // Get today's date
-        if (today.getHours() >= mNightTime &&  today.getHours() <= mMorning)
+        Log.i("DrivingLockScreen", today.getHours() + "");
+        if (today.getHours() >= mNightTime || today.getHours() <= mMorning) {
             mIsNight = true;
+        }
 
         mDrivingLockScreen.startDriving(mIsNight);
         Utils.silenceDevice(getApplicationContext());

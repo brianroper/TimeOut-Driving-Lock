@@ -3,17 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimary"
+    android:id="@+id/lockout_screen_background">
 
     <ImageButton
+        android:id="@+id/overflow_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/overflow_button"
-        android:src="@mipmap/ic_more_vert_white_48dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:background="@color/colorPrimary"
-        android:padding="16dp"/>
+        android:padding="16dp"
+        android:src="@mipmap/ic_more_vert_white_48dp" />
 
     <RelativeLayout
         android:layout_width="190dp"
@@ -35,51 +36,53 @@
             android:layout_centerVertical="true"/>
 
         <TextView
+            android:id="@+id/unlock_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="unlock"
-            android:textSize="22sp"
-            android:layout_marginStart="2dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
-            android:textColor="@color/primaryText"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"/>
+            android:layout_marginBottom="2dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:text="unlock"
+            android:textColor="@color/primaryText"
+            android:textSize="22sp" />
 
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/overflow_layout_passenger"
         android:layout_width="190dp"
         android:layout_height="38dp"
-        android:background="@drawable/rounded_textview"
-        android:id="@+id/overflow_layout_passenger"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/overflow_layout_unlock"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/rounded_textview"
         android:visibility="gone">
 
         <ImageView
+            android:id="@+id/passenger_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_action_people_outline"
+            android:layout_centerVertical="true"
             android:layout_marginStart="8dp"
-            android:id="@+id/passenger_icon"
-            android:layout_centerVertical="true"/>
+            android:src="@mipmap/ic_action_people_outline" />
 
         <TextView
+            android:id="@+id/passenger_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="passenger"
-            android:textSize="22sp"
-            android:layout_marginStart="2dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
-            android:textColor="@color/primaryText"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"/>
+            android:layout_marginBottom="2dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:text="passenger"
+            android:textColor="@color/primaryText"
+            android:textSize="22sp" />
 
     </RelativeLayout>
 
@@ -102,14 +105,15 @@
         android:id="@+id/car_image"/>
 
     <TextView
+        android:id="@+id/you_are_driving_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title_text"
-        android:text="You are driving..."
         android:layout_centerInParent="true"
         android:fontFamily="sans-serif-medium"
+        android:text="You are driving..."
         android:textColor="#ffff"
-        android:textSize="28sp"/>
+        android:textSize="28sp" />
 
     <RelativeLayout
         android:layout_width="280dp"
@@ -133,13 +137,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Enabling passenger mode while driving will result in logging an interrupted trip. Are you sure you want to enable?"
-            android:layout_marginStart="16dp"
             android:layout_below="@+id/passenger_dialog_title"
             android:layout_marginEnd="16dp"
-            android:textColor="@color/white"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:textSize="14sp"/>
+            android:text="Enabling passenger mode while driving will result in logging an interrupted trip. Are you sure you want to enable?"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
 
         <TextView
             android:layout_width="wrap_content"
