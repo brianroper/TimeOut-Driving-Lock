@@ -52,9 +52,9 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
      */
     private float mCurrentSpeed = 0;
     
-    private int DRIVING_LOCKOUT_RETRY_TIME = 5000;
+    private int DRIVING_LOCKOUT_RETRY_TIME = 30000;
     private int DRIVING_STOPPED_DOUBLE_CHECK_TIME = 30000;
-    private int TARGET_LOCKOUT_SPEED = 5;
+    private int TARGET_LOCKOUT_SPEED = 4;
     private int TARGET_STOPPED_SPEED = 0;
 
     private Intent mDrivingService;
@@ -347,7 +347,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         TARGET_LOCKOUT_SPEED = mDrivingModeSpeeds[drivingMode];
 
         int lockOutTime = sharedPreferences.getInt("lockOutTime", 1); // default is 30,000ms = 30s
-        DRIVING_STOPPED_DOUBLE_CHECK_TIME = mLockOutTimes[lockOutTime];
+        DRIVING_LOCKOUT_RETRY_TIME = mLockOutTimes[lockOutTime];
     }
 
     /**
