@@ -57,6 +57,7 @@ public class DrivingLockScreen {
     private RelativeLayout mOverflowPassengerLayout;
     private ImageView mCarImageView;
     private RelativeLayout mPassengerDialogLayout;
+    private RelativeLayout mOverflowEmergencyLayout;
     private ImageView mPassengerDialogInfoButton;
     private TextView mPassengerDialogConfirmButton;
     private TextView mPassengerDialogCancelButton;
@@ -196,6 +197,7 @@ public class DrivingLockScreen {
         mTimeOutLogoImageView = (ImageView) root.findViewById(R.id.title_text);
         mUnlockTextView = (TextView) root.findViewById(R.id.unlock_text_view);
         mPassengerTextView = (TextView) root.findViewById(R.id.passenger_text_view);
+        mOverflowEmergencyLayout = (RelativeLayout) root.findViewById(R.id.overflow_layout_emergency);
 
         mOverflowButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,6 +223,16 @@ public class DrivingLockScreen {
             public void onClick(View view) {
                 mPassengerDialogLayout.setVisibility(View.VISIBLE);
                 mInvisibleClickView.setVisibility(View.VISIBLE);
+            }
+        });
+
+        mOverflowEmergencyLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addFailedDrivingEvent();
+                stopDriving();
+                Constants constants = new Constants();
+                postDrivingEventStatus(constants.DRIVING_EVENT_EMERGENCY);
             }
         });
 
@@ -290,6 +302,7 @@ public class DrivingLockScreen {
         mOverflowUnlockLayout.setVisibility(View.VISIBLE);
         animateOverflowTextViews();
         mOverflowPassengerLayout.setVisibility(View.VISIBLE);
+        mOverflowEmergencyLayout.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -298,6 +311,7 @@ public class DrivingLockScreen {
     public void hideOverflow(){
         mOverflowUnlockLayout.setVisibility(View.GONE);
         mOverflowPassengerLayout.setVisibility(View.GONE);
+        mOverflowEmergencyLayout.setVisibility(View.GONE);
     }
 
     /**
@@ -415,6 +429,21 @@ public class DrivingLockScreen {
                 // float value in the translationX property.
                 float animatedValue = (float)updatedAnimation.getAnimatedValue();
                 mOverflowPassengerLayout.setTranslationX(animatedValue);
+            }
+        });
+
+        ValueAnimator emergencyAnimator = ValueAnimator.ofFloat(500f, 0f);
+        emergencyAnimator.setDuration(300);
+        emergencyAnimator.start();
+
+        emergencyAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator updatedAnimation) {
+                // You can use the animated value in a property that uses the
+                // same type as the animation. In this case, you can use the
+                // float value in the translationX property.
+                float animatedValue = (float)updatedAnimation.getAnimatedValue();
+                mOverflowEmergencyLayout.setTranslationX(animatedValue);
             }
         });
     }

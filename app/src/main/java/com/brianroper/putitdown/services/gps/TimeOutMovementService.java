@@ -50,7 +50,7 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
      * For testing purposes:
      * change the value to change current speed to start or stop the driving service
      */
-    private float mCurrentSpeed = 0;
+    private float mCurrentSpeed = 50;
     
     private int DRIVING_LOCKOUT_RETRY_TIME = 30000;
     private int DRIVING_STOPPED_DOUBLE_CHECK_TIME = 30000;

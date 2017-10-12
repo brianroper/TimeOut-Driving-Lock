@@ -17,4 +17,5 @@ public class Constants {
     public String DRIVING_LOG_EVENT_SUCCESS = "success";
     public String DRIVING_LOG_EVENT_FAILED = "failed";
     public String PERMISSION_EVENT_GRANTED = "granted";
+    public String DRIVING_EVENT_EMERGENCY = "emergency";
 }
