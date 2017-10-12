@@ -67,8 +67,10 @@ public class SettingsActivity extends AppCompatActivity {
     TextView mVersionCode;
 
     private SharedPreferences mSharedPreferences;
-    private final String[] mDriveModes = {"Strict", "Normal", "Lenient"};
-    private final String[] mTimes = {"15s", "30s", "45s"};
+    private final String[] mDriveModes =
+            getResources().getStringArray(R.array.drive_modes_list);
+    private final String[] mTimes =
+            getResources().getStringArray(R.array.lock_out_times_list);
 
 
     @Override
@@ -224,14 +226,14 @@ public class SettingsActivity extends AppCompatActivity {
     @OnClick(R.id.surface_drive_mode)
     public void setSurfaceDriveModeListener(){
         new AlertDialog.Builder(this)
-                .setTitle("Adjust Driving Mode")
+                .setTitle(getString(R.string.adjust_driving_mode_title))
                 .setSingleChoiceItems(mDriveModes, mSharedPreferences.getInt("driveModeOption", 1), null) //default value set to 4mph = normal driving mode
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.cancel_button), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int button) {
                         dialog.cancel();
                     }
                 })
-                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.confirm_button), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int button) {
                         dialog.dismiss();
                         int selectedOption = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
@@ -251,14 +253,14 @@ public class SettingsActivity extends AppCompatActivity {
     @OnClick(R.id.surface_unlock_mode)
     public void setSurfaceLockModeListener(){
         new AlertDialog.Builder(this)
-                .setTitle("Adjust Unlock Timer")
+                .setTitle(getString(R.string.adjust_unlock_timer_title))
                 .setSingleChoiceItems(mTimes, mSharedPreferences.getInt("lockOutTime", 1), null) //default value set to 30000ms = 30s
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.cancel_button), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int button) {
                         dialog.cancel();
                     }
                 })
-                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.confirm_button), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int button) {
                         dialog.dismiss();
                         int selectedOption = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
@@ -279,7 +281,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void setSurfaceFeedbackListener(){
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
         emailIntent.setData(Uri.parse("mailto: team@timeoutinitiative.com"));
-        startActivity(Intent.createChooser(emailIntent, "Give Feedback"));
+        startActivity(Intent.createChooser(emailIntent, getString(R.string.give_email_feedback)));
     }
 
     @OnClick(R.id.surface_play_store)
@@ -291,8 +293,6 @@ public class SettingsActivity extends AppCompatActivity {
         } catch (android.content.ActivityNotFoundException anfe) {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
         }
-
-        //TODO: create intent to open app in play store for rating
     }
 
     /**
@@ -332,7 +332,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         //notifies dashboard of ui change since it is still alive in background
         EventBus.getDefault().postSticky(new PreferenceMessage("true"));
-        Toast.makeText(getApplicationContext(), "Passenger mode enabled", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), getString(R.string.passenger_mode_enabled), Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -346,7 +346,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         //notifies dashboard of ui change since it is still alive in background
         EventBus.getDefault().postSticky(new PreferenceMessage("false"));
-        Toast.makeText(getApplicationContext(), "Passenger mode disabled", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), getString(R.string.passenger_mode_disabled), Toast.LENGTH_LONG).show();
     }
 
     /**

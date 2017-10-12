@@ -124,4 +124,22 @@
         Click on the trip log to view a detailed breakdown
     </string>
 
+    <!-- Settings Activity -->
+    <string-array name="drive_modes_list">
+        <item>Strict</item>
+        <item>Normal</item>
+        <item>Lenient</item>
+    </string-array>
+
+    <string-array name="lock_out_times_list">
+        <item>15s</item>
+        <item>30s</item>
+        <item>45s</item>
+    </string-array>
+
+    <string name="adjust_driving_mode_title">Adjust Driving Mode</string>
+    <string name="adjust_unlock_timer_title">Adjust Unlock Timer</string>
+
+    <string name="give_email_feedback">Give Feedback</string>
+
 </resources>
