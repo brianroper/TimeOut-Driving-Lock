@@ -69,7 +69,7 @@ public class IntroActivity extends AppIntro2 {
                 getResources().getColor(R.color.slide5Color)));
 
         addSlide(AppIntro2Fragment.newInstance("Start Driving",
-                "Time works silently in the background to ensure your always driving safetly. " +
+                "Time works silently in the background to ensure your always driving safely. " +
                         "To get start, just start driving!",
                 R.drawable.redcar,
                 getResources().getColor(R.color.slide6Color)));
@@ -81,6 +81,8 @@ public class IntroActivity extends AppIntro2 {
 
         showSkipButton(false);
         setProgressButtonEnabled(true);
+
+
     }
 
     @Override
