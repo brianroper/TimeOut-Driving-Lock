@@ -36,46 +36,41 @@ public class IntroActivity extends AppIntro2 {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        addSlide(AppIntro2Fragment.newInstance("Welcome",
-                "TimeOut will help you put an end to texting and driving",
+        addSlide(AppIntro2Fragment.newInstance(getString(R.string.welcome_title),
+                getString(R.string.welcome_message),
                 R.drawable.redcar,
                 getResources().getColor(R.color.colorPrimary)));
 
-        addSlide(AppIntro2Fragment.newInstance("Before we start",
-                "TimeOut needs permission to " +
-                        "access some of your device sensors. " +
-                        "Without them the app won't function properly",
+        addSlide(AppIntro2Fragment.newInstance(getString(R.string.before_we_start_title),
+                getString(R.string.before_we_start_message),
                 R.drawable.redcar,
                 getResources().getColor(R.color.colorAccent)));
 
-        addSlide(AppIntro2Fragment.newInstance("Location",
-                "TimeOut uses location to determine if your vehicle is moving.",
+        addSlide(AppIntro2Fragment.newInstance(getString(R.string.location_title),
+                getString(R.string.location_message),
                 R.drawable.redcar,
                 getResources().getColor(R.color.slide3Color)));
 
         askForPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 3);
 
 
-        addSlide(AppIntro2Fragment.newInstance("App Overlay",
-                "TimeOut needs permission to draw over other apps. " +
-                        "This is a key part of our lockout technology",
+        addSlide(AppIntro2Fragment.newInstance(getString(R.string.app_overlay_title),
+                getString(R.string.app_overlay_message),
                 R.drawable.redcar,
                 getResources().getColor(R.color.slide4Color)));
 
-        addSlide(AppIntro2Fragment.newInstance("One Left",
-                "TimeOut needs access to the do not disturb permission. " +
-                        "This helps us keep your eyes on the road and not your phone",
+        addSlide(AppIntro2Fragment.newInstance(getString(R.string.one_left_title),
+                getString(R.string.one_left_message),
                 R.drawable.redcar,
                 getResources().getColor(R.color.slide5Color)));
 
-        addSlide(AppIntro2Fragment.newInstance("Start Driving",
-                "Time works silently in the background to ensure your always driving safetly. " +
-                        "To get start, just start driving!",
+        addSlide(AppIntro2Fragment.newInstance(getString(R.string.start_driving_title),
+                getString(R.string.start_driving_message),
                 R.drawable.redcar,
                 getResources().getColor(R.color.slide6Color)));
 
-        addSlide(AppIntro2Fragment.newInstance("One Last Thing",
-                "To stay up to date on your safe driving progress. Click on the trip log to view a detailed breakdown.",
+        addSlide(AppIntro2Fragment.newInstance(getString(R.string.one_last_thing_title),
+                getString(R.string.one_last_thing_message),
                 R.drawable.redcar,
                 getResources().getColor(R.color.colorPrimaryDark)));
 

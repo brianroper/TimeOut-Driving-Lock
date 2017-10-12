@@ -9,7 +9,7 @@
 
     <!-- successful driving session notification -->
     <string name="notification_success_title">Way to go</string>
-    <string name="notification_success_content">You drove safely and didnt use your phone</string>
+    <string name="notification_success_content">You drove safely and did not use your phone</string>
     <string name="notification_success_button">view driving logs</string>
 
     <!-- failed driving session notification -->
@@ -97,5 +97,31 @@
     <string name="no_data_this_week">You have no trip data for this week</string>
     <string name="no_data_this_month">You have no trip data for this month</string>
     <string name="no_data_all_time">You have no trip data</string>
+
+    <!-- Intro Activity -->
+    <string name="welcome_title">Welcome</string>
+    <string name="welcome_message">TimeOut will help you put an end to texting and driving</string>
+    <string name="before_we_start_title">Before we start</string>
+    <string name="before_we_start_message">TimeOut needs permission to access some of your device sensors.
+        Without them the app will not function properly"
+    </string>
+    <string name="location_title">Location</string>
+    <string name="location_message">TimeOut uses location to determine if your vehicle is moving.</string>
+    <string name="app_overlay_title">App Overlay</string>
+    <string name="app_overlay_message">TimeOut needs permission to draw over other apps.
+        This is a key part of our lockout technology
+    </string>
+    <string name="one_left_title">One Left</string>
+    <string name="one_left_message">TimeOut needs access to the do not disturb permission.
+        This helps us keep your eyes on the road and not on your phone"
+    </string>
+    <string name="start_driving_title">Start Driving</string>
+    <string name="start_driving_message">TimeOut works silently in the background to ensure your always driving safely.
+        To get started, just start driving!
+    </string>
+    <string name="one_last_thing_title">One Last Thing</string>
+    <string name="one_last_thing_message">To stay up to date on your safe driving progress.
+        Click on the trip log to view a detailed breakdown
+    </string>
 
 </resources>
