@@ -50,7 +50,7 @@
     <string name="no_active_network_notification_content">Put it down requires a network connection
         to track your driving patterns
     </string>
-    
+
     <!-- goal notification -->
     <string name="goal_notification_title">You are cutting it close</string>
     <string name="goal_notification_message_one">You are coming close to exceeding your goal of </string>
@@ -59,6 +59,7 @@
     <string name="goal_exceeded_title">You are cutting it close</string>
     <string name="goal_exceeded_message">Better luck next week, you exceeded your goal of </string>
 
+    <!-- goal notification-->
     <string name="goal_notification_button">Open</string>
 
     <!-- Driving Events Log -->
