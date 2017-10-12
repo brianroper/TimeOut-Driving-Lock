@@ -5,7 +5,7 @@ package com.brianroper.putitdown.utils;
  */
 
 /**
- * constants we can user throughout the app
+ * constants we can use throughout the app
  */
 public class Constants {
     public String DRIVING_EVENT_FINISHED = "finished";

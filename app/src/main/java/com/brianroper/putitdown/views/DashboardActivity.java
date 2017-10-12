@@ -214,16 +214,16 @@ public class DashboardActivity extends AppCompatActivity {
             //checks to see if today's week number matches the stored week number
             //if so we check to see if that trip was successful or not
             if(currentWeek == storedWeek){
-                if(mRealmResults.get(i).isSuccessful() == false){
+                if(!mRealmResults.get(i).isSuccessful()){
                     weeklyFailedTrips++;
                 }
             }
 
             if(logDateString.equals(currentStringDate)){
-                if(mRealmResults.get(i).isSuccessful() == true){
+                if(mRealmResults.get(i).isSuccessful()){
                     successfulTrips++;
                 }
-                else if(mRealmResults.get(i).isSuccessful() == false){
+                else if(!mRealmResults.get(i).isSuccessful()){
                     failedTrips++;
                 }
             }
@@ -251,17 +251,17 @@ public class DashboardActivity extends AppCompatActivity {
                 mTripLogTopEventTime.setText(results.get(topLog).getTime());
 
                 if(results.get(topLog).isSuccessful()){
-                    mTripLogTopEventName.setText("you had a safe trip");
+                    mTripLogTopEventName.setText(getString(R.string.successful_trip));
                 }
                 else{
-                    mTripLogTopEventName.setText("you used your device while driving");
+                    mTripLogTopEventName.setText(getString(R.string.unsuccessful_trip));
                 }
 
                 if(results.get(bottomLog).isSuccessful()){
-                    mTripBottomEventName.setText("you had a safe trip");
+                    mTripBottomEventName.setText(getString(R.string.successful_trip));
                 }
                 else{
-                    mTripBottomEventName.setText("you used your device while driving");
+                    mTripBottomEventName.setText(getString(R.string.unsuccessful_trip));
                 }
             }
             else if(mRealmResults.size() == 1){
@@ -271,10 +271,10 @@ public class DashboardActivity extends AppCompatActivity {
                 mTripLogTopEventTime.setText(results.get(topLog).getTime());
 
                 if(results.get(topLog).isSuccessful()){
-                    mTripLogTopEventName.setText("you had a safe trip");
+                    mTripLogTopEventName.setText(getString(R.string.successful_trip));
                 }
                 else{
-                    mTripLogTopEventName.setText("you used your device while driving");
+                    mTripLogTopEventName.setText(getString(R.string.unsuccessful_trip));
                 }
                 mTripLogBottomLayout.setVisibility(View.GONE);
             }
@@ -315,7 +315,7 @@ public class DashboardActivity extends AppCompatActivity {
     public void setGoalSeekBarVisibility(boolean isGoalSet){
         if(isGoalSet){
             mGoalSeekbar.setVisibility(View.GONE);
-            mGoalContent.setText("You have set a goal for this week!");
+            mGoalContent.setText(getString(R.string.goal_set_for_week));
         }
         else if(!isGoalSet){
             mGoalSeekbar.setVisibility(View.VISIBLE);
@@ -437,7 +437,7 @@ public class DashboardActivity extends AppCompatActivity {
                 .apply();
 
         mEventBus.postSticky(new PreferenceMessage("true"));
-        Toast.makeText(getApplicationContext(), "Passenger mode enabled", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), getString(R.string.passenger_mode_enabled), Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -450,7 +450,7 @@ public class DashboardActivity extends AppCompatActivity {
                 .apply();
 
         mEventBus.postSticky(new PreferenceMessage("false"));
-        Toast.makeText(getApplicationContext(), "Passenger mode disabled", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), getString(R.string.passenger_mode_disabled), Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -667,16 +667,16 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(final SeekBar seekBar) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
-                builder.setTitle("Set a goal")
-                        .setMessage("Would you like to set " + seekBar.getProgress() +" as your personal goal?")
-                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                builder.setTitle(getString(R.string.goal_set_title))
+                        .setMessage(getString(R.string.goal_set_question_part_one) + seekBar.getProgress() + getString(R.string.goal_set_question_part_two))
+                        .setPositiveButton(getString(R.string.confirm_button), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 storeGoal(seekBar.getProgress());
                                 setGoalCountTextView();
                             }
                         })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(getString(R.string.cancel_button), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 setGoalCountTextView();
@@ -734,12 +734,13 @@ public class DashboardActivity extends AppCompatActivity {
             if(goal == (failedTrips) / 2 || goal == ((failedTrips) / 2) + (failedTrips / 4) && failedTrips != 0){
                 sendGoalNotification(goal,
                         getString(R.string.goal_notification_title),
-                        "You are coming close to exceeding your goal of " + goal + " total unlocks. ");
+                        getString(R.string.goal_notification_message_one) + goal
+                                + getString(R.string.goal_notification_message_two));
             }
             else if(failedTrips >= goal){
                 sendGoalNotification(goal,
-                        "You exceeded your goal!",
-                        "Better luck next week, you exceeded your goal of " + goal);
+                        getString(R.string.goal_exceeded_title),
+                        getString(R.string.goal_exceeded_message) + goal);
             }
         }
     }

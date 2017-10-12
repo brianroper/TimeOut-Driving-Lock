@@ -65,8 +65,8 @@ public class Utils {
      */
     static public String returnTime(Calendar calendar){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm a");
-        String time = simpleDateFormat.format(calendar.getTime());
-        return time;
+
+        return simpleDateFormat.format(calendar.getTime());
     }
 
     /**
@@ -74,16 +74,15 @@ public class Utils {
      */
     static public String returnDateAsString(Calendar calendar){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd");
-        String date = simpleDateFormat.format(calendar.getTime());
-        return date;
+
+        return simpleDateFormat.format(calendar.getTime());
     }
 
     /**
      * formats and returns the date as a date object
      */
     static public Date returnDateAsDate(){
-        Date date  = new Date(System.currentTimeMillis());
-        return date;
+        return new Date(System.currentTimeMillis());
     }
 
     /**
@@ -91,8 +90,8 @@ public class Utils {
      */
     static public String returnDateStringFromDate(Date date){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd");
-        String formattedDate = simpleDateFormat.format(date);
-        return formattedDate;
+
+        return simpleDateFormat.format(date);
     }
 
     /**
@@ -108,7 +107,7 @@ public class Utils {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_YEAR, dayOfYear);
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        Log.i("DayOfWeek: ", dayOfWeek + "");
+
         return dayOfWeek + "";
     }
 
@@ -153,8 +152,7 @@ public class Utils {
     static public String returnFullDate(){
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
-        String formattedDate = dateFormat.format(calendar.getTime());
-        return formattedDate;
+        return dateFormat.format(calendar.getTime());
     }
 
     /**
@@ -163,8 +161,7 @@ public class Utils {
     static public String returnDayOfWeek(){
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE");
-        String formattedDate = dateFormat.format(calendar.getTime());
-        return formattedDate;
+        return dateFormat.format(calendar.getTime());
     }
 
     /**
@@ -173,7 +170,6 @@ public class Utils {
     static public String returnDateAsId(){
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
-        String formattedDate = dateFormat.format(calendar.getTime());
-        return formattedDate;
+        return dateFormat.format(calendar.getTime());
     }
 }

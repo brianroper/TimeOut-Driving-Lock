@@ -51,16 +51,14 @@ public class DrivingLogEventAdapter extends RecyclerView.Adapter<DrivingLogEvent
     @Override
     public void onBindViewHolder(DrivingLogEventAdapter.DrivingLogEventViewHolder holder, int position) {
 
-        if(position == (getItemCount() - getItemCount())){
+        if(position == (getItemCount() - getItemCount()))
             holder.mDivider.setVisibility(View.GONE);
-        }
 
-        if(mResults.get(position).isSuccessful() == true){
-            holder.mEventNameTextView.setText("you had a safe trip");
-        }
-        else if(mResults.get(position).isSuccessful() == false){
-            holder.mEventNameTextView.setText("you used your device while driving");
-        }
+        if(mResults.get(position).isSuccessful())
+            holder.mEventNameTextView.setText(mContext.getResources().getString(R.string.successful_trip));
+        else if(!mResults.get(position).isSuccessful())
+            holder.mEventNameTextView.setText(mContext.getResources().getString(R.string.unsuccessful_trip));
+
         holder.mEventDateTextView.setText(Utils.returnDateStringFromDate(mResults.get(position).getDate()));
         holder.mEventTimeTextView.setText(mResults.get(position).getTime());
     }

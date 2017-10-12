@@ -50,7 +50,7 @@ public class DrivingLockService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Date today = Utils.returnDateAsDate(); // Get today's date
-        Log.i("DrivingLockScreen", today.getHours() + "");
+
         if (today.getHours() >= mNightTime || today.getHours() <= mMorning) {
             mIsNight = true;
         }
@@ -87,9 +87,9 @@ public class DrivingLockService extends Service {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(getApplicationContext())
                         .setSmallIcon(R.drawable.redcar)
-                        .setContentTitle("TimeOut")
+                        .setContentTitle(getString(R.string.persistent_notification_title))
                         .setContentText(
-                                "TimeOut is monitoring your driving patterns");
+                                getString(R.string.persistent_notification_content));
 
         //shows notification text on the status bar when received
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
