@@ -14,31 +14,31 @@ public class TutorialActivity extends AppIntro2 {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Slide 1
+        //Slide 1 -- Setting Goals
         addSlide(AppIntro2Fragment.newInstance("Setting Goals",
                 "Setting goals will reduce the amount of time you are " +
                         "influenced to unlock your phone while driving",
                 R.drawable.redcar,getResources().getColor(R.color.colorPrimary)));
 
-        //Slide 2
+        //Slide 2 -- Explaining dashboard (top portion)
         addSlide(AppIntro2Fragment.newInstance("Setting Goals",
                 "Setting goals will reduce the amount of time you are " +
                         "influenced to unlock your phone while driving",
                 R.drawable.redcar,getResources().getColor(R.color.colorPrimary)));
 
-        //Slide 3
+        //Slide 3 -- passenger mode
         addSlide(AppIntro2Fragment.newInstance("Setting Goals",
                 "Setting goals will reduce the amount of time you are " +
                         "influenced to unlock your phone while driving",
                 R.drawable.redcar,getResources().getColor(R.color.colorPrimary)));
 
-        //Slide 4
+        //Slide 4 -- drive difficulty setting
         addSlide(AppIntro2Fragment.newInstance("Setting Goals",
                 "Setting goals will reduce the amount of time you are " +
                         "influenced to unlock your phone while driving",
                 R.drawable.redcar,getResources().getColor(R.color.colorPrimary)));
 
-        //Slide 5
+        //Slide 5 -- unlock reset setting 
         addSlide(AppIntro2Fragment.newInstance("Setting Goals",
                 "Setting goals will reduce the amount of time you are " +
                         "influenced to unlock your phone while driving",
