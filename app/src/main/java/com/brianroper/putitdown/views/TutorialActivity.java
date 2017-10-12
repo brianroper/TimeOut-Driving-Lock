@@ -55,4 +55,10 @@ public class TutorialActivity extends AppIntro2 {
         super.onDonePressed(currentFragment);
         finish();
     }
+
+    @Override
+    public void onSkipPressed(Fragment currentFragment) {
+        super.onSkipPressed(currentFragment);
+        finish();
+    }
 }
