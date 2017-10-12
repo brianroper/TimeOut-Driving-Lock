@@ -67,11 +67,9 @@ public class SettingsActivity extends AppCompatActivity {
     TextView mVersionCode;
 
     private SharedPreferences mSharedPreferences;
-    private final String[] mDriveModes =
-            getResources().getStringArray(R.array.drive_modes_list);
-    private final String[] mTimes =
-            getResources().getStringArray(R.array.lock_out_times_list);
 
+    private String[] mDriveModes;
+    private String[] mTimes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +78,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        setDrivingModesList();
+        setTimesList();
         returnDefaultSharedPreferences();
         handleUIUtilities();
     }
@@ -164,6 +164,18 @@ public class SettingsActivity extends AppCompatActivity {
         else if(!passengerMode){
             mPassengerSwitch.setChecked(false);
         }
+    }
+
+    /**
+     * sets the values for mDrivingModes and mTimes lists
+     */
+    private void setDrivingModesList() {
+        mDriveModes = getResources().getStringArray(R.array.drive_modes_list);
+    }
+
+    private void setTimesList() {
+        mTimes = getResources().getStringArray(R.array.lock_out_times_list);
+
     }
 
     /**

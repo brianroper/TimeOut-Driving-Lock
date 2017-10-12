@@ -73,8 +73,8 @@
     <!-- Goal Setting -->
     <string name="goal_set_for_week">You have set a goal for this week!</string>
     <string name="goal_set_title">Set a goal</string>
-    <string name="goal_set_question_part_one">Would you like to set </string>
-    <string name="goal_set_question_part_two"> as your personal goal?</string>
+    <string name="goal_set_question_part_one">Would you like to set</string>
+    <string name="goal_set_question_part_two">as your personal goal?</string>
 
     <!-- Passenger mode -->
     <string name="passenger_mode_disabled">Passenger mode disabled</string>
@@ -130,7 +130,6 @@
         <item>Normal</item>
         <item>Lenient</item>
     </string-array>
-
     <string-array name="lock_out_times_list">
         <item>15s</item>
         <item>30s</item>
@@ -139,7 +138,25 @@
 
     <string name="adjust_driving_mode_title">Adjust Driving Mode</string>
     <string name="adjust_unlock_timer_title">Adjust Unlock Timer</string>
-
     <string name="give_email_feedback">Give Feedback</string>
+
+    <!-- Tutorial Activity (Taj enter the tutorial text here: ) -->
+    <string name="setting_goals_title">Setting Goals</string>
+    <string name="setting_goals_message">Setting goals will reduce the amount of time you are
+        influenced to unlock your phone while driving
+    </string>
+    <string name="explain_dashboard_title">Dashboard Functionality</string>
+    <string name="explain_dashboard_message">
+    </string>
+    <string name="passenger_mode_title">Passenger Mode</string>
+    <string name="passenger_mode_message">
+    </string>
+    <string name="drive_difficulty_title">Drive Difficulty</string>
+    <string name="drive_difficulty_message">
+    </string>
+    <string name="unlock_reset_title">Unlock Reset Time</string>
+    <string name="unlock_reset_message">
+    </string>
+
 
 </resources>

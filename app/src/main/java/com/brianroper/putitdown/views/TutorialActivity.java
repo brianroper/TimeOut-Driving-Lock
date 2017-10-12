@@ -15,33 +15,28 @@ public class TutorialActivity extends AppIntro2 {
         super.onCreate(savedInstanceState);
 
         //Slide 1 -- Setting Goals
-        addSlide(AppIntro2Fragment.newInstance("Setting Goals",
-                "Setting goals will reduce the amount of time you are " +
-                        "influenced to unlock your phone while driving",
+        addSlide(AppIntro2Fragment.newInstance(getString(R.string.setting_goals_title),
+                getString(R.string.setting_goals_message),
                 R.drawable.redcar,getResources().getColor(R.color.colorPrimary)));
 
         //Slide 2 -- Explaining dashboard (top portion)
-        addSlide(AppIntro2Fragment.newInstance("Setting Goals",
-                "Setting goals will reduce the amount of time you are " +
-                        "influenced to unlock your phone while driving",
+        addSlide(AppIntro2Fragment.newInstance(getString(R.string.explain_dashboard_title),
+                getString(R.string.explain_dashboard_message),
                 R.drawable.redcar,getResources().getColor(R.color.colorPrimary)));
 
         //Slide 3 -- passenger mode
-        addSlide(AppIntro2Fragment.newInstance("Setting Goals",
-                "Setting goals will reduce the amount of time you are " +
-                        "influenced to unlock your phone while driving",
+        addSlide(AppIntro2Fragment.newInstance(getString(R.string.passenger_mode_title),
+                getString(R.string.passenger_mode_message),
                 R.drawable.redcar,getResources().getColor(R.color.colorPrimary)));
 
         //Slide 4 -- drive difficulty setting
-        addSlide(AppIntro2Fragment.newInstance("Setting Goals",
-                "Setting goals will reduce the amount of time you are " +
-                        "influenced to unlock your phone while driving",
+        addSlide(AppIntro2Fragment.newInstance(getString(R.string.drive_difficulty_title),
+                getString(R.string.drive_difficulty_message),
                 R.drawable.redcar,getResources().getColor(R.color.colorPrimary)));
 
         //Slide 5 -- unlock reset setting 
-        addSlide(AppIntro2Fragment.newInstance("Setting Goals",
-                "Setting goals will reduce the amount of time you are " +
-                        "influenced to unlock your phone while driving",
+        addSlide(AppIntro2Fragment.newInstance(getString(R.string.unlock_reset_title),
+                getString(R.string.unlock_reset_message),
                 R.drawable.redcar,getResources().getColor(R.color.colorPrimary)));
 
 
