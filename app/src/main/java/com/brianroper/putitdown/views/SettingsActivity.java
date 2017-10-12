@@ -217,7 +217,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     @OnClick(R.id.surface_tutorial)
     public void setSurfaceTutorialListener(){
-        //TODO: create intent for tutorial activity
+        Intent tutorialIntent= new Intent(getApplicationContext(), TutorialActivity.class);
+        startActivity(tutorialIntent);
     }
 
     @OnClick(R.id.surface_drive_mode)
