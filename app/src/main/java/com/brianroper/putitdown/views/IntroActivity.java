@@ -66,9 +66,6 @@ public class IntroActivity extends AppIntro2 {
 
         addSlide(AppIntro2Fragment.newInstance(getString(R.string.start_driving_title),
                 getString(R.string.start_driving_message),
-        addSlide(AppIntro2Fragment.newInstance("Start Driving",
-                "Time works silently in the background to ensure your always driving safely. " +
-                        "To get start, just start driving!",
                 R.drawable.redcar,
                 getResources().getColor(R.color.slide6Color)));
 
