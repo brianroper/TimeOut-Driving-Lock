@@ -35,7 +35,7 @@ public class DrivingLogActivity extends AppCompatActivity {
             DrivingLogFragment.newInstance(ALL_TIME_FRAGMENT)
     };
 
-    private String[] mFragmentNames = { "Today", "This Week", "This Month", "All Time" };
+    private String[] mFragmentNames = getResources().getStringArray(R.array.driving_log_frag_names);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

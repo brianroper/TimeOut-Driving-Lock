@@ -166,16 +166,14 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
                         startService(mDrivingService);
                     }
                     mIsDriving = true;
-                    Log.i("Driving: ", "User has started driving above 5mph");
                 }
                 if(mCurrentSpeed < TARGET_LOCKOUT_SPEED && mCurrentSpeed != TARGET_STOPPED_SPEED){
                     if(mIsDriving){
                         stopService(mDrivingService);
-                        Log.i("Driving: ", "User has started driving below 5mph");
                     }
                 }
                 if(mCurrentSpeed == TARGET_STOPPED_SPEED){
-                    Log.i("Driving: ", "User has stopped driving");
+
                     if(mIsDriving){
                         //check after set seconds if speed is still 0. If so we log a successful driving session
                         mIsDriving = false;
@@ -378,9 +376,9 @@ public class TimeOutMovementService extends Service implements TimeOutGpsListene
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(getApplicationContext())
                         .setSmallIcon(R.drawable.redcar)
-                        .setContentTitle("TimeOut")
+                        .setContentTitle(getApplicationContext().getString(R.string.persistent_notification_title))
                         .setContentText(
-                                "TimeOut is monitoring your driving patterns");
+                                getApplicationContext().getString(R.string.persistent_notification_content));
 
         //shows notification text on the status bar when received
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);

@@ -2,8 +2,7 @@
     <string name="app_name">TimeOut</string>
 
     <string name="app_uid">3ad95db57d8062d2a8e947438d7c23e5067abe38d78f24252d0fd9db06eef9ef</string>
-    <string name="app_secret">fcbb0c283f3c44298d5da6ef339d5245f753781a6bb233a44424a18587692a1b
-    </string>
+    <string name="app_secret">fcbb0c283f3c44298d5da6ef339d5245f753781a6bb233a44424a18587692a1b</string>
 
     <!-- shared preference keys -->
     <string name="passenger_mode_key">passengerStatus</string>
@@ -52,8 +51,50 @@
         to track your driving patterns
     </string>
     
-    <!-- goal notification-->
-    <string name="goal_notification_title">You cutting it close</string>
+    <!-- goal notification -->
+    <string name="goal_notification_title">You are cutting it close</string>
+    <string name="goal_notification_message_one">You are coming close to exceeding your goal of </string>
+    <string name="goal_notification_message_two"> total unlocks.</string>
+
+    <string name="goal_exceeded_title">You are cutting it close</string>
+    <string name="goal_exceeded_message">Better luck next week, you exceeded your goal of </string>
+
     <string name="goal_notification_button">Open</string>
+
+    <!-- Driving Events Log -->
+    <string name="successful_trip">you had a safe trip</string>
+    <string name="unsuccessful_trip">you used your device while driving</string>
+
+    <!-- Android O Notification -->
+    <string name="persistent_notification_title">TimeOut</string>
+    <string name="persistent_notification_content">TimeOut is monitoring your driving patterns</string>
+
+    <!-- Goal Setting -->
+    <string name="goal_set_for_week">You have set a goal for this week!</string>
+    <string name="goal_set_title">Set a goal</string>
+    <string name="goal_set_question_part_one">Would you like to set </string>
+    <string name="goal_set_question_part_two"> as your personal goal?</string>
+
+    <!-- Passenger mode -->
+    <string name="passenger_mode_disabled">Passenger mode disabled</string>
+    <string name="passenger_mode_enabled">Passenger mode enabled</string>
+
+    <!-- Cancel/Confirm Buttons -->
+    <string name="cancel_button">Cancel</string>
+    <string name="confirm_button">Confirm</string>
+
+    <!-- Driving Log Fragment Names -->
+    <string-array name="driving_log_frag_names">
+        <item>Today</item>
+        <item>This Week</item>
+        <item>This Month</item>
+        <item>All Time</item>
+    </string-array>
+
+    <!-- Handle Empty Driving Log Views -->
+    <string name="no_data_today">You have no trip data for today</string>
+    <string name="no_data_this_week">You have no trip data for this week</string>
+    <string name="no_data_this_month">You have no trip data for this month</string>
+    <string name="no_data_all_time">You have no trip data</string>
 
 </resources>

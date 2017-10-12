@@ -121,16 +121,16 @@ public class DrivingLogFragment extends Fragment {
             mLogRecycler.setVisibility(View.GONE);
             mLogEmptyView.setVisibility(View.VISIBLE);
             if(currentFragment == THIS_WEEK_FRAGMENT){
-                mLogEmptyViewTextView.setText("You have no trip data for this week");
+                mLogEmptyViewTextView.setText(getString(R.string.no_data_this_week));
             }
             else if(currentFragment == THIS_MONTH_FRAGMENT){
-                mLogEmptyViewTextView.setText("You have no trip data for this month");
+                mLogEmptyViewTextView.setText(getString(R.string.no_data_this_month));
             }
             else if(currentFragment == ALL_TIME_FRAGMENT){
-                mLogEmptyViewTextView.setText("You currently have no trip data");
+                mLogEmptyViewTextView.setText(getString(R.string.no_data_all_time));
             }
             else if(currentFragment == TODAY_FRAGMENT){
-                mLogEmptyViewTextView.setText("You currently have no trip data");
+                mLogEmptyViewTextView.setText(getString(R.string.no_data_today));
             }
         }
     }

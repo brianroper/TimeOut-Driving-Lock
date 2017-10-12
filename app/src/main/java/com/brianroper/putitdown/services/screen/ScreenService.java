@@ -87,9 +87,9 @@ public class ScreenService extends Service {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(getApplicationContext())
                         .setSmallIcon(R.drawable.redcar)
-                        .setContentTitle("TimeOut")
+                        .setContentTitle(getString(R.string.persistent_notification_title))
                         .setContentText(
-                                "TimeOut is monitoring your driving patterns");
+                                getString(R.string.persistent_notification_content));
 
         //shows notification text on the status bar when received
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);

@@ -156,8 +156,6 @@ public class DrivingLockScreen {
             mDrivingMessageTextView.setTextColor(mContext.getResources().getColor(R.color.primaryTextNight));
             mUnlockTextView.setTextColor(mContext.getResources().getColor(R.color.primaryTextNight));
             mPassengerTextView.setTextColor(mContext.getResources().getColor(R.color.primaryTextNight));
-
-            Log.i(getClass() + "", "It is night time, night time driving mode started.");
         }
     }
 
