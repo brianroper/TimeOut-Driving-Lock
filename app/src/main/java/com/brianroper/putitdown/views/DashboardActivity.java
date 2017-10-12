@@ -525,6 +525,11 @@ public class DashboardActivity extends AppCompatActivity {
             populateAllViews();
             handleAdapterDataSet();
         }
+        if(drivingMessage.message.equals("emergency")){
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:911"));
+            startActivity(intent);
+        }
     }
 
     /**
