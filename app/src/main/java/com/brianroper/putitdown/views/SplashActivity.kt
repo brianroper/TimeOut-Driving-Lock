@@ -17,7 +17,7 @@ class SplashActivity : AppCompatActivity() {
 
         Handler().postDelayed({
             startActivity(Intent(this, DashboardActivity::class.java))
-            //overridePendingTransition(R.transition.fade_in, R.transition.fade_out)
+            overridePendingTransition(R.transition.fade_in, R.transition.fade_out)
             finish()
         }, SPLASH_DURATION.toLong())
     }
