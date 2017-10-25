@@ -35,7 +35,7 @@ public class DrivingLogActivity extends AppCompatActivity {
             DrivingLogFragment.newInstance(ALL_TIME_FRAGMENT)
     };
 
-    private String[] mFragmentNames = getResources().getStringArray(R.array.driving_log_frag_names);
+    private String[] mFragmentNames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +55,14 @@ public class DrivingLogActivity extends AppCompatActivity {
      * handles all ui utilities for this activity
      */
     public void handleUIUtilities(){
+        handleFragmentNames();
         handleToolbarBehavior(mLogToolbar);
         handleViewPagerBehavior(mLogViewPager);
         handleStatusBarColor();
+    }
+
+    public void handleFragmentNames(){
+        mFragmentNames = getResources().getStringArray(R.array.driving_log_frag_names);
     }
 
     /**
