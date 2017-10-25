@@ -8,6 +8,7 @@
     <color name="grey">#e6e6e6</color>
     <color name="dark_grey">#6f6f6f</color>
     <color name="primaryText">#47525E</color>
+    <color name="splash">#3786C4</color>
 
     <!-- night time schema colors -->
     <color name="colorPrimaryNight">#47525E</color>

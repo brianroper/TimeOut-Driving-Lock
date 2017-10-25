@@ -2,7 +2,8 @@
     <string name="app_name">TimeOut</string>
 
     <string name="app_uid">3ad95db57d8062d2a8e947438d7c23e5067abe38d78f24252d0fd9db06eef9ef</string>
-    <string name="app_secret">fcbb0c283f3c44298d5da6ef339d5245f753781a6bb233a44424a18587692a1b</string>
+    <string name="app_secret">fcbb0c283f3c44298d5da6ef339d5245f753781a6bb233a44424a18587692a1b
+    </string>
 
     <!-- shared preference keys -->
     <string name="passenger_mode_key">passengerStatus</string>
@@ -53,11 +54,12 @@
 
     <!-- goal notification -->
     <string name="goal_notification_title">You are cutting it close</string>
-    <string name="goal_notification_message_one">You are coming close to exceeding your goal of </string>
-    <string name="goal_notification_message_two"> total unlocks.</string>
+    <string name="goal_notification_message_one">You are coming close to exceeding your goal of
+    </string>
+    <string name="goal_notification_message_two">total unlocks.</string>
 
     <string name="goal_exceeded_title">You are cutting it close</string>
-    <string name="goal_exceeded_message">Better luck next week, you exceeded your goal of </string>
+    <string name="goal_exceeded_message">Better luck next week, you exceeded your goal of</string>
 
     <!-- goal notification-->
     <string name="goal_notification_button">Open</string>
@@ -68,7 +70,8 @@
 
     <!-- Android O Notification -->
     <string name="persistent_notification_title">TimeOut</string>
-    <string name="persistent_notification_content">TimeOut is monitoring your driving patterns</string>
+    <string name="persistent_notification_content">TimeOut is monitoring your driving patterns
+    </string>
 
     <!-- Goal Setting -->
     <string name="goal_set_for_week">You have set a goal for this week!</string>
@@ -102,11 +105,13 @@
     <string name="welcome_title">Welcome</string>
     <string name="welcome_message">TimeOut will help you put an end to texting and driving</string>
     <string name="before_we_start_title">Before we start</string>
-    <string name="before_we_start_message">TimeOut needs permission to access some of your device sensors.
+    <string name="before_we_start_message">TimeOut needs permission to access some of your device
+        sensors.
         Without them the app will not function properly"
     </string>
     <string name="location_title">Location</string>
-    <string name="location_message">TimeOut uses location to determine if your vehicle is moving.</string>
+    <string name="location_message">TimeOut uses location to determine if your vehicle is moving.
+    </string>
     <string name="app_overlay_title">App Overlay</string>
     <string name="app_overlay_message">TimeOut needs permission to draw over other apps.
         This is a key part of our lockout technology
@@ -116,7 +121,8 @@
         This helps us keep your eyes on the road and not on your phone"
     </string>
     <string name="start_driving_title">Start Driving</string>
-    <string name="start_driving_message">TimeOut works silently in the background to ensure your always driving safely.
+    <string name="start_driving_message">TimeOut works silently in the background to ensure your
+        always driving safely.
         To get started, just start driving!
     </string>
     <string name="one_last_thing_title">One Last Thing</string>
