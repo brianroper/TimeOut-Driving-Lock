@@ -68,7 +68,7 @@
                 <TextView
                     android:layout_width="280dp"
                     android:layout_height="wrap_content"
-                    android:text="Enable passenger mode when your aren't behind the wheel"
+                    android:text="Enable passenger mode when you aren't behind the wheel"
                     android:layout_below="@+id/passenger_title"
                     android:paddingTop="2dp"
                     android:paddingStart="16dp"
