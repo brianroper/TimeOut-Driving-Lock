@@ -14,6 +14,7 @@ import com.brianroper.putitdown.R;
 import com.brianroper.putitdown.utils.Utils;
 import com.brianroper.putitdown.model.driving.DrivingLockScreen;
 
+import java.security.spec.ECField;
 import java.util.Date;
 
 /**
@@ -56,7 +57,12 @@ public class DrivingLockService extends Service {
         }
 
         mDrivingLockScreen.startDriving(mIsNight);
-        Utils.silenceDevice(getApplicationContext());
+        try{
+            Utils.silenceDevice(getApplicationContext());
+        }
+        catch (SecurityException e){
+            Log.e("Do Not Disturb: ", "permission not granted");
+        }
         return START_STICKY;
     }
 
@@ -72,8 +78,13 @@ public class DrivingLockService extends Service {
      */
     @Override
     public void onDestroy() {
-        Utils.enableDeviceRinger(getApplicationContext());
         mDrivingLockScreen.stopDriving();
+        try{
+            Utils.enableDeviceRinger(getApplicationContext());
+        }
+        catch (SecurityException e){
+            Log.e("Do Not Disturb: ", "permission not granted");
+        }
         super.onDestroy();
     }
 
